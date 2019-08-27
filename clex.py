@@ -106,110 +106,124 @@ import sly
 
 
 class Lexer(sly.Lexer):
-	# -------
-	# Conjunto de palabras reservadas.  Este conjunto enumera todos los
-	# nombres especiales utilizados en el lenguaje, como 'if', 'else',
-	# 'while', etc.
-	keywords = {
-	}
+    # -------
+    # Conjunto de palabras reservadas.  Este conjunto enumera todos los
+    # nombres especiales utilizados en el lenguaje, como 'if', 'else',
+    # 'while', etc.
+    keywords = {
+        'if', 'else', 'while', 'for', 'break',
+        'return', 'void', 'bool', 'int', 'float',
+        'char', 'new', 'size', 'true', 'false',
+    }
 
-	# ----------------------------------------------------------------------
-	# Conjunto de token. Este conjunto identifica la lista completa de
-	# nombres de tokens que reconocerá su lexer. No cambie ninguno de estos
-	# nombres.
-	tokens = {
-		# keywords
-		* { kw.upper() for kw in keywords },
+    # ----------------------------------------------------------------------
+    # Conjunto de tokens. Este conjunto identifica la lista completa de
+    # nombres de tokens que reconocerá su lexer. No cambie ninguno de estos
+    # nombres.
+    tokens = {
+        # keywords
+        * { kw.upper() for kw in keywords },
 
-		# Identificador
-		IDENT,
-	}
-	literals = ''
+        # Identificador
+        IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT,
+        STRING_LIT, LE, GE, EQ, NE, OR, AND
+    }
 
-	# ----------------------------------------------------------------------
-	# Caracteres ignorados (whitespace)
-	#
-	# Los siguientes caracteres son ignorados completamente por el lexer.
-	# No lo cambie.
+    literals = '(){}[];,.+-*/%<>=!'
 
-	ignore = ' \t\r'
+    # ----------------------------------------------------------------------
+    # Caracteres ignorados (whitespace)
+    #
+    # Los siguientes caracteres son ignorados completamente por el lexer.
+    # No lo cambie.
 
-	# ----------------------------------------------------------------------
-	# Patrones ignorados.  Complete las expresiones regulares a continuación
-	# para ignorar los comentarios
-	#
+    ignore = ' \t\r'
 
-
-
-
-
-	# ----------------------------------------------------------------------
-	#                           *** DEBE COMPLETAR ***
-	#
-	# escriba las expresiones regulares que se indican a continuación.
-	#
-	# Tokens para símbolos simples: + - * / = ( ) ; < >, etc.
-	#
-	# Precaución: El orden de las definiciones es importante. Los símbolos
-	# más largos deben aparecer antes de los símbolos más cortos que son
-	# una subcadena (por ejemplo, el patrón para <= debe ir antes de <).
-
-	# ----------------------------------------------------------------------
-	#                           *** DEBE COMPLETAR ***
-	#
-	# escriba las expresiones regulares y el código adicional a continuación
-	#
-	# Tokens para literales, INTEGER, FLOAT, STRING.
-	#
-	# Constante de punto flotante. Debe reconocer los números de punto
-	# flotante en los siguientes formatos:
-	#
-	#   1.23
-	#   123.
-	#   .123
-	#
-	# Bonificación: reconocer números flotantes en notación científica
-	#
-	#   1.23e1
-	#   1.23e+1
-	#   1.23e-1
-	#   1e1
-	#
-	# El valor debe ser convertir en un float de Python cuando se lea
-
-
-	# Constante entera
-	#s
-	#     1234             (decimal)
-	#
-	# El valor debe ser convertido a un int de Python cuando se lea.
-	#
-	# Bonificación. Reconocer enteros en diferentes bases tales como
-	# 0x1a, 0o13 o 0b111011.
-
-
-	# ----------------------------------------------------------------------
-	#                           *** DEBE COMPLETAR ***
-	#
-	# escribir la expresión regular y agregar palabras reservadas
-	#
-	# Identificadores y palabras reservadas
-	#
-	# Concuerde con un identificador. Los identificadores siguen las mismas
-	# reglas que Python. Es decir, comienzan con una letra o un guión bajo (_)
-	# y pueden contener una cantidad arbitraria de letras, dígitos o guiones
-	# bajos después de eso.
-	# Las palabras reservadas del lenguaje como "if" y "while" también se
-	# combinan como identificadores. Debe capturar estos y cambiar su tipo
-	# de token para que coincida con la palabra clave adecuada.
+    # ----------------------------------------------------------------------
+    # Patrones ignorados.  Complete las expresiones regulares a continuación
+    # para ignorar los comentarios
+    #
 
 
 
-	# ----------------------------------------------------------------------
-	# Manejo de errores de caracteres incorrectos
-	def error(self, t):
-		error(self.lineno, 'Caracter Ilegal %r' % t.value[0])
-		self.index += 1
+
+
+    # ----------------------------------------------------------------------
+    #                           *** DEBE COMPLETAR ***
+    #
+    # escriba las expresiones regulares que se indican a continuación.
+    #
+    # Tokens para símbolos simples: + - * / = ( ) ; < >, etc.
+    #
+    # Precaución: El orden de las definiciones es importante. Los símbolos
+    # más largos deben aparecer antes de los símbolos más cortos que son
+    # una subcadena (por ejemplo, el patrón para <= debe ir antes de <).
+
+    LE = r'<='
+    GE = r'>='
+    EQ = r'=='
+    NE = r'!='
+    OR = r'||'
+    AND = r'&&'
+
+
+    # ----------------------------------------------------------------------
+    #                           *** DEBE COMPLETAR ***
+    #
+    # escriba las expresiones regulares y el código adicional a continuación
+    #
+    # Tokens para literales, INTEGER, FLOAT, STRING.
+    #
+    # Constante de punto flotante. Debe reconocer los números de punto
+    # flotante en los siguientes formatos:
+    #
+    #   1.23
+    #   123.
+    #   .123
+    #
+    # Bonificación: reconocer números flotantes en notación científica
+    #
+    #   1.23e1
+    #   1.23e+1
+    #   1.23e-1
+    #   1e1
+    #
+    # El valor debe ser convertir en un float de Python cuando se lea
+
+
+    # Constante entera
+    #s
+    #     1234             (decimal)
+    #
+    # El valor debe ser convertido a un int de Python cuando se lea.
+    #
+    # Bonificación. Reconocer enteros en diferentes bases tales como
+    # 0x1a, 0o13 o 0b111011.
+
+
+    # ----------------------------------------------------------------------
+    #                           *** DEBE COMPLETAR ***
+    #
+    # escribir la expresión regular y agregar palabras reservadas
+    #
+    # Identificadores y palabras reservadas
+    #
+    # Concuerde con un identificador. Los identificadores siguen las mismas
+    # reglas que Python. Es decir, comienzan con una letra o un guión bajo (_)
+    # y pueden contener una cantidad arbitraria de letras, dígitos o guiones
+    # bajos después de eso.
+    # Las palabras reservadas del lenguaje como "if" y "while" también se
+    # combinan como identificadores. Debe capturar estos y cambiar su tipo
+    # de token para que coincida con la palabra clave adecuada.
+
+    IDENT = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
+
+    # ----------------------------------------------------------------------
+    # Manejo de errores de caracteres incorrectos
+    def error(self, t):
+        error(self.lineno, 'Caracter Ilegal %r' % t.value[0])
+        self.index += 1
 
 
 # ----------------------------------------------------------------------
@@ -222,19 +236,19 @@ class Lexer(sly.Lexer):
 #
 # ----------------------------------------------------------------------
 def main():
-	'''
-	main. Para propósitos de depuracion
-	'''
-	import sys
+    '''
+    main. Para propósitos de depuracion
+    '''
+    import sys
 
-	if len(sys.argv) != 2:
-		sys.stderr.write('Uso: python3 -m clexer filename\n')
-		raise SystemExit(1)
+    if len(sys.argv) != 2:
+        sys.stderr.write('Uso: python3 -m clexer filename\n')
+        raise SystemExit(1)
 
-	lexer = Lexer()
-	text = open(sys.argv[1]).read()
-	for tok in lexer.tokenize(text):
-		print(tok)
+    lexer = Lexer()
+    text = open(sys.argv[1]).read()
+    for tok in lexer.tokenize(text):
+        print(tok)
 
 if __name__ == '__main__':
-	main()
+    main()
