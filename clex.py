@@ -163,7 +163,7 @@ class Lexer(sly.Lexer):
     MINUS = r'-'
     TIMES = r'\*'
     DIVIDE = r'/'
-    MOD = r'%'
+    MOD = r'%' # conflicto con printf
     LE = r'<='
     LT = r'<'
     GE = r'>='
@@ -208,6 +208,9 @@ class Lexer(sly.Lexer):
     # Bonificación. Reconocer enteros en diferentes bases tales como
     # 0x1a, 0o13 o 0b111011.
 
+    INT_LIT = r'\d+|0[0-7]+|0x[0-9a-fA-F]'
+    FLOAT_LIT = r'\d*\.\d+'
+
 
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
@@ -242,6 +245,9 @@ class Lexer(sly.Lexer):
     IDENT['true'] = TRUE
     IDENT['false'] = FALSE
 
+    @_(r'\n')
+    def newline(self, t):
+        self.lineno += 1
 
     # ----------------------------------------------------------------------
     # Manejo de errores de caracteres incorrectos
@@ -263,15 +269,34 @@ def main():
     '''
     main. Para propósitos de depuracion
     '''
-    import sys
-
-    if len(sys.argv) != 2:
-        sys.stderr.write('Uso: python3 -m clexer filename\n')
-        raise SystemExit(1)
-
+    # import sys
+    #
+    # if len(sys.argv) != 2:
+    #     sys.stderr.write('Uso: python3 -m clexer filename\n')
+    #     raise SystemExit(1)
+    #
+    # lexer = Lexer()
+    # text = open(sys.argv[1]).read()
+    # for tok in lexer.tokenize(text):
+    #     print(tok)
+    data = '''
+    //Counting
+    x = 0;
+    float a = 0
+    for(int i = 0; i < 20; i++) {
+        printf("%d", i);
+        a = a + i + 0.15
+    }
+    /* esto 
+    es un bloque de 
+    comentario */
+    while (x < 10) {
+        print x:
+        x = x + 1;
+    }
+    '''
     lexer = Lexer()
-    text = open(sys.argv[1]).read()
-    for tok in lexer.tokenize(text):
+    for tok in lexer.tokenize(data):
         print(tok)
 
 if __name__ == '__main__':
