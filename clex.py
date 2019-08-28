@@ -125,8 +125,9 @@ class Lexer(sly.Lexer):
         * { kw.upper() for kw in keywords },
 
         # Identificador
-        IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT,
-        STRING_LIT, LE, GE, EQ, NE, OR, AND
+        IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT, STRING_LIT,
+        PLUS, MINUS, TIMES, DIVIDE, MOD, LE, LT, GE, GT,
+        EQ, ASSIGN, NE, OR, AND
     }
 
     literals = '(){}[];,.+-*/%<>=!'
@@ -142,10 +143,9 @@ class Lexer(sly.Lexer):
     # ----------------------------------------------------------------------
     # Patrones ignorados.  Complete las expresiones regulares a continuación
     # para ignorar los comentarios
-    #
 
-
-
+    ignore_line_comment = r'//.*'
+    ignore_block_comment = r'/\*.*\*/' # todo: punto no reconoceria \n
 
 
     # ----------------------------------------------------------------------
@@ -159,13 +159,21 @@ class Lexer(sly.Lexer):
     # más largos deben aparecer antes de los símbolos más cortos que son
     # una subcadena (por ejemplo, el patrón para <= debe ir antes de <).
 
+    PLUS = r'\+'
+    MINUS = r'-'
+    TIMES = r'\*'
+    DIVIDE = r'/'
+    MOD = r'%'
     LE = r'<='
+    LT = r'<'
     GE = r'>='
+    GT = r'>'
     EQ = r'=='
+    ASSIGN = r'='
     NE = r'!='
-    OR = r'||'
+    OR = r'\|\|'
     AND = r'&&'
-
+    # todo agregar incrementos e incr con operaciones?
 
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
@@ -217,6 +225,22 @@ class Lexer(sly.Lexer):
     # de token para que coincida con la palabra clave adecuada.
 
     IDENT = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
+    IDENT['if'] = IF
+    IDENT['else'] = ELSE
+    IDENT['while'] = WHILE
+    IDENT['for'] = FOR
+    IDENT['break'] = BREAK
+    IDENT['return'] = RETURN
+    IDENT['void'] = VOID
+    IDENT['bool'] = BOOL
+    IDENT['int'] = INT
+    IDENT['float'] = FLOAT
+    IDENT['char'] = CHAR
+    IDENT['new'] = NEW
+    IDENT['size'] = SIZE
+    IDENT['true'] = TRUE
+    IDENT['false'] = FALSE
 
 
     # ----------------------------------------------------------------------
