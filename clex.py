@@ -221,10 +221,14 @@ class Lexer(sly.Lexer):
     BOOL_LIT = r'(true|false)$'
 
     def INT_LIT(self, t):
-        if '' in t.value:
+        if ('0b' in t.value) or ('0B' in t.value):
             t.value = int(t.value, 2)
-        # else if...
-
+        elif t.value[0] == '0' and t.value[1] in '1234567':
+            t.value = int(t.value, 8)
+        elif ('0x' in t.value) or ('0X' in t.value):
+            t.value = int(t.value, 16)
+        else:
+            t.value = int(t.value)
         return t
 
     # ----------------------------------------------------------------------
