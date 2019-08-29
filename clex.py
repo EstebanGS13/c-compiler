@@ -125,9 +125,10 @@ class Lexer(sly.Lexer):
         * { kw.upper() for kw in keywords },
 
         # Identificador
-        IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT, STRING_LIT,
-        PLUS, MINUS, TIMES, DIVIDE, MOD, LE, LT, GE, GT,
-        EQ, ASSIGN, NE, OR, AND
+        IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT, STRING_LIT, BOOL_LIT,
+        INCR, DECR, ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN,
+        PLUS, MINUS, TIMES, DIVIDE, MOD,
+        LE, LT, GE, GT, EQ, ASSIGN, NE, OR, AND
     }
 
     literals = '(){}[];,.+-*/%<>=!'
@@ -145,8 +146,7 @@ class Lexer(sly.Lexer):
     # para ignorar los comentarios
 
     ignore_line_comment = r'//.*'
-    ignore_block_comment = r'/\*.*\*/' # todo: punto no reconoceria \n
-
+    ignore_block_comment = r'/\*[^*]*\*+(?:[^*/][^*]*\*+)*/'
 
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
@@ -159,6 +159,13 @@ class Lexer(sly.Lexer):
     # más largos deben aparecer antes de los símbolos más cortos que son
     # una subcadena (por ejemplo, el patrón para <= debe ir antes de <).
 
+    INCR = r'\+\+' # todo r'\+\+\w+'
+    DECR = r'--'
+    ADDASSIGN = r'\+='
+    SUBASSIGN = r'-='
+    MULASSIGN = r'\*='
+    DIVASSIGN = r'/='
+    MODASSIGN = r'%='
     PLUS = r'\+'
     MINUS = r'-'
     TIMES = r'\*'
@@ -173,7 +180,6 @@ class Lexer(sly.Lexer):
     NE = r'!='
     OR = r'\|\|'
     AND = r'&&'
-    # todo agregar incrementos e incr con operaciones?
 
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
@@ -208,8 +214,11 @@ class Lexer(sly.Lexer):
     # Bonificación. Reconocer enteros en diferentes bases tales como
     # 0x1a, 0o13 o 0b111011.
 
-    INT_LIT = r'\d+|0[0-7]+|0x[0-9a-fA-F]'
-    FLOAT_LIT = r'\d*\.\d+'
+    FLOAT_LIT = r'\d*\.\d+|\d+\.$'
+    INT_LIT = r'[1-9]\d*|0[0-7]+|0[xX][0-9a-fA-F]+|0[bB][0-1]+|0$'
+    CHAR_LIT = r'\'.\''
+    STRING_LIT =  r'\"(\\.|[^"\\])*\"'   # simple r'\".*\"'
+    BOOL_LIT = r'(true|false)$'
 
 
     # ----------------------------------------------------------------------
@@ -279,22 +288,27 @@ def main():
     # text = open(sys.argv[1]).read()
     # for tok in lexer.tokenize(text):
     #     print(tok)
+    # data = '''
+    # //Counting
+    # x = 0;
+    # float a = 0
+    # for(int i = 0; i < 20; i++) {
+    #     printf("%d", i);
+    #     a = a + i + 0.15
+    # }
     data = '''
-    //Counting
-    x = 0;
-    float a = 0
-    for(int i = 0; i < 20; i++) {
-        printf("%d", i);
-        a = a + i + 0.15
-    }
-    /* esto 
-    es un bloque de 
+    /* esto
+    es un bloque de
     comentario */
     while (x < 10) {
         print x:
         x = x + 1;
     }
     '''
+    # data = '123.r'
+    # data = '''   '\n' '''
+    # data = '''bool truefalse = true'''
+    # data = '''//qwe\nrty'''
     lexer = Lexer()
     for tok in lexer.tokenize(data):
         print(tok)
