@@ -170,7 +170,7 @@ class Lexer(sly.Lexer):
     MINUS = r'-'
     TIMES = r'\*'
     DIVIDE = r'/'
-    MOD = r'%' # conflicto con printf
+    MOD = r'%'
     LE = r'<='
     LT = r'<'
     GE = r'>='
@@ -215,11 +215,17 @@ class Lexer(sly.Lexer):
     # 0x1a, 0o13 o 0b111011.
 
     FLOAT_LIT = r'\d*\.\d+|\d+\.$'
-    INT_LIT = r'[1-9]\d*|0[0-7]+|0[xX][0-9a-fA-F]+|0[bB][0-1]+|0$'
+    INT_LIT = r'[1-9]\d*|0[1-7][0-7]*|0[xX][0-9a-fA-F]+|0[bB][01]+|0$'
     CHAR_LIT = r'\'.\''
-    STRING_LIT =  r'\"(\\.|[^"\\])*\"'   # simple r'\".*\"'
+    STRING_LIT = r'\"(\\.|[^"\\])*\"'   # simple r'\".*\"'
     BOOL_LIT = r'(true|false)$'
 
+    def INT_LIT(self, t):
+        if '' in t.value:
+            t.value = int(t.value, 2)
+        # else if...
+
+        return t
 
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
@@ -278,16 +284,16 @@ def main():
     '''
     main. Para propósitos de depuracion
     '''
-    # import sys
-    #
-    # if len(sys.argv) != 2:
-    #     sys.stderr.write('Uso: python3 -m clexer filename\n')
-    #     raise SystemExit(1)
-    #
-    # lexer = Lexer()
-    # text = open(sys.argv[1]).read()
-    # for tok in lexer.tokenize(text):
-    #     print(tok)
+    import sys
+
+    if len(sys.argv) != 2:
+        sys.stderr.write('Uso: python3 -m clexer filename\n')
+        raise SystemExit(1)
+
+    lexer = Lexer()
+    text = open(sys.argv[1]).read()
+    for tok in lexer.tokenize(text):
+        print(tok)
     # data = '''
     # //Counting
     # x = 0;
@@ -296,22 +302,22 @@ def main():
     #     printf("%d", i);
     #     a = a + i + 0.15
     # }
-    data = '''
-    /* esto
-    es un bloque de
-    comentario */
-    while (x < 10) {
-        print x:
-        x = x + 1;
-    }
-    '''
+    # data = '''
+    # /* esto
+    # es un bloque de
+    # comentario */
+    # while (x < 10) {
+    #     print x:
+    #     x = x + 1;
+    # }
+    # '''
     # data = '123.r'
     # data = '''   '\n' '''
     # data = '''bool truefalse = true'''
     # data = '''//qwe\nrty'''
-    lexer = Lexer()
-    for tok in lexer.tokenize(data):
-        print(tok)
+    # lexer = Lexer()
+    # for tok in lexer.tokenize(data):
+    #     print(tok)
 
 if __name__ == '__main__':
     main()
