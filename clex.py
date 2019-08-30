@@ -214,11 +214,15 @@ class Lexer(sly.Lexer):
     # Bonificación. Reconocer enteros en diferentes bases tales como
     # 0x1a, 0o13 o 0b111011.
 
-    FLOAT_LIT = r'\d*\.\d+|\d+\.$'
+    FLOAT_LIT = r'\d*\.\d+|\d+\.*'
     INT_LIT = r'[1-9]\d*|0[1-7][0-7]*|0[xX][0-9a-fA-F]+|0[bB][01]+|0$'
     CHAR_LIT = r'\'.\''
     STRING_LIT = r'\"(\\.|[^"\\])*\"'   # simple r'\".*\"'
     BOOL_LIT = r'(true|false)$'
+
+    def FLOAT_LIT(self, t):
+        t.value = float(t.value)
+        return t
 
     def INT_LIT(self, t):
         if ('0b' in t.value) or ('0B' in t.value):
