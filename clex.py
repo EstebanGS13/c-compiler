@@ -215,7 +215,7 @@ class Lexer(sly.Lexer):
     # 0x1a, 0o13 o 0b111011.
 
     FLOAT_LIT = r'\d*\.\d+|\d+\.\d*'
-    INT_LIT = r'[1-9]\d*|0[1-7][0-7]*|0[xX][0-9a-fA-F]+|0[bB][01]+|0$'
+    INT_LIT = r'[1-9]\d*|0[1-7][0-7]*|0[xX][0-9a-fA-F]+|0[bB][01]+|\b0\b'
     CHAR_LIT = r'\'.\''
     STRING_LIT = r'\"(\\.|[^"\\])*\"'   # simple r'\".*\"'
     BOOL_LIT = r'(true|false)$'
@@ -227,7 +227,7 @@ class Lexer(sly.Lexer):
     def INT_LIT(self, t):
         if ('0b' in t.value) or ('0B' in t.value):
             t.value = int(t.value, 2)
-        elif t.value[0] == '0' and t.value[1] in '1234567':
+        elif len(t.value) > 1 and t.value[0] == '0' and t.value[1] in '1234567':
             t.value = int(t.value, 8)
         elif ('0x' in t.value) or ('0X' in t.value):
             t.value = int(t.value, 16)
