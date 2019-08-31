@@ -126,12 +126,13 @@ class Lexer(sly.Lexer):
 
         # Identificador
         IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT, STRING_LIT, BOOL_LIT,
-        INCR, DECR, ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN,
+        PREINC, PREDEC, POSTINC, POSTDEC,
+        ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN,
         PLUS, MINUS, TIMES, DIVIDE, MOD,
         LE, LT, GE, GT, EQ, ASSIGN, NE, OR, AND
     }
 
-    literals = '(){}[];,.+-*/%<>=!'
+    literals = '(){}[];,.+-*/%#<>=!'
 
     # ----------------------------------------------------------------------
     # Caracteres ignorados (whitespace)
@@ -146,7 +147,14 @@ class Lexer(sly.Lexer):
     # para ignorar los comentarios
 
     ignore_line_comment = r'//.*'
-    ignore_block_comment = r'/\*[^*]*\*+(?:[^*/][^*]*\*+)*/'
+    ignore_block_comment = r'/\*[^*]*\*+(?:[^*/][^*]*\*+)*/|/\*(.|\n)*\*/'
+
+    def ignore_block_comment(self, t):
+        self.lineno += t.value.count('\n')
+
+    @_(r'/\*(.|\n)*')
+    def error_comment(self, t):
+        error(self.lineno, 'Comentario sin terminar')
 
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
@@ -159,8 +167,11 @@ class Lexer(sly.Lexer):
     # más largos deben aparecer antes de los símbolos más cortos que son
     # una subcadena (por ejemplo, el patrón para <= debe ir antes de <).
 
-    INCR = r'\+\+' # todo r'\+\+\w+'
-    DECR = r'--'
+    PREINC = r'\+\+(?= *?[a-zA-Z_][a-zA-Z0-9_]*)'
+    PREDEC = r'--(?= *?[a-zA-Z_][a-zA-Z0-9_]*)'
+    # regex lookahead doesn't work with + or *
+    POSTINC = r'\+\+' # r'(?<=[a-zA-Z_][a-zA-Z0-9_]* *?)\+\+'
+    POSTDEC = r'--'
     ADDASSIGN = r'\+='
     SUBASSIGN = r'-='
     MULASSIGN = r'\*='

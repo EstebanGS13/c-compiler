@@ -11,4 +11,19 @@ This is not a comment.
 
 /**/ Incorrectly removed /**/
 
-/* comentario */ sin terminar */
+//* comentario */  */
+
+/* comentario */  anidado */
+
+
+/*foo
+lol
+blah
+
+
+
+da
+*
+end*/
+
+one
