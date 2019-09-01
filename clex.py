@@ -105,6 +105,9 @@ from errors import error
 import sly
 
 
+unallowed_escapes = ('\\a', '\\b', '\\e', '\\f', '\\r', '\\v')
+
+
 class Lexer(sly.Lexer):
     # -------
     # Conjunto de palabras reservadas.  Este conjunto enumera todos los
@@ -170,7 +173,7 @@ class Lexer(sly.Lexer):
     PREINC = r'\+\+(?= *?[a-zA-Z_][a-zA-Z0-9_]*)'
     PREDEC = r'--(?= *?[a-zA-Z_][a-zA-Z0-9_]*)'
     # regex lookahead doesn't work with + or *
-    POSTINC = r'\+\+' # r'(?<=[a-zA-Z_][a-zA-Z0-9_]* *?)\+\+'
+    POSTINC = r'\+\+'  # r'(?<=[a-zA-Z_][a-zA-Z0-9_]* *?)\+\+'
     POSTDEC = r'--'
     ADDASSIGN = r'\+='
     SUBASSIGN = r'-='
@@ -223,13 +226,13 @@ class Lexer(sly.Lexer):
     # El valor debe ser convertido a un int de Python cuando se lea.
     #
     # Bonificación. Reconocer enteros en diferentes bases tales como
-    # 0x1a, 0o13 o 0b111011.
+    # 0x1a, 013 o 0b111011.
 
     FLOAT_LIT = r'\d*\.\d+|\d+\.\d*'
-    INT_LIT = r'[1-9]\d*|0[1-7][0-7]*|0[xX][0-9a-fA-F]+|0[bB][01]+|\b0\b'
-    CHAR_LIT = r'\'.\''
-    STRING_LIT = r'\"(\\.|[^"\\])*\"'   # simple r'\".*\"'
-    BOOL_LIT = r'(true|false)$'
+    INT_LIT = r'\b0[1-7][0-7]*\b|\b0[xX][0-9a-fA-F]+\b|\b0[bB][01]+\b|\b\d+\b'
+    STRING_LIT = r'\"(\\.|[^\n\"\\])*\"'
+    CHAR_LIT = r'\'(.|\\[nt\\\'\"\?])\''
+    BOOL_LIT = r'\b(true|false)\b'
 
     def FLOAT_LIT(self, t):
         t.value = float(t.value)
@@ -246,6 +249,17 @@ class Lexer(sly.Lexer):
             t.value = int(t.value)
         return t
 
+    def STRING_LIT(self, t):
+        char = [e for e in unallowed_escapes if e in t.value]
+        if char:
+            self.error_escape(char)
+        else:
+            return t
+
+    @_(r'\"[^\n\"]*')
+    def error_string(self, t):
+        error(self.lineno, 'Cadena sin terminar')
+
     # ----------------------------------------------------------------------
     #                           *** DEBE COMPLETAR ***
     #
@@ -261,7 +275,7 @@ class Lexer(sly.Lexer):
     # combinan como identificadores. Debe capturar estos y cambiar su tipo
     # de token para que coincida con la palabra clave adecuada.
 
-    IDENT = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    IDENT = r'\b[a-zA-Z_][a-zA-Z0-9_]*\b'
 
     IDENT['if'] = IF
     IDENT['else'] = ELSE
@@ -289,6 +303,9 @@ class Lexer(sly.Lexer):
         error(self.lineno, 'Caracter Ilegal %r' % t.value[0])
         self.index += 1
 
+    def error_escape(self, c):
+        error(self.lineno, 'Cadena con caracter escape no permitido ' + c[0])
+
 
 # ----------------------------------------------------------------------
 #                   NO CAMBIE NADA POR DEBAJO DE ESTA PARTE
@@ -313,30 +330,7 @@ def main():
     text = open(sys.argv[1]).read()
     for tok in lexer.tokenize(text):
         print(tok)
-    # data = '''
-    # //Counting
-    # x = 0;
-    # float a = 0
-    # for(int i = 0; i < 20; i++) {
-    #     printf("%d", i);
-    #     a = a + i + 0.15
-    # }
-    # data = '''
-    # /* esto
-    # es un bloque de
-    # comentario */
-    # while (x < 10) {
-    #     print x:
-    #     x = x + 1;
-    # }
-    # '''
-    # data = '123.r'
-    # data = '''   '\n' '''
-    # data = '''bool truefalse = true'''
-    # data = '''//qwe\nrty'''
-    # lexer = Lexer()
-    # for tok in lexer.tokenize(data):
-    #     print(tok)
+
 
 if __name__ == '__main__':
     main()
