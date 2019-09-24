@@ -134,26 +134,25 @@ class NewArrayExpr(Expression):
 
 
 class CallExpr(Expression):
-    pass
+    name: str
+    expr: Expression
 
 
 class VarExpr(Expression):
-    pass
+    expr: Expression
 
 
 class ArrayLookupExpr(Expression):
-    pass
+    name: str
+    value: Expression
 
 
 class UnaryOpExpr(Expression):
-    pass
+    op: str
+    expr: Expression
 
 
 class BinaryOpExpr(Expression):
-    pass
-
-
-class Binop(Expression):
     '''
     Un operador binario como 2 + 3 o x * y
     '''
@@ -164,20 +163,24 @@ class Binop(Expression):
 
 class VarAssignmentExpr(Expression):
     var: str
-    op: str
+    op: str  # todo necesario?
     expr: Expression
 
 
 class ArrayAssignmentExpr(Expression):
-    pass
+    var: str
+    left: Expression
+    right: Expression
 
 
 class IntToFloatExpr(Expression):
-    pass
+    name: str
+    expr: Expression
 
 
 class ArraySizeExpr(Expression):
-    pass
+    name: str
+    value: str
 
 
 class SimpleLocation(Location):
