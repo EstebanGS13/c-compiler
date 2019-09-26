@@ -73,23 +73,29 @@ class NullStmt(Statement):
 
 
 class ExprStmt(Statement):
-    pass
+    expr: Expression
 
 
 class IfStmt(Statement):
-    pass
+    condition: Expression
+    true_stmt: Statement
+    else_stmt: Statement
 
 
 class WhileStmt(Statement):
-    pass
+    condition: Expression
+    stmt: Statement
 
 
 class ForStmt(Statement):
-    pass
+    init: Expression
+    condition: Expression
+    loop: Expression
+    stmt: Statement
 
 
 class ReturnStmt(Statement):
-    pass
+    expr: Expression
 
 
 class BreakStmt(Statement):
@@ -101,7 +107,10 @@ class CompoundStmt(Statement):
 
 
 class FuncDeclStmt(Statement):
-    pass
+    type: str
+    name: str
+    params: Statement  # todo verificar
+    stmt: Statement
 
 
 class StaticVarDeclStmt(Statement):
@@ -129,7 +138,7 @@ class BoolLiteral(Literal):
 
 
 class NewArrayExpr(Expression):
-    type: type_spec
+    type: str
     expr: Expression
 
 
@@ -162,15 +171,14 @@ class BinaryOpExpr(Expression):
 
 
 class VarAssignmentExpr(Expression):
-    var: str
-    op: str  # todo necesario?
+    name: str
     expr: Expression
 
 
 class ArrayAssignmentExpr(Expression):
-    var: str
-    left: Expression
-    right: Expression
+    name: str
+    expr0: Expression
+    expr1: Expression
 
 
 class IntToFloatExpr(Expression):
