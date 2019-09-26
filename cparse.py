@@ -130,15 +130,16 @@ class Parser(sly.Parser):
 
     @_("decl_list")
     def program(self, p):
-        pass
+        return p.decl_list
 
     @_(" decl_list decl")
     def decl_list(self, p):
-        pass
+        p.decl_list.append(p.decl)
+        return p.decl_list
 
     @_("decl")
     def decl_list(self, p):
-        pass
+        return [p.decl]
 
     @_("var_decl")
     def decl(self, p):
@@ -158,11 +159,11 @@ class Parser(sly.Parser):
 
     @_("VOID", "BOOL", "INT", "FLOAT", "CHAR", "STRING")  # todo?
     def type_spec(self, p):
-        pass
+        return p[0]
 
     @_(" type_spec IDENT '(' params ')' compound_stmt")
     def fun_decl(self, p):
-        pass
+        return FuncDeclStmt(p.type_spec, p.IDENT, p.params, p.compound_stmt, lineno=p.lineno)
 
     @_("param_list")
     def params(self, p):
@@ -172,7 +173,11 @@ class Parser(sly.Parser):
     def params(self, p):
         pass
 
-    @_("param_list ',' param", "param")
+    @_("param_list ',' param")
+    def param_list(self, p):
+        pass
+
+    @_("param")
     def param_list(self, p):
         pass
 
@@ -229,40 +234,44 @@ class Parser(sly.Parser):
     def while_stmt(self, p):
         pass
 
-    @_("FOR '(' expr ')' stmt")  # todo check
+    @_("FOR '(' expr ';' expr ';' expr ')' stmt")  # todo check
     def for_stmt(self, p):
-        pass
+        return ForStmt(p.expr0, p.expr1, p.expr2, p.stmt, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt")
     def if_stmt(self, p):
-        pass
+        return IfStmt(p.expr, p.stmt, None, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt ELSE stmt")
     def if_stmt(self, p):
-        pass
+        return IfStmt(p.expr, p.stmt0, p.stmt1, lineno=p.lineno)
 
-    @_("RETURN ';' ", "RETURN expr ';'")
+    @_("RETURN ';' ")
     def return_stmt(self, p):
-        pass
+        return ReturnStmt(None, lineno=p.lineno)
+
+    @_("RETURN expr ';'")
+    def return_stmt(self, p):
+        return ReturnStmt(p.expr, lineno=p.lineno)
 
     @_("IDENT '=' expr")
     def expr(self, p):
-        pass
+        return VarAssignmentExpr(p.IDENT, p.expr, lineno=p.lineno)
 
     @_("IDENT '[' expr ']' '=' expr")
     def expr(self, p):
-        pass
+        return ArrayAssignmentExpr(p.IDENT, p.expr0, p.expr1,lineno=p.lineno)
 
-    @_(" expr OR expr", "expr AND expr", "expr EQ expr", "expr NE expr",
+    @_("expr OR expr", "expr AND expr", "expr EQ expr", "expr NE expr",
        "expr LE expr", "expr '<' expr", "expr GE expr", "expr '>' expr",
        "expr '+' expr", "expr '-' expr",
        "expr '*' expr", "expr '/' expr", "expr '%' expr")
     def expr(self, p):
-        pass
+        return BinaryOpExpr(p[1], p.expr0, p.expr1, lineno=p.lineno)
 
     @_("'!' expr", "'-' expr", "'+' expr")
     def expr(self, p):
-        pass
+        return UnaryOpExpr(p[0], p.expr,lineno=p.lineno)
 
     @_("'(' expr ')'")
     def expr(self, p):
@@ -274,23 +283,23 @@ class Parser(sly.Parser):
 
     @_("BOOL_LIT")
     def expr(self, p):
-        pass
+        return BoolLiteral(p.BOOL_LIT, lineno=p.lineno)
 
     @_("INT_LIT")
     def expr(self, p):
-        pass
+        return IntegerLiteral(p.INT_LIT, lineno=p.lineno)
 
     @_("FLOAT_LIT")
     def expr(self, p):
-        pass
+        return FloatLiteral(p.FLOAT_LIT, lineno=p.lineno)
 
     @_("CHAR_LIT")
     def expr(self, p):
-        pass
+        return CharLiteral(p.CHAR_LIT, lineno=p.lineno)
 
     @_("STRING_LIT")
     def expr(self, p):
-        pass
+        return StringLiteral(p.STRING_LIT, lineno=p.lineno)
 
     @_("NEW type_spec '[' expr ']'")
     def expr(self, p):
