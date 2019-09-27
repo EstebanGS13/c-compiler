@@ -99,11 +99,12 @@ class ReturnStmt(Statement):
 
 
 class BreakStmt(Statement):
-    pass
+    value: str
 
 
 class CompoundStmt(Statement):
-    pass
+    decl: Statement
+    stmt_list: Statement
 
 
 class FuncDeclStmt(Statement):
@@ -114,7 +115,13 @@ class FuncDeclStmt(Statement):
 
 
 class StaticVarDeclStmt(Statement):
-    pass
+    type: str
+    name: str
+
+
+class StaticArrayDeclStmt(Statement):
+    type: str
+    name: str
 
 
 class IntegerLiteral(Literal):
@@ -144,7 +151,7 @@ class NewArrayExpr(Expression):
 
 class CallExpr(Expression):
     name: str
-    expr: Expression
+    args: Expression
 
 
 class VarExpr(Expression):
