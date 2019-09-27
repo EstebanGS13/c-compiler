@@ -119,13 +119,16 @@ class Parser(sly.Parser):
     tokens = Lexer.tokens
 
     precedence = (
+        ("left", '='),
+        ("right", ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN),
         ("left", OR),
         ("left", AND),
         ("left", EQ, NE),
         ("left", LE, '<', GE, '>'),
         ("left", '+', '-'),
         ("left", '*', '/', '%'),
-        ("right", '!', UNARY)
+        ("right", TYPE, '!', UNARY),
+        ("left", PREINC, PREDEC, POSTINC, POSTDEC, '.', '[', ']', '(', ')')
     )
 
     @_("decl_list")
@@ -149,11 +152,11 @@ class Parser(sly.Parser):
     def decl(self, p):
         return p.fun_decl
 
-    @_("type_spec IDENT ';'")
+    @_("type_spec IDENT ';' %prec TYPE")
     def var_decl(self, p):
         return StaticVarDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
-    @_("type_spec IDENT '[' ']' ';'")
+    @_("type_spec IDENT '[' ']' ';' %prec TYPE")
     def var_decl(self, p):
         return StaticArrayDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
@@ -161,7 +164,7 @@ class Parser(sly.Parser):
     def type_spec(self, p):
         return p[0]
 
-    @_("type_spec IDENT '(' params ')' compound_stmt")
+    @_("type_spec IDENT '(' params ')' compound_stmt %prec TYPE")
     def fun_decl(self, p):
         return FuncDeclStmt(p.type_spec, p.IDENT, p.params, p.compound_stmt, lineno=p.lineno)
 
@@ -182,11 +185,11 @@ class Parser(sly.Parser):
     def param_list(self, p):
         return [p.param]
 
-    @_("type_spec IDENT")
+    @_("type_spec IDENT %prec TYPE")
     def param(self, p):
         return (p.type_spec, p.IDENT)
 
-    @_("type_spec IDENT '[' ']' ")
+    @_("type_spec IDENT '[' ']' %prec TYPE")
     def param(self, p):
         return (p.type_spec, p.IDENT)
 
@@ -204,11 +207,11 @@ class Parser(sly.Parser):
     def local_decls(self, p):
         return p.empty  # todo valido?
 
-    @_("type_spec IDENT ';'")
+    @_("type_spec IDENT ';' %prec TYPE")
     def local_decl(self, p):
         return (p.type_spec, p.IDENT)
 
-    @_("type_spec IDENT '[' ']' ';'")
+    @_("type_spec IDENT '[' ']' ';' %prec TYPE")
     def local_decl(self, p):
         return (p.type_spec, p.IDENT)
 
@@ -325,7 +328,7 @@ class Parser(sly.Parser):
     def expr(self, p):
         return StringLiteral(p.STRING_LIT, lineno=p.lineno)
 
-    @_("NEW type_spec '[' expr ']'")
+    @_("NEW type_spec '[' expr ']' %prec TYPE")
     def expr(self, p):
         return (p.type_spec, p.expr)  # todo con lineno?
 
