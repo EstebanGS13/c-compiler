@@ -4,7 +4,7 @@ int main()
     printf("Enter a positive number: ");
     scanf(n);
     // displays the first two terms which is always 0 and 1
-    printf("Fibonacci Series: %d, %d, ", t1, t2);
+    printf("Fibonacci Series: ", t1, t2);
     nextTerm = t1 + t2;
     while(nextTerm <= n)
     {
