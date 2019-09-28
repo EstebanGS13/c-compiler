@@ -129,13 +129,12 @@ class Lexer(sly.Lexer):
 
         # Identificador
         IDENT, INT_LIT, FLOAT_LIT, CHAR_LIT, STRING_LIT, BOOL_LIT,
-        PREINC, PREDEC, POSTINC, POSTDEC,
         ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN,
         PLUS, MINUS, TIMES, DIVIDE, MOD,
-        LE, LT, GE, GT, EQ, ASSIGN, NE, OR, AND
+        LE, GE, EQ, NE, OR, AND, INC, DEC
     }
 
-    literals = '(){}[];,.+-*/%#<>=!'
+    literals = '(){}[];,.+-*/%<>=!'
 
     # ----------------------------------------------------------------------
     # Caracteres ignorados (whitespace)
@@ -170,11 +169,8 @@ class Lexer(sly.Lexer):
     # más largos deben aparecer antes de los símbolos más cortos que son
     # una subcadena (por ejemplo, el patrón para <= debe ir antes de <).
 
-    PREINC = r'\+\+(?= *?[a-zA-Z_][a-zA-Z0-9_]*)'
-    PREDEC = r'--(?= *?[a-zA-Z_][a-zA-Z0-9_]*)'
-    # regex lookahead doesn't work with + or *
-    POSTINC = r'\+\+'  # r'(?<=[a-zA-Z_][a-zA-Z0-9_]* *?)\+\+'
-    POSTDEC = r'--'
+    INC = r'\+\+'
+    DEC = r'--'
     ADDASSIGN = r'\+='
     SUBASSIGN = r'-='
     MULASSIGN = r'\*='
@@ -186,11 +182,8 @@ class Lexer(sly.Lexer):
     DIVIDE = r'/'
     MOD = r'%'
     LE = r'<='
-    LT = r'<'
     GE = r'>='
-    GT = r'>'
     EQ = r'=='
-    ASSIGN = r'='
     NE = r'!='
     OR = r'\|\|'
     AND = r'&&'
