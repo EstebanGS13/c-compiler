@@ -134,7 +134,7 @@ class Lexer(sly.Lexer):
         LE, GE, EQ, NE, OR, AND, INC, DEC
     }
 
-    literals = '(){}[];,.+-*/%<>=!'
+    literals = '(){}[];,.+-*/#%<>=!'
 
     # ----------------------------------------------------------------------
     # Caracteres ignorados (whitespace)
