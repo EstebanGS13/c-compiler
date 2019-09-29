@@ -272,7 +272,7 @@ class Parser(sly.Parser):
 
     @_("IDENT '[' expr ']' '=' expr")
     def expr(self, p):
-        return ArrayAssignmentExpr(p.IDENT, p.expr0, p.expr1,lineno=p.lineno)
+        return ArrayAssignmentExpr(p.IDENT, p.expr0, p.expr1, lineno=p.lineno)
 
     @_("expr OR expr", "expr AND expr", "expr EQ expr", "expr NE expr",
        "expr LE expr", "expr '<' expr", "expr GE expr", "expr '>' expr",
