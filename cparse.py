@@ -114,21 +114,22 @@ from cast import *
 
 
 class Parser(sly.Parser):
-    debugfile = 'parser.out'
+
+    debugfile = 'parser.txt'
 
     tokens = Lexer.tokens
 
     precedence = (
-        ("left", '='),
-        ("right", ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN),
+        ("left", ','),
+        ("right", '=', ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN),
         ("left", OR),
         ("left", AND),
         ("left", EQ, NE),
         ("left", LE, '<', GE, '>'),
         ("left", '+', '-'),
-        ("left", '*', '/', '%'),
-        ("right", TYPE, '!', UNARY),
-        ("left", PREINC, PREDEC, POSTINC, POSTDEC, '.', '[', ']', '(', ')')
+        ("left", TIMES, DIVIDE, MOD),
+        ("right", '!', UNARY, PRE),
+        ("left", '.', '(', ')', '[', ']', POST)
     )
 
     @_("decl_list")
@@ -152,19 +153,19 @@ class Parser(sly.Parser):
     def decl(self, p):
         return p.fun_decl
 
-    @_("type_spec IDENT ';' %prec TYPE")
+    @_("type_spec IDENT ';'")
     def var_decl(self, p):
         return StaticVarDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
-    @_("type_spec IDENT '[' ']' ';' %prec TYPE")
+    @_("type_spec IDENT '[' ']' ';'")
     def var_decl(self, p):
         return StaticArrayDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
-    @_("VOID", "BOOL", "INT", "FLOAT", "CHAR")  # todo?
+    @_("VOID", "BOOL", "INT", "FLOAT", "CHAR")
     def type_spec(self, p):
         return p[0]
 
-    @_("type_spec IDENT '(' params ')' compound_stmt %prec TYPE")
+    @_("type_spec IDENT '(' params ')' compound_stmt")
     def fun_decl(self, p):
         return FuncDeclStmt(p.type_spec, p.IDENT, p.params, p.compound_stmt, lineno=p.lineno)
 
@@ -172,9 +173,9 @@ class Parser(sly.Parser):
     def params(self, p):
         return p.param_list
 
-    @_("VOID")
+    @_("VOID", "empty")
     def params(self, p):
-        return p.VOID
+        return p[0]
 
     @_("param_list ',' param")
     def param_list(self, p):
@@ -185,17 +186,16 @@ class Parser(sly.Parser):
     def param_list(self, p):
         return [p.param]
 
-    @_("type_spec IDENT %prec TYPE")
+    @_("type_spec IDENT")
     def param(self, p):
-        return (p.type_spec, p.IDENT)
+        return FuncParamStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
-    @_("type_spec IDENT '[' ']' %prec TYPE")
+    @_("type_spec IDENT '[' ']'")
     def param(self, p):
-        return (p.type_spec, p.IDENT)
+        return FuncParamStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
     @_("'{' local_decls stmt_list '}'")
     def compound_stmt(self, p):
-        p.local_decls.append(p.stmt_list)
         return CompoundStmt(p.local_decls, p.stmt_list, lineno=p.lineno)
 
     @_("local_decls local_decl")
@@ -205,15 +205,15 @@ class Parser(sly.Parser):
 
     @_("empty")
     def local_decls(self, p):
-        return p.empty  # todo valido?
+        return p.empty
 
-    @_("type_spec IDENT ';' %prec TYPE")
+    @_("type_spec IDENT ';'")
     def local_decl(self, p):
-        return (p.type_spec, p.IDENT)
+        return LocalDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
-    @_("type_spec IDENT '[' ']' ';' %prec TYPE")
+    @_("type_spec IDENT '[' ']' ';'")
     def local_decl(self, p):
-        return (p.type_spec, p.IDENT)
+        return LocalArrayDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
 
     @_("stmt_list stmt")
     def stmt_list(self, p):
@@ -235,13 +235,13 @@ class Parser(sly.Parser):
 
     @_("';'")
     def expr_stmt(self, p):
-        return ExprStmt(None, lineno=p.lineno)
+        return NullStmt(None, lineno=p.lineno)
 
     @_("WHILE '(' expr ')' stmt")
     def while_stmt(self, p):
         return WhileStmt(p.expr, p.stmt, lineno=p.lineno)
 
-    @_("FOR '(' expr ';' expr ';' expr ')' stmt")  # todo check
+    @_("FOR '(' expr ';' expr ';' expr ')' stmt")
     def for_stmt(self, p):
         return ForStmt(p.expr0, p.expr1, p.expr2, p.stmt, lineno=p.lineno)
 
@@ -263,11 +263,12 @@ class Parser(sly.Parser):
 
     @_("BREAK ';'")
     def break_stmt(self, p):
-        return BreakStmt(p[0], lineno=p.lineno)  # todo asi?
+        return BreakStmt(None, lineno=p.lineno)
 
-    @_("IDENT '=' expr")
+    @_("IDENT '=' expr", "IDENT ADDASSIGN expr", "IDENT SUBASSIGN expr",
+       "IDENT MULASSIGN expr", "IDENT DIVASSIGN expr", "IDENT MODASSIGN expr")
     def expr(self, p):
-        return VarAssignmentExpr(p.IDENT, p.expr, lineno=p.lineno)
+        return VarAssignmentExpr(p[1], p.IDENT, p.expr, lineno=p.lineno)
 
     @_("IDENT '[' expr ']' '=' expr")
     def expr(self, p):
@@ -276,25 +277,29 @@ class Parser(sly.Parser):
     @_("expr OR expr", "expr AND expr", "expr EQ expr", "expr NE expr",
        "expr LE expr", "expr '<' expr", "expr GE expr", "expr '>' expr",
        "expr '+' expr", "expr '-' expr",
-       "expr '*' expr", "expr '/' expr", "expr '%' expr")
+       "expr TIMES expr", "expr DIVIDE expr", "expr MOD expr")
     def expr(self, p):
         return BinaryOpExpr(p[1], p.expr0, p.expr1, lineno=p.lineno)
 
-    @_("'!' expr")
+    @_("'!' expr", "MINUS expr %prec UNARY", "PLUS expr %prec UNARY")
     def expr(self, p):
         return UnaryOpExpr(p[0], p.expr, lineno=p.lineno)
 
-    @_("MINUS expr %prec UNARY", "PLUS expr %prec UNARY")
-    def expr(self, p):
-        return UnaryOpExpr(p[0], p.expr,lineno=p.lineno)
-
     @_("'(' expr ')'")
     def expr(self, p):
-        return p.expr  # todo exprstmt?
+        return p.expr
 
     @_("IDENT")
     def expr(self, p):
         return p.IDENT
+
+    @_("INC IDENT %prec PRE", "DEC IDENT %prec PRE")
+    def expr(self, p):
+        return IncDecExpr(p[0], p.IDENT, lineno=p.lineno)
+
+    @_("IDENT INC %prec POST", "IDENT DEC %prec POST")
+    def expr(self, p):
+        return IncDecExpr(p[1], p.IDENT, lineno=p.lineno)
 
     @_("IDENT '[' expr ']'")
     def expr(self, p):
@@ -308,9 +313,9 @@ class Parser(sly.Parser):
     def expr(self, p):
         return ArraySizeExpr(p.IDENT, p.size, lineno=p.lineno)
 
-    @_("BOOL_LIT")
+    @_("BOOL_LIT", "TRUE", "FALSE")
     def expr(self, p):
-        return BoolLiteral(p.BOOL_LIT, lineno=p.lineno)
+        return BoolLiteral(p[0], lineno=p.lineno)
 
     @_("INT_LIT")
     def expr(self, p):
@@ -328,9 +333,9 @@ class Parser(sly.Parser):
     def expr(self, p):
         return StringLiteral(p.STRING_LIT, lineno=p.lineno)
 
-    @_("NEW type_spec '[' expr ']' %prec TYPE")
+    @_("NEW type_spec '[' expr ']'")
     def expr(self, p):
-        return (p.type_spec, p.expr)  # todo con lineno?
+        return NewArrayExpr(p.type_spec, p.expr, lineno=p.lineno)
 
     @_("arg_list ',' expr")
     def arg_list(self, p):
@@ -360,7 +365,7 @@ class Parser(sly.Parser):
     # cualquier entrada incorrecta. p es el token ofensivo o None si
     # el final de archivo (EOF).
 
-    def error(self, t):
+    def error(self, p):
         if p:
             error(p.lineno, "Error de sintaxis en la entrada en el token '%s'" % p.value)
         else:
