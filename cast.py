@@ -7,6 +7,7 @@ Analizador descendente recursivo.
 # -------------------------------------------
 # Nodos Abstract Syntax Tree (AST)
 
+
 class AST(object):
     _nodes = {}
 
@@ -68,8 +69,9 @@ class Location(AST):
 
 # Nodos Reales del AST
 
+
 class NullStmt(Statement):
-    pass
+    value: (type(None))
 
 
 class ExprStmt(Statement):
@@ -99,7 +101,7 @@ class ReturnStmt(Statement):
 
 
 class BreakStmt(Statement):
-    value: str
+    value: (type(None))
 
 
 class CompoundStmt(Statement):
@@ -110,8 +112,13 @@ class CompoundStmt(Statement):
 class FuncDeclStmt(Statement):
     type: str
     name: str
-    params: Statement  # todo verificar
+    params: Statement
     stmt: Statement
+
+
+class FuncParamStmt(Statement):
+    type: str
+    name: str
 
 
 class StaticVarDeclStmt(Statement):
@@ -120,6 +127,16 @@ class StaticVarDeclStmt(Statement):
 
 
 class StaticArrayDeclStmt(Statement):
+    type: str
+    name: str
+
+
+class LocalDeclStmt(Statement):
+    type: str
+    name: str
+
+
+class LocalArrayDeclStmt(Statement):
     type: str
     name: str
 
@@ -177,7 +194,13 @@ class BinaryOpExpr(Expression):
     right: Expression
 
 
+class IncDecExpr(Expression):
+    op: str
+    name: str
+
+
 class VarAssignmentExpr(Expression):
+    op: str
     name: str
     expr: Expression
 
