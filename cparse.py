@@ -173,9 +173,9 @@ class Parser(sly.Parser):
     def params(self, p):
         return p.param_list
 
-    @_("VOID", "empty")
+    @_("VOID")
     def params(self, p):
-        return p[0]
+        return p.VOID
 
     @_("param_list ',' param")
     def param_list(self, p):
