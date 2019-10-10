@@ -82,6 +82,7 @@ class IfStmt(Statement):
     condition: Expression
     true_stmt: Statement
     else_stmt: Statement
+    else_stmt: type(None) # todo ask
 
 
 class WhileStmt(Statement):
@@ -101,7 +102,7 @@ class ReturnStmt(Statement):
 
 
 class BreakStmt(Statement):
-    pass
+    value: type(None)
 
 
 class CompoundStmt(Statement):
