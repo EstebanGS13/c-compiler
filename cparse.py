@@ -115,7 +115,7 @@ from cast import *
 
 class Parser(sly.Parser):
 
-    debugfile = 'parser.txt'
+    # debugfile = 'parser.txt'
 
     tokens = Lexer.tokens
 
@@ -205,7 +205,7 @@ class Parser(sly.Parser):
 
     @_("empty")
     def local_decls(self, p):
-        return p.empty
+        return []
 
     @_("type_spec IDENT ';'")
     def local_decl(self, p):
@@ -222,7 +222,7 @@ class Parser(sly.Parser):
 
     @_("empty")
     def stmt_list(self, p):
-        return p.empty
+        return []
 
     @_("expr_stmt", "compound_stmt", "if_stmt", "while_stmt",
        "for_stmt", "return_stmt", "break_stmt")
@@ -253,7 +253,7 @@ class Parser(sly.Parser):
     def if_stmt(self, p):
         return IfStmt(p.expr, p.stmt0, p.stmt1, lineno=p.lineno)
 
-    @_("RETURN ';' ")
+    @_("RETURN ';'")
     def return_stmt(self, p):
         return ReturnStmt(None, lineno=p.lineno)
 
@@ -291,7 +291,7 @@ class Parser(sly.Parser):
 
     @_("IDENT")
     def expr(self, p):
-        return p.IDENT
+        return VarExpr(p.IDENT)
 
     @_("INC IDENT %prec PRE", "DEC IDENT %prec PRE")
     def expr(self, p):
@@ -305,7 +305,7 @@ class Parser(sly.Parser):
     def expr(self, p):
         return ArrayLookupExpr(p.IDENT, p.expr, lineno=p.lineno)
 
-    @_("IDENT '(' args ')' ")
+    @_("IDENT '(' args ')'")
     def expr(self, p):
         return CallExpr(p.IDENT, p.args, lineno=p.lineno)
 
@@ -352,7 +352,7 @@ class Parser(sly.Parser):
 
     @_("empty")
     def args(self, p):
-        return p.empty
+        return []
 
     @_("")
     def empty(self, p):
