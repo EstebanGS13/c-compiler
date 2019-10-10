@@ -1,8 +1,9 @@
 // Program to take 5 values from the user and store them in an array
 // Print the elements stored in the array
-#include <stdio.h>
-int main() {
+//#include <stdio.h>
+int main(void) {
   int values[];
+  int i;
   bool test;
   printf("Enter 5 integers: ");
   // taking input and storing it in an array
@@ -12,7 +13,7 @@ int main() {
   }
   printf("Displaying integers: ");
   // printing elements of an array
-  for(int i = 0; i < 5; ++i) {
+  for(i = 0; i < 5; ++i) {
      printf("\n", values[i]);
      break;
   }

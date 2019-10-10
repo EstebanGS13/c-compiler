@@ -3,7 +3,7 @@
 hola
 */
 
-int main()
+int main(void)
 {
     int number;
     int i;
