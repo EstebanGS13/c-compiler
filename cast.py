@@ -71,7 +71,7 @@ class Location(AST):
 
 
 class NullStmt(Statement):
-    value: (type(None))
+    pass
 
 
 class ExprStmt(Statement):
@@ -101,18 +101,18 @@ class ReturnStmt(Statement):
 
 
 class BreakStmt(Statement):
-    value: (type(None))
+    pass
 
 
 class CompoundStmt(Statement):
-    decl: Statement
-    stmt_list: Statement
+    decl: [Statement]
+    stmt_list: [Statement]
 
 
 class FuncDeclStmt(Statement):
     type: str
     name: str
-    params: Statement
+    params: str
     stmt: Statement
 
 
@@ -168,11 +168,11 @@ class NewArrayExpr(Expression):
 
 class CallExpr(Expression):
     name: str
-    args: Expression
+    args: [Expression]
 
 
 class VarExpr(Expression):
-    expr: Expression
+    name: str
 
 
 class ArrayLookupExpr(Expression):
