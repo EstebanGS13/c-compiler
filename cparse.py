@@ -115,7 +115,7 @@ from cast import *
 
 class Parser(sly.Parser):
 
-    # debugfile = 'parser.txt'
+    debugfile = 'parser.txt'
 
     tokens = Lexer.tokens
 
@@ -134,7 +134,7 @@ class Parser(sly.Parser):
 
     @_("decl_list")
     def program(self, p):
-        return p.decl_list
+        return Program(p.decl_list)
 
     @_("decl_list decl")
     def decl_list(self, p):
@@ -163,7 +163,7 @@ class Parser(sly.Parser):
 
     @_("VOID", "BOOL", "INT", "FLOAT", "CHAR")
     def type_spec(self, p):
-        return p[0]
+        return SimpleType(p[0], lineno=p.lineno)
 
     @_("type_spec IDENT '(' params ')' compound_stmt")
     def fun_decl(self, p):
@@ -175,7 +175,7 @@ class Parser(sly.Parser):
 
     @_("VOID")
     def params(self, p):
-        return p.VOID
+        return []  # p.VOID
 
     @_("param_list ',' param")
     def param_list(self, p):
@@ -188,11 +188,11 @@ class Parser(sly.Parser):
 
     @_("type_spec IDENT")
     def param(self, p):
-        return FuncParamStmt(p.type_spec, p.IDENT, lineno=p.lineno)
+        return FuncParameter(p.type_spec, p.IDENT, lineno=p.lineno)
 
     @_("type_spec IDENT '[' ']'")
     def param(self, p):
-        return FuncParamStmt(p.type_spec, p.IDENT, lineno=p.lineno)
+        return FuncParameter(p.type_spec, p.IDENT, lineno=p.lineno)
 
     @_("'{' local_decls stmt_list '}'")
     def compound_stmt(self, p):
@@ -243,10 +243,12 @@ class Parser(sly.Parser):
 
     @_("FOR '(' expr ';' expr ';' expr ')' stmt")
     def for_stmt(self, p):
+        # print(type(p.expr0),type(p.expr1),type(p.expr2),type(p.stmt)) #todo
         return ForStmt(p.expr0, p.expr1, p.expr2, p.stmt, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt")
     def if_stmt(self, p):
+        print(type(p.expr),type(p.stmt))
         return IfStmt(p.expr, p.stmt, None, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt ELSE stmt")
@@ -268,7 +270,7 @@ class Parser(sly.Parser):
     @_("IDENT '=' expr", "IDENT ADDASSIGN expr", "IDENT SUBASSIGN expr",
        "IDENT MULASSIGN expr", "IDENT DIVASSIGN expr", "IDENT MODASSIGN expr")
     def expr(self, p):
-        return VarAssignmentExpr(p[1], p.IDENT, p.expr, lineno=p.lineno)
+        return VarAssignmentExpr(p.IDENT, p.expr, lineno=p.lineno)
 
     @_("IDENT '[' expr ']' '=' expr")
     def expr(self, p):
@@ -287,7 +289,7 @@ class Parser(sly.Parser):
 
     @_("'(' expr ')'")
     def expr(self, p):
-        return p.expr
+        return p.expr  # todo que tipo es?
 
     @_("IDENT")
     def expr(self, p):
@@ -346,7 +348,7 @@ class Parser(sly.Parser):
     def arg_list(self, p):
         return [p.expr]
 
-    @_(" arg_list")
+    @_("arg_list")
     def args(self, p):
         return p.arg_list
 
@@ -403,6 +405,12 @@ def main():
     # Genera el árbol de análisis sintáctico resultante
     for depth, node in flatten(ast):
         print('%s: %s%s' % (getattr(node, 'lineno', None), ' ' * (4 * depth), node))
+
+    dot = DotVisitor()
+    dot.visit(ast)
+    ast_file = open("ast.txt", "w")
+    ast_file.write(str(dot))
+    ast_file.close()
 
 
 if __name__ == '__main__':

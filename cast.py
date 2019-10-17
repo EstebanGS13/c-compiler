@@ -1,11 +1,17 @@
 '''
 cast.py
 
-Analizador descendente recursivo.
+Objetos del AST (Abstract Syntax Tree).
+
+Este archivo define clases para diferentes tipos de nodos de un Árbol
+de sintaxis abstracto. Durante el análisis, creará estos nodos y los
+conectará entre sí. En general, tendrá un nodo AST diferente para cada
+tipo de regla de gramática. Se pueden encontrar algunos nodos AST de
+muestra en la parte superior de este archivo. Tendrá que agregar más
+por su cuenta.
 '''
 
-# -------------------------------------------
-# Nodos Abstract Syntax Tree (AST)
+import pydot
 
 
 class AST(object):
@@ -46,6 +52,33 @@ class AST(object):
         return f'{type(self).__name__}({argstr})'
 
 
+# ----------------------------------------------------------------------
+# Nodos espefificos del AST.
+#
+# Para cada uno de estos nodos, se debe agregar la especificacion
+# apropiada de _fields = [] que especifique que campos seran guardados.
+# Solo como ejemplo, para el operador binario, se debe guardar el
+# operador, la expresion izquierda y la derecha como esto:
+#
+#    class Expression(AST):
+#          pass
+#
+#    class BinOp(AST):
+#          op: str
+#          left: Expression
+#          right: Expression
+#
+# En el archivo parser.py, se creara el nodo usando un codigo
+# sililar a esto:
+#
+#    class MiniCParser(Parser):
+#        ...
+#        @_('expr "+" expr')
+#        def expr(self, p):
+#            return BinOp(p[1], p.expr0, p.expr1)
+#
+# ----------------------------------------------------------------------
+
 # Nodos Abstract del AST
 
 class Statement(AST):
@@ -63,11 +96,38 @@ class Literal(Expression):
     pass
 
 
+class DataType(AST):
+    pass
+
+
 class Location(AST):
     pass
 
 
 # Nodos Reales del AST
+
+
+class Program(Statement):
+    '''
+    program : decl_list
+    '''
+    decl_list: [Statement]
+
+
+class SimpleType(DataType):
+    name: str
+
+
+class FuncParameter(AST):
+    type: DataType
+    name: str
+
+
+class WriteStmt(Statement):
+    '''
+    statement : write(expression) ;
+    '''
+    value: Expression
 
 
 class NullStmt(Statement):
@@ -81,8 +141,7 @@ class ExprStmt(Statement):
 class IfStmt(Statement):
     condition: Expression
     true_stmt: Statement
-    else_stmt: Statement
-    else_stmt: type(None) # todo ask
+    else_stmt: (Statement, type(None))  # todo ?
 
 
 class WhileStmt(Statement):
@@ -111,34 +170,29 @@ class CompoundStmt(Statement):
 
 
 class FuncDeclStmt(Statement):
-    type: str
+    type: DataType
     name: str
-    params: str
+    params: [FuncParameter]
     stmt: Statement
 
 
-class FuncParamStmt(Statement):
-    type: str
-    name: str
-
-
 class StaticVarDeclStmt(Statement):
-    type: str
+    type: DataType
     name: str
 
 
 class StaticArrayDeclStmt(Statement):
-    type: str
+    type: DataType
     name: str
 
 
 class LocalDeclStmt(Statement):
-    type: str
+    type: DataType
     name: str
 
 
 class LocalArrayDeclStmt(Statement):
-    type: str
+    type: DataType
     name: str
 
 
@@ -163,7 +217,7 @@ class BoolLiteral(Literal):
 
 
 class NewArrayExpr(Expression):
-    type: str
+    type: DataType
     expr: Expression
 
 
@@ -201,7 +255,6 @@ class IncDecExpr(Expression):
 
 
 class VarAssignmentExpr(Expression):
-    op: str
     name: str
     expr: Expression
 
@@ -236,7 +289,10 @@ class WriteLocation(Statement):
 
 
 # ----------------------------------------------------------------------
-# Las siguientes clases para visitar y reescribir el AST se toman del 
+#                NO MODIFIQUE NADA DE AQUI EN ADELANTE
+# ----------------------------------------------------------------------
+
+# Las siguientes clases para visitar y reescribir el AST se toman del
 # módulo ast de Python.
 
 # NO MODIFIQUE
@@ -321,3 +377,59 @@ def flatten(top):
     d = Flattener()
     d.visit(top)
     return d.nodes
+
+
+class DotVisitor(NodeVisitor):
+    '''
+    Crea archivo tipo 'dot' para Graphiz
+    '''
+    _dot_graph_defaults = {
+        'graph_name': 'AST',
+        'graph_type': 'graph'
+    }
+
+    _dot_node_defaults = {
+        'shape': 'box',
+        'color': 'lightblue2',
+        'style': 'filled'
+    }
+
+    _dot_edge_defaults = {}
+
+    def __init__(self):
+        '''
+        creamos un obj del tipo dot que se va a llamar AST
+        '''
+        self.dot = pydot.Dot(graph_name='AST', graph_type='graph')
+        self.dot.set_node_defaults(**self._dot_node_defaults)
+        self.dot.set_edge_defaults(**self._dot_edge_defaults)
+        self.st = []
+        self.id = 0
+
+    def __repr__(self):
+        return self.dot.to_string()
+
+    def _dot_graph_defaults(self):
+        return {}
+
+    def _id(self):
+        self.id += 1
+        return 'n%02d' % self.id
+
+    def generic_visit(self, node):
+        # Siempre va a pasar por aca cada vez que este en un nodo
+        id = self._id()
+        label = node.__class__.__name__
+        NodeVisitor.generic_visit(self, node)
+        for field in getattr(node, '_fields'):
+            value = getattr(node, field, None)
+            if isinstance(value, list):
+                for item in value:
+                    self.dot.add_edge(pydot.Edge(id, self.st.pop()))
+            elif isinstance(value, AST):
+                self.dot.add_edge(pydot.Edge(id, self.st.pop()))
+            elif value:
+                label += '\\n' + '({}={})'.format(field, value)
+
+        self.dot.add_node(pydot.Node(id, label=label))
+        self.st.append(id)
