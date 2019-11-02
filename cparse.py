@@ -155,11 +155,19 @@ class Parser(sly.Parser):
 
     @_("type_spec IDENT ';'")
     def var_decl(self, p):
-        return StaticVarDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
+        return StaticVarDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
+
+    @_("type_spec IDENT '=' expr ';'")
+    def var_decl(self, p):
+        return StaticVarDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
     @_("type_spec IDENT '[' ']' ';'")
     def var_decl(self, p):
-        return StaticArrayDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
+        return StaticArrayDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
+
+    @_("type_spec IDENT '[' ']' '=' expr ';'")
+    def var_decl(self, p):
+        return StaticArrayDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
     @_("VOID", "BOOL", "INT", "FLOAT", "CHAR")
     def type_spec(self, p):
@@ -175,7 +183,7 @@ class Parser(sly.Parser):
 
     @_("VOID")
     def params(self, p):
-        return []  # p.VOID
+        return []
 
     @_("param_list ',' param")
     def param_list(self, p):
@@ -209,11 +217,19 @@ class Parser(sly.Parser):
 
     @_("type_spec IDENT ';'")
     def local_decl(self, p):
-        return LocalDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
+        return LocalDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
+
+    @_("type_spec IDENT '=' expr ';'")
+    def local_decl(self, p):
+        return LocalDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
     @_("type_spec IDENT '[' ']' ';'")
     def local_decl(self, p):
-        return LocalArrayDeclStmt(p.type_spec, p.IDENT, lineno=p.lineno)
+        return LocalArrayDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
+
+    @_("type_spec IDENT '[' ']' '=' expr ';'")
+    def local_decl(self, p):
+        return LocalArrayDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
     @_("stmt_list stmt")
     def stmt_list(self, p):
@@ -243,12 +259,10 @@ class Parser(sly.Parser):
 
     @_("FOR '(' expr ';' expr ';' expr ')' stmt")
     def for_stmt(self, p):
-        # print(type(p.expr0),type(p.expr1),type(p.expr2),type(p.stmt)) #todo
         return ForStmt(p.expr0, p.expr1, p.expr2, p.stmt, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt")
     def if_stmt(self, p):
-        print(type(p.expr),type(p.stmt))
         return IfStmt(p.expr, p.stmt, None, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt ELSE stmt")
@@ -289,7 +303,7 @@ class Parser(sly.Parser):
 
     @_("'(' expr ')'")
     def expr(self, p):
-        return p.expr  # todo que tipo es?
+        return p.expr
 
     @_("IDENT")
     def expr(self, p):
