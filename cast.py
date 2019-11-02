@@ -119,7 +119,7 @@ class SimpleType(DataType):
 
 
 class FuncParameter(AST):
-    type: DataType
+    datatype: DataType
     name: str
 
 
@@ -135,18 +135,18 @@ class NullStmt(Statement):
 
 
 class ExprStmt(Statement):
-    expr: Expression
+    value: Expression
 
 
 class IfStmt(Statement):
     condition: Expression
-    true_stmt: Statement
-    else_stmt: (Statement, type(None))  # todo ?
+    true_block: Statement
+    false_block: (Statement, type(None))
 
 
 class WhileStmt(Statement):
     condition: Expression
-    stmt: Statement
+    body: Statement
 
 
 class ForStmt(Statement):
@@ -157,7 +157,7 @@ class ForStmt(Statement):
 
 
 class ReturnStmt(Statement):
-    expr: Expression
+    value: Expression
 
 
 class BreakStmt(Statement):
@@ -170,30 +170,34 @@ class CompoundStmt(Statement):
 
 
 class FuncDeclStmt(Statement):
-    type: DataType
+    datatype: DataType
     name: str
     params: [FuncParameter]
     stmt: Statement
 
 
 class StaticVarDeclStmt(Statement):
-    type: DataType
+    datatype: DataType
     name: str
+    value: (Expression, type(None))
 
 
 class StaticArrayDeclStmt(Statement):
-    type: DataType
+    datatype: DataType
     name: str
+    value: (Expression, type(None))
 
 
 class LocalDeclStmt(Statement):
-    type: DataType
+    datatype: DataType
     name: str
+    value: (Expression, type(None))
 
 
 class LocalArrayDeclStmt(Statement):
-    type: DataType
+    datatype: DataType
     name: str
+    value: (Expression, type(None))
 
 
 class IntegerLiteral(Literal):
@@ -217,13 +221,13 @@ class BoolLiteral(Literal):
 
 
 class NewArrayExpr(Expression):
-    type: DataType
-    expr: Expression
+    datatype: DataType
+    value: Expression
 
 
 class CallExpr(Expression):
     name: str
-    args: [Expression]
+    arguments: [Expression]
 
 
 class VarExpr(Expression):
@@ -237,7 +241,7 @@ class ArrayLookupExpr(Expression):
 
 class UnaryOpExpr(Expression):
     op: str
-    expr: Expression
+    right: Expression
 
 
 class BinaryOpExpr(Expression):
@@ -256,18 +260,18 @@ class IncDecExpr(Expression):
 
 class VarAssignmentExpr(Expression):
     name: str
-    expr: Expression
+    value: Expression
 
 
 class ArrayAssignmentExpr(Expression):
     name: str
-    expr0: Expression
-    expr1: Expression
+    index: Expression
+    value: Expression
 
 
 class IntToFloatExpr(Expression):
     name: str
-    expr: Expression
+    value: Expression
 
 
 class ArraySizeExpr(Expression):
