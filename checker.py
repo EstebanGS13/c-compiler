@@ -156,6 +156,7 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.decl_list)
 
     def visit_SimpleType(self, node):
+        print('visit_SimpleType')
         # Associate a type name such as "int" with a Type object
         node.type = Type.get_by_name(node.name)
         if node.type is None:
@@ -167,8 +168,8 @@ class CheckProgramVisitor(NodeVisitor):
         # todo visitar name?
 
     def visit_ExprStmt(self, node):
-        # print('visit_ExprStmt', node)
-        self.visit(node.expr)
+        print('visit_ExprStmt', node)
+        self.visit(node.value)
 
     def visit_IfStmt(self, node):
         self.visit(node.condition)
@@ -203,6 +204,7 @@ class CheckProgramVisitor(NodeVisitor):
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_ReturnStmt(self, node):
+        print('visit_ReturnStmt')
         self.visit(node.value)
         # Propagate return value type as a special property ret_type, only
         # to be checked at function declaration checking
@@ -215,11 +217,12 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, "Return statement must be within a function")
 
     def visit_CompoundStmt(self, node):
-        # print('visit_CompoundStmt', node)
+        print('visit_CompoundStmt', node)
         self.visit(node.decl)
         self.visit(node.stmt_list)
 
     def visit_FuncDeclStmt(self, node):
+        print('visit_FuncDeclStmt')
         if node.name in self.functions:
             prev_def = self.functions[node.name].lineno
             error(node.lineno, f"Function '{node.name}' already defined at line {prev_def}")
@@ -263,6 +266,7 @@ class CheckProgramVisitor(NodeVisitor):
             self.current_ret_type = None
 
     def visit_StaticVarDeclStmt(self, node):
+        print('visit_StaticVarDeclStmt')
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -345,6 +349,7 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_LocalDeclStmt(self, node):
+        print('visit_LocalDeclStmt')
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -427,6 +432,7 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_IntegerLiteral(self, node):
+        print('visit_IntegerLiteral')
         # For literals, you'll need to assign a type to the node and allow it to
         # propagate.  This type will work it's way through various operators
         node.type = IntType
@@ -510,6 +516,13 @@ class CheckProgramVisitor(NodeVisitor):
         print('visit_VarAssignmentExpr')
         self.visit(node.name)
         self.visit(node.value)
+
+        if node.name in self.symbols:
+            if node.name.type != node.value.type:
+                print('no son mismo tipo')
+        else:
+            error(node.lineno, f"Name '{node.name}' was not defined")
+
 
     def visit_ArrayAssignmentExpr(self, node):
         print('visit_ArrayAssignmentExpr')
