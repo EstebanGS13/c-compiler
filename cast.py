@@ -173,7 +173,7 @@ class FuncDeclStmt(Statement):
     datatype: DataType
     name: str
     params: [FuncParameter]
-    stmt: Statement
+    body: Statement
 
 
 class StaticVarDeclStmt(Statement):
