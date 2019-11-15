@@ -152,11 +152,13 @@ class CheckProgramVisitor(NodeVisitor):
         self.keywords = {t.name for t in Type.__subclasses__()}
 
     def visit_Program(self, node):
-        print('visit_Program', node)
+        print(' visit_Program')
+        # print(node)
         self.visit(node.decl_list)
 
     def visit_SimpleType(self, node):
-        print('visit_SimpleType')
+        print(' visit_SimpleType')
+        print(node)
         # Associate a type name such as "int" with a Type object
         node.type = Type.get_by_name(node.name)
         if node.type is None:
@@ -165,10 +167,10 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_FuncParameter(self, node):
         self.visit(node.datatype)
         node.type = node.datatype.type
-        # todo visitar name?
 
     def visit_ExprStmt(self, node):
-        print('visit_ExprStmt', node)
+        print(' visit_ExprStmt')
+        print(node)
         self.visit(node.value)
 
     def visit_IfStmt(self, node):
@@ -204,7 +206,8 @@ class CheckProgramVisitor(NodeVisitor):
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_ReturnStmt(self, node):
-        print('visit_ReturnStmt')
+        print(' visit_ReturnStmt')
+        print(node)
         self.visit(node.value)
         # Propagate return value type as a special property ret_type, only
         # to be checked at function declaration checking
@@ -217,12 +220,14 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, "Return statement must be within a function")
 
     def visit_CompoundStmt(self, node):
-        print('visit_CompoundStmt', node)
+        print(' visit_CompoundStmt')
+        print(node)
         self.visit(node.decl)
         self.visit(node.stmt_list)
 
     def visit_FuncDeclStmt(self, node):
-        print('visit_FuncDeclStmt')
+        print(' visit_FuncDeclStmt')
+        print(node)
         if node.name in self.functions:
             prev_def = self.functions[node.name].lineno
             error(node.lineno, f"Function '{node.name}' already defined at line {prev_def}")
@@ -266,7 +271,8 @@ class CheckProgramVisitor(NodeVisitor):
             self.current_ret_type = None
 
     def visit_StaticVarDeclStmt(self, node):
-        print('visit_StaticVarDeclStmt')
+        print(' visit_StaticVarDeclStmt')
+        print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -308,6 +314,8 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_StaticArrayDeclStmt(self, node):
+        print('visit_StaticArrayDeclStmt')
+        print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -349,7 +357,8 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_LocalDeclStmt(self, node):
-        print('visit_LocalDeclStmt')
+        print(' visit_LocalDeclStmt')
+        print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -391,6 +400,8 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_LocalArrayDeclStmt(self, node):
+        print('visit_LocalArrayDeclStmt')
+        print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -432,12 +443,15 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_IntegerLiteral(self, node):
-        print('visit_IntegerLiteral')
+        print(' visit_IntegerLiteral')
+        print(node)
         # For literals, you'll need to assign a type to the node and allow it to
         # propagate.  This type will work it's way through various operators
         node.type = IntType
 
     def visit_FloatLiteral(self, node):
+        print(' visit_FloatLiteral')
+        print(node)
         node.type = FloatType
 
     def visit_CharLiteral(self, node):
@@ -469,8 +483,11 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = func.datatype.type
 
     def visit_VarExpr(self, node):
-        print('visit_VarExpr')
+        print(' visit_VarExpr')
+        print(node)
+        # Associate a type name such as "int" with a Type object
         self.visit(node.name)
+        node.type = node.name.type
 
     def visit_ArrayLookupExpr(self, node):
         print('visit_ArrayLookupExpr')
@@ -478,6 +495,8 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.value)
 
     def visit_UnaryOpExpr(self, node):
+        print(' visit_UnaryOpExpr')
+        print(node)
         # Check and propagate the type of the only operand
         self.visit(node.right)
 
@@ -491,6 +510,8 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = op_type
 
     def visit_BinaryOpExpr(self, node):
+        print(' visit_BinaryOpExpr')
+        print(node)
         # For operators, you need to visit each operand separately.  You'll
         # then need to make sure the types and operator are all compatible.
         self.visit(node.left)
@@ -513,16 +534,29 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.name)
 
     def visit_VarAssignmentExpr(self, node):
-        print('visit_VarAssignmentExpr')
+        print(' visit_VarAssignmentExpr')
+        print(node)
+        # First visit the name definition to check that it is a valid
+        # name
         self.visit(node.name)
+        # Visit the value, to also get type information
         self.visit(node.value)
 
+        node.type = None
+        # Check if the variable is already declared
         if node.name in self.symbols:
-            if node.name.type != node.value.type:
-                print('no son mismo tipo')
+            var_type = self.symbols[node.name].type
+            if var_type and node.value.type:
+                # If both have type information, then the type checking worked on
+                # both branches
+                if var_type == node.value.type:  # If var name type is the same as value type
+                    # Propagate the type
+                    node.type = var_type
+                else:
+                    error(node.lineno,
+                          f"Cannot assign type '{node.value.type.name}' to variable '{node.name}' of type '{var_type.name}'")
         else:
             error(node.lineno, f"Name '{node.name}' was not defined")
-
 
     def visit_ArrayAssignmentExpr(self, node):
         print('visit_ArrayAssignmentExpr')
