@@ -330,26 +330,23 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(node.datatype)
 
             if node.datatype.type:
-                # Before finishing, this var declaration may have an expression
-                # to initialize it. If so, we must visit the node, and check
-                # type errors
-                if node.value:
-                    self.visit(node.value)
 
-                    if node.value.type:  # If value has no type, then there was a previous error
-                        if node.value.type == node.datatype.type:
-                            # Great, the value type matches the variable type
-                            # declaration
+                if node.size:
+                    self.visit(node.size)
+
+                    # Check if size is an instance of IntegerLiteral
+                    if isinstance(node.size, IntegerLiteral):
+                        if node.size.value > 0:
+                            # There is no initialization and the size is valid integer,
+                            # so we have everything needed to save it into our symbols table
                             node.type = node.datatype.type
                             self.symbols[node.name] = node
                         else:
-                            error(node.lineno,
-                                  f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                            error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
+                    else:
+                        error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
                 else:
-                    # There is no initialization, so we have everything needed
-                    # to save it into our symbols table
-                    node.type = node.datatype.type
-                    self.symbols[node.name] = node
+                    error(node.lineno, f"Array size missing in '{node.name}'")
             else:
                 error(node.lineno, f"Unknown type '{node.datatype.name}'")
         else:
@@ -416,26 +413,23 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(node.datatype)
 
             if node.datatype.type:
-                # Before finishing, this var declaration may have an expression
-                # to initialize it. If so, we must visit the node, and check
-                # type errors
-                if node.value:
-                    self.visit(node.value)
 
-                    if node.value.type:  # If value has no type, then there was a previous error
-                        if node.value.type == node.datatype.type:
-                            # Great, the value type matches the variable type
-                            # declaration
+                if node.size:
+                    self.visit(node.size)
+
+                    # Check if size is an instance of IntegerLiteral
+                    if isinstance(node.size, IntegerLiteral):
+                        if node.size.value > 0:
+                            # There is no initialization and the size is valid integer,
+                            # so we have everything needed to save it into our symbols table
                             node.type = node.datatype.type
                             self.symbols[node.name] = node
                         else:
-                            error(node.lineno,
-                                  f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                            error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
+                    else:
+                        error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
                 else:
-                    # There is no initialization, so we have everything needed
-                    # to save it into our symbols table
-                    node.type = node.datatype.type
-                    self.symbols[node.name] = node
+                    error(node.lineno, f"Array size missing in '{node.name}'")
             else:
                 error(node.lineno, f"Unknown type '{node.datatype.name}'")
         else:
@@ -487,7 +481,10 @@ class CheckProgramVisitor(NodeVisitor):
         print(node)
         # Associate a type name such as "int" with a Type object
         self.visit(node.name)
-        node.type = node.name.type
+        if node.name in self.symbols:
+            node.type = self.symbols[node.name].type
+        else:
+            error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_ArrayLookupExpr(self, node):
         print('visit_ArrayLookupExpr')
