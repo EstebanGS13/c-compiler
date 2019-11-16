@@ -9,61 +9,61 @@ La siguiente gramática es parcial. Se agregan más características en
 proyectos posteriores.
 
 	program : decl_list
-	
-	decl_list : decl_list decl 
+
+	decl_list : decl_list decl
 			| decl
-					
-	decl : var_decl 
+
+	decl : var_decl
 			| fun_decl
-			
+
 	var_decl : type_spec IDENT ;
 			| type_spec IDENT [ ] ;
 
-	type_spec : VOID 
-			| BOOL 
-			| INT 
+	type_spec : VOID
+			| BOOL
+			| INT
 			| FLOAT
 
 	fun_decl : type_spec IDENT ( params ) compound_stmt
 
-	params : param_list 
-			| VOID 
-	
-	param_list : param_list , param 
+	params : param_list
+			| VOID
+
+	param_list : param_list , param
 			| param
 
-	param : type_spec IDENT 
+	param : type_spec IDENT
 			| type_spec IDENT [ ]
-	
+
 	compound_stmt : { local_decls stmt_list }
-	
-	local_decls : local_decls local_decl 
+
+	local_decls : local_decls local_decl
 			| empty
-			
-	local_decl : type_spec IDENT ; 
+
+	local_decl : type_spec IDENT ;
 			| type_spec IDENT [ ] ;
 
-	stmt_list : stmt_list stmt 
+	stmt_list : stmt_list stmt
 			| empty
-			
-	stmt : expr_stmt 
-			| compound_stmt 
-			| if_stmt 
-			| while_stmt 
-			| return_stmt 
-			| break_stmt 
-	
-	expr_stmt : expr ; 
+
+	stmt : expr_stmt
+			| compound_stmt
+			| if_stmt
+			| while_stmt
+			| return_stmt
+			| break_stmt
+
+	expr_stmt : expr ;
 			| ;
 
 	while_stmt : WHILE ( expr ) stmt
 
-	if_stmt : IF ( expr ) stmt 
+	if_stmt : IF ( expr ) stmt
 			| IF ( expr ) stmt ELSE stmt
 
-	return_stmt : RETURN ; 
+	return_stmt : RETURN ;
 			| RETURN expr ;
-			
+
 	break_stamt : BREAK ;
 
 	expr : IDENT = expr | IDENT[ expr ] = expr
@@ -78,10 +78,10 @@ proyectos posteriores.
 			| IDENT | IDENT[ expr ] | IDENT( args ) | IDENT . size
 			| BOOL_LIT | INT_LIT | FLOAT_LIT | NEW type_spec [ expr ]
 
-	arg_list : arg_list , expr 
-			| expr 
-	
-	args : arg_list 
+	arg_list : arg_list , expr
+			| expr
+
+	args : arg_list
 			| empty
 
 
@@ -96,20 +96,20 @@ import sly
 
 # ----------------------------------------------------------------------
 # El siguiente import carga la función error(lineno, msg) que se debe
-# usar para informar todos los mensajes de error emitidos por su analizador. 
-# Las pruebas unitarias y otras características del compilador se basarán 
-# en esta función. Consulte el archivo errors.py para obtener más 
+# usar para informar todos los mensajes de error emitidos por su analizador.
+# Las pruebas unitarias y otras características del compilador se basarán
+# en esta función. Consulte el archivo errors.py para obtener más
 # documentación sobre el mecanismo de manejo de errores.
 from errors import error
 
 # ------------------------------------------------- ---------------------
-# Importar la clase lexer. Su lista de tokens es necesaria para validar y 
+# Importar la clase lexer. Su lista de tokens es necesaria para validar y
 # construir el objeto analizador.
 from clex import Lexer
 
 # ----------------------------------------------------------------------
 # Obtener los nodos AST.
-# Lea las instrucciones en ast.py 
+# Lea las instrucciones en ast.py
 from cast import *
 
 
@@ -126,7 +126,7 @@ class Parser(sly.Parser):
         ("left", AND),
         ("left", EQ, NE),
         ("left", LE, '<', GE, '>'),
-        ("left", '+', '-'),
+        ("left", PLUS, MINUS),
         ("left", TIMES, DIVIDE, MOD),
         ("right", '!', UNARY, PRE),
         ("left", '.', '(', ')', '[', ']', POST)
@@ -161,11 +161,7 @@ class Parser(sly.Parser):
     def var_decl(self, p):
         return StaticVarDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
-    @_("type_spec IDENT '[' ']' ';'")
-    def var_decl(self, p):
-        return StaticArrayDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
-
-    @_("type_spec IDENT '[' ']' '=' expr ';'")
+    @_("type_spec IDENT '[' expr ']' ';'")
     def var_decl(self, p):
         return StaticArrayDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
@@ -181,7 +177,7 @@ class Parser(sly.Parser):
     def params(self, p):
         return p.param_list
 
-    @_("VOID")
+    @_("VOID", "empty")
     def params(self, p):
         return []
 
@@ -223,11 +219,7 @@ class Parser(sly.Parser):
     def local_decl(self, p):
         return LocalDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
-    @_("type_spec IDENT '[' ']' ';'")
-    def local_decl(self, p):
-        return LocalArrayDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
-
-    @_("type_spec IDENT '[' ']' '=' expr ';'")
+    @_("type_spec IDENT '[' expr ']' ';'")
     def local_decl(self, p):
         return LocalArrayDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
@@ -292,7 +284,7 @@ class Parser(sly.Parser):
 
     @_("expr OR expr", "expr AND expr", "expr EQ expr", "expr NE expr",
        "expr LE expr", "expr '<' expr", "expr GE expr", "expr '>' expr",
-       "expr '+' expr", "expr '-' expr",
+       "expr PLUS expr", "expr MINUS expr",
        "expr TIMES expr", "expr DIVIDE expr", "expr MOD expr")
     def expr(self, p):
         return BinaryOpExpr(p[1], p.expr0, p.expr1, lineno=p.lineno)
@@ -307,7 +299,7 @@ class Parser(sly.Parser):
 
     @_("IDENT")
     def expr(self, p):
-        return VarExpr(p.IDENT)
+        return VarExpr(p.IDENT, lineno=p.lineno)
 
     @_("INC IDENT %prec PRE", "DEC IDENT %prec PRE")
     def expr(self, p):

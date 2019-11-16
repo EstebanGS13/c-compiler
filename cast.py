@@ -123,13 +123,6 @@ class FuncParameter(AST):
     name: str
 
 
-class WriteStmt(Statement):
-    '''
-    statement : write(expression) ;
-    '''
-    value: Expression
-
-
 class NullStmt(Statement):
     pass
 
@@ -153,7 +146,7 @@ class ForStmt(Statement):
     init: Expression
     condition: Expression
     loop: Expression
-    stmt: Statement
+    body: Statement
 
 
 class ReturnStmt(Statement):
@@ -185,7 +178,7 @@ class StaticVarDeclStmt(Statement):
 class StaticArrayDeclStmt(Statement):
     datatype: DataType
     name: str
-    value: (Expression, type(None))
+    size: Expression
 
 
 class LocalDeclStmt(Statement):
@@ -197,7 +190,7 @@ class LocalDeclStmt(Statement):
 class LocalArrayDeclStmt(Statement):
     datatype: DataType
     name: str
-    value: (Expression, type(None))
+    size: Expression
 
 
 class IntegerLiteral(Literal):
