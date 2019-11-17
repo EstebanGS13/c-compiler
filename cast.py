@@ -1,5 +1,5 @@
+# cast.py
 '''
-cast.py
 
 Objetos del AST (Abstract Syntax Tree).
 
@@ -150,7 +150,7 @@ class ForStmt(Statement):
 
 
 class ReturnStmt(Statement):
-    value: Expression
+    value: (Expression, type(None))
 
 
 class BreakStmt(Statement):
@@ -259,11 +259,6 @@ class VarAssignmentExpr(Expression):
 class ArrayAssignmentExpr(Expression):
     name: str
     index: Expression
-    value: Expression
-
-
-class IntToFloatExpr(Expression):
-    name: str
     value: Expression
 
 

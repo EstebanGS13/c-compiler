@@ -1,3 +1,4 @@
+# cparse.py
 # coding: utf-8
 r'''
 Proyecto 2: Escribir un analizador
@@ -177,7 +178,7 @@ class Parser(sly.Parser):
     def params(self, p):
         return p.param_list
 
-    @_("VOID", "empty")
+    @_("VOID")
     def params(self, p):
         return []
 

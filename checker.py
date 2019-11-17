@@ -1,4 +1,4 @@
-# minic/checker.py
+# checker.py
 '''
 
 *** No inicie este proyecto hasta que no haya completado el parser. ***
@@ -117,13 +117,11 @@ todo eso. Entonces, espera un poco al principio.
 from collections import ChainMap
 from errors import error
 from cast import *
-from typesys import Type, FloatType, IntType, BoolType, CharType
+from typesys import Type, FloatType, IntType, BoolType, CharType, VoidType
 
 
 class CheckProgramVisitor(NodeVisitor):
     '''
-    Class Chequeo Programa.   Esta clase usa el patron visitor como se describe
-    en ast.py.  Usted necesita definir metodos
     Program checking class.   This class uses the visitor pattern as described
     in ast.py.   You need to define methods of the form visit_NodeName()
     for each kind of AST node that you want to process.  You may need to
@@ -212,10 +210,12 @@ class CheckProgramVisitor(NodeVisitor):
         # Propagate return value type as a special property ret_type, only
         # to be checked at function declaration checking
         if self.expected_ret_type:
-            self.current_ret_type = node.value.type
-            if node.value.type and node.value.type != self.expected_ret_type:
-                error(node.lineno,
-                      f"Function returns '{self.expected_ret_type.name}' but return statement value is of type '{node.value.type.name}'")
+            # Check if return has a value
+            if node.value:
+                self.current_ret_type = node.value.type
+                if node.value.type and node.value.type != self.expected_ret_type:
+                    error(node.lineno,
+                          f"Function returns '{self.expected_ret_type.name}' but return statement value is of type '{node.value.type.name}'")
         else:
             error(node.lineno, "Return statement must be within a function")
 
@@ -233,12 +233,20 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Function '{node.name}' already defined at line {prev_def}")
 
         self.visit(node.params)
+        if node.params:
+            param_types_ok = all((param.type is not None for param in node.params))
+            if not param_types_ok:
+                error(node.lineno, f"Invalid parameter type at function definition")
 
-        param_types_ok = all((param.type is not None for param in node.params))
-        param_names = [param.name for param in node.params]
-        param_names_ok = len(param_names) == len(set(param_names))
-        if not param_names_ok:
-            error(node.lineno, "Duplicate parameter names at function definition")
+            param_names = [param.name for param in node.params]
+            param_names_ok = len(param_names) == len(set(param_names))
+            if not param_names_ok:
+                error(node.lineno, "Duplicate parameter names at function definition")
+
+            invalid_params = tuple([param.name for param in node.params if param.type == VoidType])
+            if invalid_params:
+                for param in invalid_params:
+                    error(node.lineno, f"Parameter '{param}' has invalid type '{VoidType.name}'")
 
         self.visit(node.datatype)
         ret_type_ok = node.datatype.type is not None
@@ -258,7 +266,7 @@ class CheckProgramVisitor(NodeVisitor):
 
             self.visit(node.body)
 
-            if not self.current_ret_type:
+            if self.current_ret_type is None and self.expected_ret_type != VoidType:
                 error(node.lineno, f"Function '{node.name}' has no return statement")
             elif self.current_ret_type == self.expected_ret_type:
                 # We must add the function declaration as available for
@@ -287,26 +295,29 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(node.datatype)
 
             if node.datatype.type:
-                # Before finishing, this var declaration may have an expression
-                # to initialize it. If so, we must visit the node, and check
-                # type errors
-                if node.value:
-                    self.visit(node.value)
-
-                    if node.value.type:  # If value has no type, then there was a previous error
-                        if node.value.type == node.datatype.type:
-                            # Great, the value type matches the variable type
-                            # declaration
-                            node.type = node.datatype.type
-                            self.symbols[node.name] = node
-                        else:
-                            error(node.lineno,
-                                  f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                if node.datatype.type is VoidType:
+                    error(node.lineno, f"Variable '{node.name}' declared as '{VoidType.name}'")
                 else:
-                    # There is no initialization, so we have everything needed
-                    # to save it into our symbols table
-                    node.type = node.datatype.type
-                    self.symbols[node.name] = node
+                    # Before finishing, this var declaration may have an expression
+                    # to initialize it. If so, we must visit the node, and check
+                    # type errors
+                    if node.value:
+                        self.visit(node.value)
+
+                        if node.value.type:  # If value has no type, then there was a previous error
+                            if node.value.type == node.datatype.type:
+                                # Great, the value type matches the variable type
+                                # declaration
+                                node.type = node.datatype.type
+                                self.symbols[node.name] = node
+                            else:
+                                error(node.lineno,
+                                      f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                    else:
+                        # There is no initialization, so we have everything needed
+                        # to save it into our symbols table
+                        node.type = node.datatype.type
+                        self.symbols[node.name] = node
             else:
                 error(node.lineno, f"Unknown type '{node.datatype.name}'")
         else:
@@ -330,23 +341,25 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(node.datatype)
 
             if node.datatype.type:
-
-                if node.size:
-                    self.visit(node.size)
-
-                    # Check if size is an instance of IntegerLiteral
-                    if isinstance(node.size, IntegerLiteral):
-                        if node.size.value > 0:
-                            # There is no initialization and the size is valid integer,
-                            # so we have everything needed to save it into our symbols table
-                            node.type = node.datatype.type
-                            self.symbols[node.name] = node
-                        else:
-                            error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
-                    else:
-                        error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
+                if node.datatype.type is VoidType:
+                    error(node.lineno, f"Array '{node.name}' declared as '{VoidType.name}'")
                 else:
-                    error(node.lineno, f"Array size missing in '{node.name}'")
+                    if node.size:
+                        self.visit(node.size)
+
+                        # Check if size is an instance of IntegerLiteral
+                        if isinstance(node.size, IntegerLiteral):
+                            if node.size.value > 0:
+                                # There is no initialization and the size is valid integer,
+                                # so we have everything needed to save it into our symbols table
+                                node.type = node.datatype.type
+                                self.symbols[node.name] = node
+                            else:
+                                error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
+                        else:
+                            error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
+                    else:
+                        error(node.lineno, f"Array size missing in '{node.name}'")
             else:
                 error(node.lineno, f"Unknown type '{node.datatype.name}'")
         else:
@@ -370,26 +383,29 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(node.datatype)
 
             if node.datatype.type:
-                # Before finishing, this var declaration may have an expression
-                # to initialize it. If so, we must visit the node, and check
-                # type errors
-                if node.value:
-                    self.visit(node.value)
-
-                    if node.value.type:  # If value has no type, then there was a previous error
-                        if node.value.type == node.datatype.type:
-                            # Great, the value type matches the variable type
-                            # declaration
-                            node.type = node.datatype.type
-                            self.symbols[node.name] = node
-                        else:
-                            error(node.lineno,
-                                  f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                if node.datatype.type is VoidType:
+                    error(node.lineno, f"Variable '{node.name}' declared as '{VoidType.name}'")
                 else:
-                    # There is no initialization, so we have everything needed
-                    # to save it into our symbols table
-                    node.type = node.datatype.type
-                    self.symbols[node.name] = node
+                    # Before finishing, this var declaration may have an expression
+                    # to initialize it. If so, we must visit the node, and check
+                    # type errors
+                    if node.value:
+                        self.visit(node.value)
+
+                        if node.value.type:  # If value has no type, then there was a previous error
+                            if node.value.type == node.datatype.type:
+                                # Great, the value type matches the variable type
+                                # declaration
+                                node.type = node.datatype.type
+                                self.symbols[node.name] = node
+                            else:
+                                error(node.lineno,
+                                      f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                    else:
+                        # There is no initialization, so we have everything needed
+                        # to save it into our symbols table
+                        node.type = node.datatype.type
+                        self.symbols[node.name] = node
             else:
                 error(node.lineno, f"Unknown type '{node.datatype.name}'")
         else:
@@ -413,23 +429,25 @@ class CheckProgramVisitor(NodeVisitor):
             self.visit(node.datatype)
 
             if node.datatype.type:
-
-                if node.size:
-                    self.visit(node.size)
-
-                    # Check if size is an instance of IntegerLiteral
-                    if isinstance(node.size, IntegerLiteral):
-                        if node.size.value > 0:
-                            # There is no initialization and the size is valid integer,
-                            # so we have everything needed to save it into our symbols table
-                            node.type = node.datatype.type
-                            self.symbols[node.name] = node
-                        else:
-                            error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
-                    else:
-                        error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
+                if node.datatype.type is VoidType:
+                    error(node.lineno, f"Array '{node.name}' declared as '{VoidType.name}'")
                 else:
-                    error(node.lineno, f"Array size missing in '{node.name}'")
+                    if node.size:
+                        self.visit(node.size)
+
+                        # Check if size is an instance of IntegerLiteral
+                        if isinstance(node.size, IntegerLiteral):
+                            if node.size.value > 0:
+                                # There is no initialization and the size is valid integer,
+                                # so we have everything needed to save it into our symbols table
+                                node.type = node.datatype.type
+                                self.symbols[node.name] = node
+                            else:
+                                error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
+                        else:
+                            error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
+                    else:
+                        error(node.lineno, f"Array size missing in '{node.name}'")
             else:
                 error(node.lineno, f"Unknown type '{node.datatype.name}'")
         else:
@@ -460,6 +478,8 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.value)
 
     def visit_CallExpr(self, node):
+        node.type = None
+
         if node.name not in self.functions:
             error(node.lineno, f"Function '{node.name}' is not declared")
         else:
@@ -479,6 +499,7 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_VarExpr(self, node):
         print(' visit_VarExpr')
         print(node)
+        node.type = None
         # Associate a type name such as "int" with a Type object
         self.visit(node.name)
         if node.name in self.symbols:
@@ -559,11 +580,6 @@ class CheckProgramVisitor(NodeVisitor):
         print('visit_ArrayAssignmentExpr')
         self.visit(node.name)
         self.visit(node.index)
-        self.visit(node.value)
-
-    def visit_IntToFloatExpr(self, node):
-        print('visit_IntToFloatExpr')
-        self.visit(node.name)
         self.visit(node.value)
 
     def visit_ArraySizeExpr(self, node):
