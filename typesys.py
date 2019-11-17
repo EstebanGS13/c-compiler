@@ -1,4 +1,4 @@
-# minic/typesys.py
+# typesys.py
 '''
 Sistema de tipo miniC
 =====================
@@ -26,6 +26,7 @@ REL_BIN_OPS = ["<", "<=", ">", ">=", "==", "!="]
 BOOL_BIN_OPS = ["&&", "||", "==", "!="]
 BOOL_UNARY_OPS = ["!"]
 
+
 class Type():
 	'''
 	Clase Base para nuestros tipos del sistema
@@ -52,7 +53,8 @@ class Type():
 				return type_cls
 				
 		return None
-		
+
+
 class FloatType(Type):
 	name = "float"
 	
@@ -72,7 +74,8 @@ class FloatType(Type):
 			return FloatType
 			
 		return None
-		
+
+
 class IntType(Type):
 	name = "int"
 	
@@ -92,7 +95,8 @@ class IntType(Type):
 			return IntType
 			
 		return None
-		
+
+
 class CharType(Type):
 	name = "char"
 	
@@ -103,8 +107,8 @@ class CharType(Type):
 				return BoolType
 				
 		return None
-		
-		
+
+
 class BoolType(Type):
 	name = "bool"
 	
@@ -121,3 +125,7 @@ class BoolType(Type):
 			return BoolType
 			
 		return None
+
+
+class VoidType(Type):
+	name = "void"
