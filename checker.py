@@ -145,6 +145,9 @@ class CheckProgramVisitor(NodeVisitor):
         # A table of function definitions
         self.functions = {}
 
+        # To check if we are inside a loop
+        self.loop = False
+
         # Put the builtin type names in the symbol table
         # self.symbols.update(builtin_types)
         self.keywords = {t.name for t in Type.__subclasses__()}
@@ -165,6 +168,10 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_FuncParameter(self, node):
         self.visit(node.datatype)
         node.type = node.datatype.type
+
+    def visit_NullStmt(self, node):
+        print(' visit_NullStmt')
+        print(node)
 
     def visit_ExprStmt(self, node):
         print(' visit_ExprStmt')
@@ -188,7 +195,11 @@ class CheckProgramVisitor(NodeVisitor):
         cond_type = node.condition.type
         if cond_type:
             if issubclass(node.condition.type, BoolType):
-                self.visit(node.body)
+                if node.body:
+                    self.loop = True
+                    self.visit(node.body)
+
+                self.loop = False
             else:
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
@@ -218,6 +229,12 @@ class CheckProgramVisitor(NodeVisitor):
                           f"Function returns '{self.expected_ret_type.name}' but return statement value is of type '{node.value.type.name}'")
         else:
             error(node.lineno, "Return statement must be within a function")
+
+    def visit_BreakStmt(self, node):
+        print(' visit_BreakStmt')
+        print(node)
+        if not self.loop:
+            error(node.lineno, "Break statement must be within a loop")
 
     def visit_CompoundStmt(self, node):
         print(' visit_CompoundStmt')
@@ -366,8 +383,8 @@ class CheckProgramVisitor(NodeVisitor):
             prev_lineno = self.symbols[node.name].lineno
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
-    def visit_LocalDeclStmt(self, node):
-        print(' visit_LocalDeclStmt')
+    def visit_LocalVarDeclStmt(self, node):
+        print(' visit_LocalVarDeclStmt')
         print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
@@ -467,9 +484,13 @@ class CheckProgramVisitor(NodeVisitor):
         node.type = FloatType
 
     def visit_CharLiteral(self, node):
+        print(' visit_CharLiteral')
+        print(node)
         node.type = CharType
 
     def visit_BoolLiteral(self, node):
+        print(' visit_BoolLiteral')
+        print(node)
         node.type = BoolType
 
     def visit_NewArrayExpr(self, node):
@@ -477,7 +498,7 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.datatype)
         self.visit(node.value)
 
-    def visit_CallExpr(self, node):
+    def visit_FuncCallExpr(self, node):
         node.type = None
 
         if node.name not in self.functions:
@@ -499,16 +520,17 @@ class CheckProgramVisitor(NodeVisitor):
     def visit_VarExpr(self, node):
         print(' visit_VarExpr')
         print(node)
-        node.type = None
+
         # Associate a type name such as "int" with a Type object
         self.visit(node.name)
         if node.name in self.symbols:
             node.type = self.symbols[node.name].type
         else:
+            node.type = None
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_ArrayLookupExpr(self, node):
-        print('visit_ArrayLookupExpr')
+        print('visit_ArrayLookupExpr') # arrayexpr?
         self.visit(node.name)
         self.visit(node.value)
 
@@ -548,8 +570,16 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_IncDecExpr(self, node):
         print('visit_IncDecExpr')
+        print(node)
         self.visit(node.op)
+
+        # Associate a type name such as "int" with a Type object
         self.visit(node.name)
+        if node.name in self.symbols:
+            node.type = self.symbols[node.name].type
+        else:
+            node.type = None
+            error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_VarAssignmentExpr(self, node):
         print(' visit_VarAssignmentExpr')
