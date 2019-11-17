@@ -124,7 +124,7 @@ class FuncParameter(AST):
 
 
 class NullStmt(Statement):
-    pass
+    value: type(None)
 
 
 class ExprStmt(Statement):
@@ -181,7 +181,7 @@ class StaticArrayDeclStmt(Statement):
     size: Expression
 
 
-class LocalDeclStmt(Statement):
+class LocalVarDeclStmt(Statement):
     datatype: DataType
     name: str
     value: (Expression, type(None))
@@ -218,7 +218,7 @@ class NewArrayExpr(Expression):
     value: Expression
 
 
-class CallExpr(Expression):
+class FuncCallExpr(Expression):
     name: str
     arguments: [Expression]
 

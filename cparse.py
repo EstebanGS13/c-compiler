@@ -214,11 +214,11 @@ class Parser(sly.Parser):
 
     @_("type_spec IDENT ';'")
     def local_decl(self, p):
-        return LocalDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
+        return LocalVarDeclStmt(p.type_spec, p.IDENT, None, lineno=p.lineno)
 
     @_("type_spec IDENT '=' expr ';'")
     def local_decl(self, p):
-        return LocalDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
+        return LocalVarDeclStmt(p.type_spec, p.IDENT, p.expr, lineno=p.lineno)
 
     @_("type_spec IDENT '[' expr ']' ';'")
     def local_decl(self, p):
@@ -316,7 +316,7 @@ class Parser(sly.Parser):
 
     @_("IDENT '(' args ')'")
     def expr(self, p):
-        return CallExpr(p.IDENT, p.args, lineno=p.lineno)
+        return FuncCallExpr(p.IDENT, p.args, lineno=p.lineno)
 
     @_("IDENT '.' SIZE")
     def expr(self, p):
