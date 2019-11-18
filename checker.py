@@ -221,8 +221,9 @@ class CheckProgramVisitor(NodeVisitor):
         # Propagate return value type as a special property ret_type, only
         # to be checked at function declaration checking
         if self.expected_ret_type:
-            # Check if return has a value
-            if node.value:
+            if node.value is None and self.expected_ret_type is VoidType:
+                self.current_ret_type = VoidType
+            elif node.value:  # Check if return has a value
                 self.current_ret_type = node.value.type
                 if node.value.type and node.value.type != self.expected_ret_type:
                     error(node.lineno,
@@ -263,7 +264,7 @@ class CheckProgramVisitor(NodeVisitor):
             invalid_params = tuple([param.name for param in node.params if param.type == VoidType])
             if invalid_params:
                 for param in invalid_params:
-                    error(node.lineno, f"Parameter '{param}' has invalid type '{VoidType.name}'")
+                    error(node.lineno, f"Parameter '{param}' has invalid type '{VoidType.name}' at function definition")
 
         self.visit(node.datatype)
         ret_type_ok = node.datatype.type is not None
@@ -283,7 +284,7 @@ class CheckProgramVisitor(NodeVisitor):
 
             self.visit(node.body)
 
-            if self.current_ret_type is None and self.expected_ret_type != VoidType:
+            if self.current_ret_type is None and self.expected_ret_type is not VoidType:
                 error(node.lineno, f"Function '{node.name}' has no return statement")
             elif self.current_ret_type == self.expected_ret_type:
                 # We must add the function declaration as available for
@@ -508,11 +509,15 @@ class CheckProgramVisitor(NodeVisitor):
             # parameters definition
             self.visit(node.arguments)
 
-            arg_types = tuple([arg.type.name for arg in node.arguments])
             func = self.functions[node.name]
-            expected_types = tuple([param.type.name for param in func.params])
-            if arg_types != expected_types:
-                error(node.lineno, f"Function '{node.name}' expects {expected_types}, but was called with {arg_types}")
+            try:
+                arg_types = tuple([arg.type.name for arg in node.arguments])
+                expected_types = tuple([param.type.name for param in func.params])
+                if arg_types != expected_types:
+                    error(node.lineno,
+                          f"Function '{node.name}' expects {expected_types}, but was called with {arg_types}")
+            except AttributeError:
+                error(node.lineno, f"Function '{node.name}' has undefined argument(s) at function call")
 
             # The type of the function call is the return type of the function
             node.type = func.datatype.type
@@ -529,10 +534,18 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = None
             error(node.lineno, f"Name '{node.name}' was not defined")
 
-    def visit_ArrayLookupExpr(self, node):
-        print('visit_ArrayLookupExpr') # arrayexpr?
+    def visit_ArrayExpr(self, node):
+        print(' visit_ArrayExpr')
+        print(node)
+
+        # Associate a type name such as "int" with a Type object
         self.visit(node.name)
-        self.visit(node.value)
+        self.visit(node.index)
+        if node.name in self.symbols:
+            node.type = self.symbols[node.name].type
+        else:
+            node.type = None
+            error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_UnaryOpExpr(self, node):
         print(' visit_UnaryOpExpr')
@@ -608,52 +621,35 @@ class CheckProgramVisitor(NodeVisitor):
 
     def visit_ArrayAssignmentExpr(self, node):
         print('visit_ArrayAssignmentExpr')
+        print(node)
+        # First visit the name definition to check that it is a valid
+        # name
         self.visit(node.name)
-        self.visit(node.index)
+        # Visit the value, to also get type information
         self.visit(node.value)
+
+        node.type = None
+        # Check if the array is already declared
+        if node.name in self.symbols:
+            array_type = self.symbols[node.name].type
+            if array_type and node.value.type:
+                # If both have type information, then the type checking worked on
+                # both branches
+                if array_type == node.value.type:  # If var name type is the same as value type
+                    # Propagate the type
+                    node.type = array_type
+                    if node.index:
+                        self.visit(node.index)
+                else:
+                    error(node.lineno,
+                          f"Cannot assign type '{node.value.type.name}' to array '{node.name}' of type '{array_type.name}'")
+        else:
+            error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_ArraySizeExpr(self, node):
         print('visit_ArraySizeExpr')
         self.visit(node.name)
         self.visit(node.name)
-
-    def visit_SimpleLocation(self, node):
-        if node.name not in self.symbols:
-            node.type = None
-            error(node.lineno, f"Name '{node.name}' was not defined")
-        else:
-            node.type = self.symbols[node.name].type
-
-    def visit_ReadLocation(self, node):
-        # Associate a type name such as "int" with a Type object
-        self.visit(node.location)
-        node.type = node.location.type
-
-    def visit_WriteLocation(self, node):
-        # First visit the location definition to check that it is a valid
-        # location
-        self.visit(node.location)
-        # Visit the value, to also get type information
-        self.visit(node.value)
-
-        node.type = None
-        if node.location.type and node.value.type:
-            loc_name = node.location.name
-
-            if isinstance(self.symbols[loc_name], ConstDeclaration): # todo const?
-                # Basically, if we are writting a to a location that was
-                # declared as a constant, then this is an error
-                error(node.lineno, f"Cannot write to constant '{loc_name}'")
-                return
-
-            # If both have type information, then the type checking worked on
-            # both branches
-            if node.location.type == node.value.type:
-                # Propagate the type
-                node.type = node.value.type
-            else:
-                error(node.lineno,
-                      f"Cannot assign type '{node.value.type.name}' to variable '{node.location.name}' of type '{node.location.type.name}'")
 
 
 # ----------------------------------------------------------------------

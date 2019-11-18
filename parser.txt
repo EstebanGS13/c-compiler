@@ -55,11 +55,11 @@ Rule 51    expr -> TRUE
 Rule 52    expr -> BOOL_LIT
 Rule 53    expr -> IDENT . SIZE
 Rule 54    expr -> IDENT ( args )  [precedence=left, level=10]
-Rule 55    expr -> IDENT [ expr ]  [precedence=left, level=10]
-Rule 56    expr -> IDENT DEC  [precedence=left, level=10]
-Rule 57    expr -> IDENT INC  [precedence=left, level=10]
-Rule 58    expr -> DEC IDENT  [precedence=right, level=9]
-Rule 59    expr -> INC IDENT  [precedence=right, level=9]
+Rule 55    expr -> IDENT DEC  [precedence=left, level=10]
+Rule 56    expr -> IDENT INC  [precedence=left, level=10]
+Rule 57    expr -> DEC IDENT  [precedence=right, level=9]
+Rule 58    expr -> INC IDENT  [precedence=right, level=9]
+Rule 59    expr -> IDENT [ expr ]  [precedence=left, level=10]
 Rule 60    expr -> IDENT
 Rule 61    expr -> ( expr )  [precedence=left, level=10]
 Rule 62    expr -> PLUS expr  [precedence=right, level=9]
@@ -109,7 +109,7 @@ BOOL_LIT             : 52
 BREAK                : 44
 CHAR                 : 9
 CHAR_LIT             : 47
-DEC                  : 56 58
+DEC                  : 55 57
 DIVASSIGN            : 80
 DIVIDE               : 66
 ELSE                 : 40
@@ -121,7 +121,7 @@ FOR                  : 39
 GE                   : 71
 IDENT                : 6 7 8 14 19 20 24 25 26 53 54 55 56 57 58 59 60 78 79 80 81 82 83 84
 IF                   : 40 41
-INC                  : 57 59
+INC                  : 56 58
 INT                  : 11
 INT_LIT              : 49
 LE                   : 73
@@ -141,8 +141,8 @@ TIMES                : 67
 TRUE                 : 51
 VOID                 : 13 15
 WHILE                : 38
-[                    : 6 19 24 45 55 78
-]                    : 6 19 24 45 55 78
+[                    : 6 19 24 45 59 78
+]                    : 6 19 24 45 59 78
 error                : 
 {                    : 21
 }                    : 21
@@ -156,7 +156,7 @@ compound_stmt        : 14 34
 decl                 : 2 3
 decl_list            : 1 3
 empty                : 22 27 87
-expr                 : 6 7 24 25 37 38 39 39 39 40 41 42 45 55 61 62 63 64 65 65 66 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 80 81 82 83 84 85 86
+expr                 : 6 7 24 25 37 38 39 39 39 40 41 42 45 59 61 62 63 64 65 65 66 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 80 81 82 83 84 85 86
 expr_stmt            : 35
 for_stmt             : 31
 fun_decl             : 4
@@ -375,11 +375,11 @@ state 15
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -447,11 +447,11 @@ state 17
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -535,9 +535,9 @@ state 23
 
     (53) expr -> IDENT . . SIZE
     (54) expr -> IDENT . ( args )
-    (55) expr -> IDENT . [ expr ]
-    (56) expr -> IDENT . DEC
-    (57) expr -> IDENT . INC
+    (55) expr -> IDENT . DEC
+    (56) expr -> IDENT . INC
+    (59) expr -> IDENT . [ expr ]
     (60) expr -> IDENT .
     (78) expr -> IDENT . [ expr ] = expr
     (79) expr -> IDENT . MODASSIGN expr
@@ -548,9 +548,9 @@ state 23
     (84) expr -> IDENT . = expr
     .               shift and go to state 43
     (               shift and go to state 44
-    [               shift and go to state 45
-    DEC             shift and go to state 46
-    INC             shift and go to state 47
+    DEC             shift and go to state 45
+    INC             shift and go to state 46
+    [               shift and go to state 47
     ]               reduce using rule 60 (expr -> IDENT .)
     MOD             reduce using rule 60 (expr -> IDENT .)
     DIVIDE          reduce using rule 60 (expr -> IDENT .)
@@ -791,11 +791,11 @@ state 33
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -841,13 +841,13 @@ state 33
 
 state 34
 
-    (58) expr -> DEC . IDENT
+    (57) expr -> DEC . IDENT
     IDENT           shift and go to state 70
 
 
 state 35
 
-    (59) expr -> INC . IDENT
+    (58) expr -> INC . IDENT
     IDENT           shift and go to state 71
 
 
@@ -864,11 +864,11 @@ state 36
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -925,11 +925,11 @@ state 37
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -986,11 +986,11 @@ state 38
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1126,11 +1126,11 @@ state 44
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1180,7 +1180,51 @@ state 44
 
 state 45
 
-    (55) expr -> IDENT [ . expr ]
+    (55) expr -> IDENT DEC .
+    ]               reduce using rule 55 (expr -> IDENT DEC .)
+    MOD             reduce using rule 55 (expr -> IDENT DEC .)
+    DIVIDE          reduce using rule 55 (expr -> IDENT DEC .)
+    TIMES           reduce using rule 55 (expr -> IDENT DEC .)
+    MINUS           reduce using rule 55 (expr -> IDENT DEC .)
+    PLUS            reduce using rule 55 (expr -> IDENT DEC .)
+    >               reduce using rule 55 (expr -> IDENT DEC .)
+    GE              reduce using rule 55 (expr -> IDENT DEC .)
+    <               reduce using rule 55 (expr -> IDENT DEC .)
+    LE              reduce using rule 55 (expr -> IDENT DEC .)
+    NE              reduce using rule 55 (expr -> IDENT DEC .)
+    EQ              reduce using rule 55 (expr -> IDENT DEC .)
+    AND             reduce using rule 55 (expr -> IDENT DEC .)
+    OR              reduce using rule 55 (expr -> IDENT DEC .)
+    ;               reduce using rule 55 (expr -> IDENT DEC .)
+    )               reduce using rule 55 (expr -> IDENT DEC .)
+    ,               reduce using rule 55 (expr -> IDENT DEC .)
+
+
+state 46
+
+    (56) expr -> IDENT INC .
+    ]               reduce using rule 56 (expr -> IDENT INC .)
+    MOD             reduce using rule 56 (expr -> IDENT INC .)
+    DIVIDE          reduce using rule 56 (expr -> IDENT INC .)
+    TIMES           reduce using rule 56 (expr -> IDENT INC .)
+    MINUS           reduce using rule 56 (expr -> IDENT INC .)
+    PLUS            reduce using rule 56 (expr -> IDENT INC .)
+    >               reduce using rule 56 (expr -> IDENT INC .)
+    GE              reduce using rule 56 (expr -> IDENT INC .)
+    <               reduce using rule 56 (expr -> IDENT INC .)
+    LE              reduce using rule 56 (expr -> IDENT INC .)
+    NE              reduce using rule 56 (expr -> IDENT INC .)
+    EQ              reduce using rule 56 (expr -> IDENT INC .)
+    AND             reduce using rule 56 (expr -> IDENT INC .)
+    OR              reduce using rule 56 (expr -> IDENT INC .)
+    ;               reduce using rule 56 (expr -> IDENT INC .)
+    )               reduce using rule 56 (expr -> IDENT INC .)
+    ,               reduce using rule 56 (expr -> IDENT INC .)
+
+
+state 47
+
+    (59) expr -> IDENT [ . expr ]
     (78) expr -> IDENT [ . expr ] = expr
     (45) expr -> . NEW type_spec [ expr ]
     (46) expr -> . STRING_LIT
@@ -1192,11 +1236,11 @@ state 45
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1240,50 +1284,6 @@ state 45
 
     expr                           shift and go to state 85
 
-state 46
-
-    (56) expr -> IDENT DEC .
-    ]               reduce using rule 56 (expr -> IDENT DEC .)
-    MOD             reduce using rule 56 (expr -> IDENT DEC .)
-    DIVIDE          reduce using rule 56 (expr -> IDENT DEC .)
-    TIMES           reduce using rule 56 (expr -> IDENT DEC .)
-    MINUS           reduce using rule 56 (expr -> IDENT DEC .)
-    PLUS            reduce using rule 56 (expr -> IDENT DEC .)
-    >               reduce using rule 56 (expr -> IDENT DEC .)
-    GE              reduce using rule 56 (expr -> IDENT DEC .)
-    <               reduce using rule 56 (expr -> IDENT DEC .)
-    LE              reduce using rule 56 (expr -> IDENT DEC .)
-    NE              reduce using rule 56 (expr -> IDENT DEC .)
-    EQ              reduce using rule 56 (expr -> IDENT DEC .)
-    AND             reduce using rule 56 (expr -> IDENT DEC .)
-    OR              reduce using rule 56 (expr -> IDENT DEC .)
-    ;               reduce using rule 56 (expr -> IDENT DEC .)
-    )               reduce using rule 56 (expr -> IDENT DEC .)
-    ,               reduce using rule 56 (expr -> IDENT DEC .)
-
-
-state 47
-
-    (57) expr -> IDENT INC .
-    ]               reduce using rule 57 (expr -> IDENT INC .)
-    MOD             reduce using rule 57 (expr -> IDENT INC .)
-    DIVIDE          reduce using rule 57 (expr -> IDENT INC .)
-    TIMES           reduce using rule 57 (expr -> IDENT INC .)
-    MINUS           reduce using rule 57 (expr -> IDENT INC .)
-    PLUS            reduce using rule 57 (expr -> IDENT INC .)
-    >               reduce using rule 57 (expr -> IDENT INC .)
-    GE              reduce using rule 57 (expr -> IDENT INC .)
-    <               reduce using rule 57 (expr -> IDENT INC .)
-    LE              reduce using rule 57 (expr -> IDENT INC .)
-    NE              reduce using rule 57 (expr -> IDENT INC .)
-    EQ              reduce using rule 57 (expr -> IDENT INC .)
-    AND             reduce using rule 57 (expr -> IDENT INC .)
-    OR              reduce using rule 57 (expr -> IDENT INC .)
-    ;               reduce using rule 57 (expr -> IDENT INC .)
-    )               reduce using rule 57 (expr -> IDENT INC .)
-    ,               reduce using rule 57 (expr -> IDENT INC .)
-
-
 state 48
 
     (84) expr -> IDENT = . expr
@@ -1297,11 +1297,11 @@ state 48
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1358,11 +1358,11 @@ state 49
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1419,11 +1419,11 @@ state 50
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1480,11 +1480,11 @@ state 51
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1541,11 +1541,11 @@ state 52
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1602,11 +1602,11 @@ state 53
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1669,11 +1669,11 @@ state 55
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1730,11 +1730,11 @@ state 56
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1791,11 +1791,11 @@ state 57
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1852,11 +1852,11 @@ state 58
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1913,11 +1913,11 @@ state 59
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -1974,11 +1974,11 @@ state 60
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2035,11 +2035,11 @@ state 61
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2096,11 +2096,11 @@ state 62
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2157,11 +2157,11 @@ state 63
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2218,11 +2218,11 @@ state 64
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2279,11 +2279,11 @@ state 65
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2340,11 +2340,11 @@ state 66
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2401,11 +2401,11 @@ state 67
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -2489,46 +2489,46 @@ state 69
 
 state 70
 
-    (58) expr -> DEC IDENT .
-    ]               reduce using rule 58 (expr -> DEC IDENT .)
-    MOD             reduce using rule 58 (expr -> DEC IDENT .)
-    DIVIDE          reduce using rule 58 (expr -> DEC IDENT .)
-    TIMES           reduce using rule 58 (expr -> DEC IDENT .)
-    MINUS           reduce using rule 58 (expr -> DEC IDENT .)
-    PLUS            reduce using rule 58 (expr -> DEC IDENT .)
-    >               reduce using rule 58 (expr -> DEC IDENT .)
-    GE              reduce using rule 58 (expr -> DEC IDENT .)
-    <               reduce using rule 58 (expr -> DEC IDENT .)
-    LE              reduce using rule 58 (expr -> DEC IDENT .)
-    NE              reduce using rule 58 (expr -> DEC IDENT .)
-    EQ              reduce using rule 58 (expr -> DEC IDENT .)
-    AND             reduce using rule 58 (expr -> DEC IDENT .)
-    OR              reduce using rule 58 (expr -> DEC IDENT .)
-    ;               reduce using rule 58 (expr -> DEC IDENT .)
-    )               reduce using rule 58 (expr -> DEC IDENT .)
-    ,               reduce using rule 58 (expr -> DEC IDENT .)
+    (57) expr -> DEC IDENT .
+    ]               reduce using rule 57 (expr -> DEC IDENT .)
+    MOD             reduce using rule 57 (expr -> DEC IDENT .)
+    DIVIDE          reduce using rule 57 (expr -> DEC IDENT .)
+    TIMES           reduce using rule 57 (expr -> DEC IDENT .)
+    MINUS           reduce using rule 57 (expr -> DEC IDENT .)
+    PLUS            reduce using rule 57 (expr -> DEC IDENT .)
+    >               reduce using rule 57 (expr -> DEC IDENT .)
+    GE              reduce using rule 57 (expr -> DEC IDENT .)
+    <               reduce using rule 57 (expr -> DEC IDENT .)
+    LE              reduce using rule 57 (expr -> DEC IDENT .)
+    NE              reduce using rule 57 (expr -> DEC IDENT .)
+    EQ              reduce using rule 57 (expr -> DEC IDENT .)
+    AND             reduce using rule 57 (expr -> DEC IDENT .)
+    OR              reduce using rule 57 (expr -> DEC IDENT .)
+    ;               reduce using rule 57 (expr -> DEC IDENT .)
+    )               reduce using rule 57 (expr -> DEC IDENT .)
+    ,               reduce using rule 57 (expr -> DEC IDENT .)
 
 
 state 71
 
-    (59) expr -> INC IDENT .
-    ]               reduce using rule 59 (expr -> INC IDENT .)
-    MOD             reduce using rule 59 (expr -> INC IDENT .)
-    DIVIDE          reduce using rule 59 (expr -> INC IDENT .)
-    TIMES           reduce using rule 59 (expr -> INC IDENT .)
-    MINUS           reduce using rule 59 (expr -> INC IDENT .)
-    PLUS            reduce using rule 59 (expr -> INC IDENT .)
-    >               reduce using rule 59 (expr -> INC IDENT .)
-    GE              reduce using rule 59 (expr -> INC IDENT .)
-    <               reduce using rule 59 (expr -> INC IDENT .)
-    LE              reduce using rule 59 (expr -> INC IDENT .)
-    NE              reduce using rule 59 (expr -> INC IDENT .)
-    EQ              reduce using rule 59 (expr -> INC IDENT .)
-    AND             reduce using rule 59 (expr -> INC IDENT .)
-    OR              reduce using rule 59 (expr -> INC IDENT .)
-    ;               reduce using rule 59 (expr -> INC IDENT .)
-    )               reduce using rule 59 (expr -> INC IDENT .)
-    ,               reduce using rule 59 (expr -> INC IDENT .)
+    (58) expr -> INC IDENT .
+    ]               reduce using rule 58 (expr -> INC IDENT .)
+    MOD             reduce using rule 58 (expr -> INC IDENT .)
+    DIVIDE          reduce using rule 58 (expr -> INC IDENT .)
+    TIMES           reduce using rule 58 (expr -> INC IDENT .)
+    MINUS           reduce using rule 58 (expr -> INC IDENT .)
+    PLUS            reduce using rule 58 (expr -> INC IDENT .)
+    >               reduce using rule 58 (expr -> INC IDENT .)
+    GE              reduce using rule 58 (expr -> INC IDENT .)
+    <               reduce using rule 58 (expr -> INC IDENT .)
+    LE              reduce using rule 58 (expr -> INC IDENT .)
+    NE              reduce using rule 58 (expr -> INC IDENT .)
+    EQ              reduce using rule 58 (expr -> INC IDENT .)
+    AND             reduce using rule 58 (expr -> INC IDENT .)
+    OR              reduce using rule 58 (expr -> INC IDENT .)
+    ;               reduce using rule 58 (expr -> INC IDENT .)
+    )               reduce using rule 58 (expr -> INC IDENT .)
+    ,               reduce using rule 58 (expr -> INC IDENT .)
 
 
 state 72
@@ -2786,7 +2786,7 @@ state 84
 
 state 85
 
-    (55) expr -> IDENT [ expr . ]
+    (59) expr -> IDENT [ expr . ]
     (78) expr -> IDENT [ expr . ] = expr
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
@@ -3506,11 +3506,11 @@ state 106
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -3700,11 +3700,11 @@ state 112
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -3750,25 +3750,25 @@ state 112
 
 state 113
 
-    (55) expr -> IDENT [ expr ] .
+    (59) expr -> IDENT [ expr ] .
     (78) expr -> IDENT [ expr ] . = expr
-    ]               reduce using rule 55 (expr -> IDENT [ expr ] .)
-    MOD             reduce using rule 55 (expr -> IDENT [ expr ] .)
-    DIVIDE          reduce using rule 55 (expr -> IDENT [ expr ] .)
-    TIMES           reduce using rule 55 (expr -> IDENT [ expr ] .)
-    MINUS           reduce using rule 55 (expr -> IDENT [ expr ] .)
-    PLUS            reduce using rule 55 (expr -> IDENT [ expr ] .)
-    >               reduce using rule 55 (expr -> IDENT [ expr ] .)
-    GE              reduce using rule 55 (expr -> IDENT [ expr ] .)
-    <               reduce using rule 55 (expr -> IDENT [ expr ] .)
-    LE              reduce using rule 55 (expr -> IDENT [ expr ] .)
-    NE              reduce using rule 55 (expr -> IDENT [ expr ] .)
-    EQ              reduce using rule 55 (expr -> IDENT [ expr ] .)
-    AND             reduce using rule 55 (expr -> IDENT [ expr ] .)
-    OR              reduce using rule 55 (expr -> IDENT [ expr ] .)
-    ;               reduce using rule 55 (expr -> IDENT [ expr ] .)
-    )               reduce using rule 55 (expr -> IDENT [ expr ] .)
-    ,               reduce using rule 55 (expr -> IDENT [ expr ] .)
+    ]               reduce using rule 59 (expr -> IDENT [ expr ] .)
+    MOD             reduce using rule 59 (expr -> IDENT [ expr ] .)
+    DIVIDE          reduce using rule 59 (expr -> IDENT [ expr ] .)
+    TIMES           reduce using rule 59 (expr -> IDENT [ expr ] .)
+    MINUS           reduce using rule 59 (expr -> IDENT [ expr ] .)
+    PLUS            reduce using rule 59 (expr -> IDENT [ expr ] .)
+    >               reduce using rule 59 (expr -> IDENT [ expr ] .)
+    GE              reduce using rule 59 (expr -> IDENT [ expr ] .)
+    <               reduce using rule 59 (expr -> IDENT [ expr ] .)
+    LE              reduce using rule 59 (expr -> IDENT [ expr ] .)
+    NE              reduce using rule 59 (expr -> IDENT [ expr ] .)
+    EQ              reduce using rule 59 (expr -> IDENT [ expr ] .)
+    AND             reduce using rule 59 (expr -> IDENT [ expr ] .)
+    OR              reduce using rule 59 (expr -> IDENT [ expr ] .)
+    ;               reduce using rule 59 (expr -> IDENT [ expr ] .)
+    )               reduce using rule 59 (expr -> IDENT [ expr ] .)
+    ,               reduce using rule 59 (expr -> IDENT [ expr ] .)
     =               shift and go to state 120
 
 
@@ -3835,11 +3835,11 @@ state 115
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4014,11 +4014,11 @@ state 120
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4399,11 +4399,11 @@ state 133
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4676,11 +4676,11 @@ state 144
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4737,11 +4737,11 @@ state 145
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4799,11 +4799,11 @@ state 146
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4860,11 +4860,11 @@ state 147
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -4954,11 +4954,11 @@ state 149
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -5205,11 +5205,11 @@ state 156
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -5283,11 +5283,11 @@ state 157
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -5377,11 +5377,11 @@ state 158
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -5616,11 +5616,11 @@ state 165
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -5694,11 +5694,11 @@ state 166
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr
@@ -5848,11 +5848,11 @@ state 169
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT [ expr ]
-    (56) expr -> . IDENT DEC
-    (57) expr -> . IDENT INC
-    (58) expr -> . DEC IDENT
-    (59) expr -> . INC IDENT
+    (55) expr -> . IDENT DEC
+    (56) expr -> . IDENT INC
+    (57) expr -> . DEC IDENT
+    (58) expr -> . INC IDENT
+    (59) expr -> . IDENT [ expr ]
     (60) expr -> . IDENT
     (61) expr -> . ( expr )
     (62) expr -> . PLUS expr

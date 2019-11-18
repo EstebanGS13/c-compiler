@@ -302,6 +302,10 @@ class Parser(sly.Parser):
     def expr(self, p):
         return VarExpr(p.IDENT, lineno=p.lineno)
 
+    @_("IDENT '[' expr ']'")
+    def expr(self, p):
+        return ArrayExpr(p.IDENT, p.expr, lineno=p.lineno)
+
     @_("INC IDENT %prec PRE", "DEC IDENT %prec PRE")
     def expr(self, p):
         return IncDecExpr(p[0], p.IDENT, lineno=p.lineno)
@@ -309,10 +313,6 @@ class Parser(sly.Parser):
     @_("IDENT INC %prec POST", "IDENT DEC %prec POST")
     def expr(self, p):
         return IncDecExpr(p[1], p.IDENT, lineno=p.lineno)
-
-    @_("IDENT '[' expr ']'")
-    def expr(self, p):
-        return ArrayLookupExpr(p.IDENT, p.expr, lineno=p.lineno)
 
     @_("IDENT '(' args ')'")
     def expr(self, p):

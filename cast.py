@@ -227,9 +227,9 @@ class VarExpr(Expression):
     name: str
 
 
-class ArrayLookupExpr(Expression):
+class ArrayExpr(Expression):
     name: str
-    value: Expression
+    index: Expression
 
 
 class UnaryOpExpr(Expression):
