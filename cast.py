@@ -100,10 +100,6 @@ class DataType(AST):
     pass
 
 
-class Location(AST):
-    pass
-
-
 # Nodos Reales del AST
 
 
@@ -143,9 +139,9 @@ class WhileStmt(Statement):
 
 
 class ForStmt(Statement):
-    init: Expression
-    condition: Expression
-    loop: Expression
+    init: [Expression]
+    condition: [Expression]
+    loop: [Expression]
     body: Statement
 
 
@@ -265,19 +261,6 @@ class ArrayAssignmentExpr(Expression):
 class ArraySizeExpr(Expression):
     name: str
     value: str
-
-
-class SimpleLocation(Location):
-    name: str
-
-
-class ReadLocation(Expression):
-    location: Location
-
-
-class WriteLocation(Statement):
-    location: Location
-    value: Expression
 
 
 # ----------------------------------------------------------------------

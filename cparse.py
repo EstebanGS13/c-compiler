@@ -250,9 +250,9 @@ class Parser(sly.Parser):
     def while_stmt(self, p):
         return WhileStmt(p.expr, p.stmt, lineno=p.lineno)
 
-    @_("FOR '(' expr ';' expr ';' expr ')' stmt")
+    @_("FOR '(' args ';' args ';' args ')' stmt")
     def for_stmt(self, p):
-        return ForStmt(p.expr0, p.expr1, p.expr2, p.stmt, lineno=p.lineno)
+        return ForStmt(p.args0, p.args1, p.args2, p.stmt, lineno=p.lineno)
 
     @_("IF '(' expr ')' stmt")
     def if_stmt(self, p):
