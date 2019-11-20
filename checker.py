@@ -648,11 +648,14 @@ class CheckProgramVisitor(NodeVisitor):
                     node.type = array_type
 
                     self.visit(node.index)
-                    if node.index and isinstance(node.index, IntegerLiteral):
-                        array_size = self.symbols[node.name].size
-                        if node.index.value >= array_size.value:
-                            error(node.lineno,
-                                  f"Array '{node.name}' of size '{array_size}' has index '{node.index.value}' out of range")
+                    if node.index:
+                        if isinstance(node.index, IntegerLiteral):
+                            array_size = self.symbols[node.name].size
+                            if node.index.value >= array_size.value:
+                                error(node.lineno,
+                                      f"Array '{node.name}' of size '{array_size}' has index '{node.index.value}' out of range")
+                        elif isinstance(node.index, FloatLiteral):
+                            error(node.lineno, f"Index of array '{node.name}' must be a positive integer")
                 else:
                     error(node.lineno,
                           f"Cannot assign type '{node.value.type.name}' to array '{node.name}' of type '{array_type.name}'")

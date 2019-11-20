@@ -44,7 +44,7 @@ int main(void){
 //    return 4.2; // error return type
 //
     int A[5];
-    A[k] = 1;
+    A[5.5] = 1;
     sumar(A[2]);
     ;
     return 0;
