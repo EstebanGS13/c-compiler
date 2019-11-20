@@ -210,7 +210,11 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.init)
         self.visit(node.condition)
         self.visit(node.loop)
-        self.visit(node.body)
+        if node.body:
+            self.loop = True
+            self.visit(node.body)
+
+        self.loop = False
         # cond_type = node.condition.type
         # if cond_type:
         #     if issubclass(node.condition.type, BoolType):
@@ -642,8 +646,13 @@ class CheckProgramVisitor(NodeVisitor):
                 if array_type == node.value.type:  # If var name type is the same as value type
                     # Propagate the type
                     node.type = array_type
-                    if node.index:
-                        self.visit(node.index)
+
+                    self.visit(node.index)
+                    if node.index and isinstance(node.index, IntegerLiteral):
+                        array_size = self.symbols[node.name].size
+                        if node.index.value >= array_size.value:
+                            error(node.lineno,
+                                  f"Array '{node.name}' of size '{array_size}' has index '{node.index.value}' out of range")
                 else:
                     error(node.lineno,
                           f"Cannot assign type '{node.value.type.name}' to array '{node.name}' of type '{array_type.name}'")
