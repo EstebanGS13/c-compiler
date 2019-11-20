@@ -43,9 +43,9 @@ int main(void){
 //    sumar(4, 2);
 //    return 4.2; // error return type
 //
-    int A[5];
-    A[5.5] = 1;
-    sumar(A[2]);
+    int A[10];
+    A[5.5] = 1; // error tipo float
+    sumar(A[2]); // error args
     ;
     return 0;
 }
