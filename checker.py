@@ -191,6 +191,8 @@ class CheckProgramVisitor(NodeVisitor):
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_WhileStmt(self, node):
+        inside_loop = self.loop
+
         self.visit(node.condition)
 
         cond_type = node.condition.type
@@ -200,13 +202,15 @@ class CheckProgramVisitor(NodeVisitor):
                     self.loop = True
                     self.visit(node.body)
 
-                self.loop = False
+                if not inside_loop:
+                    self.loop = False
             else:
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_ForStmt(self, node):
         # print(' visit_ForStmt')
         # print(node)
+        inside_loop = self.loop
         self.visit(node.init)
         self.visit(node.condition)
         self.visit(node.loop)
@@ -214,7 +218,8 @@ class CheckProgramVisitor(NodeVisitor):
             self.loop = True
             self.visit(node.body)
 
-        self.loop = False
+        if not inside_loop:
+            self.loop = False
         # cond_type = node.condition.type
         # if cond_type:
         #     if issubclass(node.condition.type, BoolType):
