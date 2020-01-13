@@ -101,17 +101,17 @@ import sly
 # Las pruebas unitarias y otras características del compilador se basarán
 # en esta función. Consulte el archivo errors.py para obtener más
 # documentación sobre el mecanismo de manejo de errores.
-from minic.errors import error
+from errors import error
 
 # ------------------------------------------------- ---------------------
 # Importar la clase lexer. Su lista de tokens es necesaria para validar y
 # construir el objeto analizador.
-from minic.clex import Lexer
+from clex import Lexer
 
 # ----------------------------------------------------------------------
 # Obtener los nodos AST.
 # Lea las instrucciones en ast.py
-from minic.cast import *
+from cast import *
 
 
 class Parser(sly.Parser):

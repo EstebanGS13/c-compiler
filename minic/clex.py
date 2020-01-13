@@ -98,7 +98,7 @@ unitarias adecuadas?
 # lexer. Las pruebas unitarias y otras caracteristicas del compilador
 # confiarán en esta función. Ver el archivo errors.py para más documentación
 # acerca del mecanismo de manejo de errores.
-from minic.errors import error
+from errors import error
 
 # ----------------------------------------------------------------------
 # El paquete SLY. https://github.com/dabeaz/sly
