@@ -115,9 +115,9 @@ todo eso. Entonces, espera un poco al principio.
 '''
 
 from collections import ChainMap
-from errors import error
-from cast import *
-from typesys import Type, FloatType, IntType, BoolType, CharType, VoidType
+from minic.errors import error
+from minic.cast import *
+from minic.typesys import Type, FloatType, IntType, BoolType, CharType, VoidType
 
 
 class CheckProgramVisitor(NodeVisitor):
@@ -690,7 +690,7 @@ def main():
     Main program. Used for testing
     '''
     import sys
-    from cparse import parse
+    from minic.cparse import parse
 
     if len(sys.argv) < 2:
         sys.stderr.write('Usage: python3 -m minic.checker filename\n')

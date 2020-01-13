@@ -101,17 +101,17 @@ import sly
 # Las pruebas unitarias y otras características del compilador se basarán
 # en esta función. Consulte el archivo errors.py para obtener más
 # documentación sobre el mecanismo de manejo de errores.
-from errors import error
+from minic.errors import error
 
 # ------------------------------------------------- ---------------------
 # Importar la clase lexer. Su lista de tokens es necesaria para validar y
 # construir el objeto analizador.
-from clex import Lexer
+from minic.clex import Lexer
 
 # ----------------------------------------------------------------------
 # Obtener los nodos AST.
 # Lea las instrucciones en ast.py
-from cast import *
+from minic.cast import *
 
 
 class Parser(sly.Parser):
@@ -415,7 +415,7 @@ def main():
 
     dot = DotVisitor()
     dot.visit(ast)
-    ast_file = open("ast.txt", "w")
+    ast_file = open("data/ast.txt", "w")
     ast_file.write(str(dot))
     ast_file.close()
 
