@@ -118,6 +118,7 @@ from collections import ChainMap
 from errors import error
 from cast import *
 from typesys import Type, FloatType, IntType, BoolType, CharType, VoidType
+import inspect
 
 
 class CheckProgramVisitor(NodeVisitor):
@@ -153,13 +154,9 @@ class CheckProgramVisitor(NodeVisitor):
         self.keywords = {t.name for t in Type.__subclasses__()}
 
     def visit_Program(self, node):
-        # print(' visit_Program')
-        # print(node)
         self.visit(node.decl_list)
 
     def visit_SimpleType(self, node):
-        # print(' visit_SimpleType')
-        # print(node)
         # Associate a type name such as "int" with a Type object
         node.type = Type.get_by_name(node.name)
         if node.type is None:
@@ -170,13 +167,9 @@ class CheckProgramVisitor(NodeVisitor):
         node.type = node.datatype.type
 
     def visit_NullStmt(self, node):
-        # print(' visit_NullStmt')
-        # print(node)
         pass
 
     def visit_ExprStmt(self, node):
-        # print(' visit_ExprStmt')
-        # print(node)
         self.visit(node.value)
 
     def visit_IfStmt(self, node):
@@ -191,6 +184,7 @@ class CheckProgramVisitor(NodeVisitor):
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_WhileStmt(self, node):
+        # To check if it's a nested loop
         inside_loop = self.loop
 
         self.visit(node.condition)
@@ -208,9 +202,9 @@ class CheckProgramVisitor(NodeVisitor):
                 error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_ForStmt(self, node):
-        # print(' visit_ForStmt')
-        # print(node)
+        # To know if it's a nested loop
         inside_loop = self.loop
+
         self.visit(node.init)
         self.visit(node.condition)
         self.visit(node.loop)
@@ -228,8 +222,6 @@ class CheckProgramVisitor(NodeVisitor):
         #         error(node.lineno, f"'Condition must be of type 'bool' but got type '{cond_type.name}'")
 
     def visit_ReturnStmt(self, node):
-        # print(' visit_ReturnStmt')
-        # print(node)
         self.visit(node.value)
         # Propagate return value type as a special property ret_type, only
         # to be checked at function declaration checking
@@ -245,20 +237,14 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, "Return statement must be within a function")
 
     def visit_BreakStmt(self, node):
-        # print(' visit_BreakStmt')
-        # print(node)
         if not self.loop:
             error(node.lineno, "Break statement must be within a loop")
 
     def visit_CompoundStmt(self, node):
-        # print(' visit_CompoundStmt')
-        # print(node)
         self.visit(node.decl)
         self.visit(node.stmt_list)
 
     def visit_FuncDeclStmt(self, node):
-        # print(' visit_FuncDeclStmt')
-        # print(node)
         if node.name in self.functions:
             prev_def = self.functions[node.name].lineno
             error(node.lineno, f"Function '{node.name}' already defined at line {prev_def}")
@@ -295,14 +281,17 @@ class CheckProgramVisitor(NodeVisitor):
             # Set the expected return value to observe
             self.expected_ret_type = node.datatype.type
 
+            # Add the function declaration for future calls
+            # and to allow recursion
+            self.functions[node.name] = node
             self.visit(node.body)
 
-            if self.current_ret_type is None and self.expected_ret_type is not VoidType:
-                error(node.lineno, f"Function '{node.name}' has no return statement")
-            elif self.current_ret_type == self.expected_ret_type:
-                # We must add the function declaration as available for
-                # future calls
-                self.functions[node.name] = node
+            if self.current_ret_type != self.expected_ret_type:
+                # Remove the function name from the table
+                del self.functions[node.name]
+
+                if self.current_ret_type is None and self.expected_ret_type is not VoidType:
+                    error(node.lineno, f"Function '{node.name}' has no return statement")
 
             self.symbols = self.temp_symbols
             self.temp_symbols = {}
@@ -310,8 +299,6 @@ class CheckProgramVisitor(NodeVisitor):
             self.current_ret_type = None
 
     def visit_StaticVarDeclStmt(self, node):
-        # print(' visit_StaticVarDeclStmt')
-        # print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -356,8 +343,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_StaticArrayDeclStmt(self, node):
-        # print(' visit_StaticArrayDeclStmt')
-        # print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -398,8 +383,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_LocalVarDeclStmt(self, node):
-        # print(' visit_LocalVarDeclStmt')
-        # print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -444,8 +427,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_LocalArrayDeclStmt(self, node):
-        # print(' visit_LocalArrayDeclStmt')
-        # print(node)
         # Here we must update the symbols table with the new symbol
         node.type = None
 
@@ -486,29 +467,20 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' has already been defined at line {prev_lineno}")
 
     def visit_IntegerLiteral(self, node):
-        # print(' visit_IntegerLiteral')
-        # print(node)
         # For literals, you'll need to assign a type to the node and allow it to
         # propagate.  This type will work it's way through various operators
         node.type = IntType
 
     def visit_FloatLiteral(self, node):
-        # print(' visit_FloatLiteral')
-        # print(node)
         node.type = FloatType
 
     def visit_CharLiteral(self, node):
-        # print(' visit_CharLiteral')
-        # print(node)
         node.type = CharType
 
     def visit_BoolLiteral(self, node):
-        # print(' visit_BoolLiteral')
-        # print(node)
         node.type = BoolType
 
     def visit_NewArrayExpr(self, node):
-        print('visit_NewArrayExpr')
         self.visit(node.datatype)
         self.visit(node.value)
 
@@ -536,9 +508,6 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = func.datatype.type
 
     def visit_VarExpr(self, node):
-        # print(' visit_VarExpr')
-        # print(node)
-
         # Associate a type name such as "int" with a Type object
         self.visit(node.name)
         if node.name in self.symbols:
@@ -548,9 +517,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_ArrayExpr(self, node):
-        # print(' visit_ArrayExpr')
-        # print(node)
-
         # Associate a type name such as "int" with a Type object
         self.visit(node.name)
         self.visit(node.index)
@@ -561,8 +527,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_UnaryOpExpr(self, node):
-        # print(' visit_UnaryOpExpr')
-        # print(node)
         # Check and propagate the type of the only operand
         self.visit(node.right)
 
@@ -576,8 +540,6 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = op_type
 
     def visit_BinaryOpExpr(self, node):
-        # print(' visit_BinaryOpExpr')
-        # print(node)
         # For operators, you need to visit each operand separately.  You'll
         # then need to make sure the types and operator are all compatible.
         self.visit(node.left)
@@ -595,8 +557,6 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = op_type
 
     def visit_IncDecExpr(self, node):
-        # print(' visit_IncDecExpr')
-        # print(node)
         self.visit(node.op)
 
         # Associate a type name such as "int" with a Type object
@@ -608,8 +568,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_VarAssignmentExpr(self, node):
-        # print(' visit_VarAssignmentExpr')
-        # print(node)
         # First visit the name definition to check that it is a valid
         # name
         self.visit(node.name)
@@ -633,8 +591,6 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_ArrayAssignmentExpr(self, node):
-        # print(' visit_ArrayAssignmentExpr')
-        # print(node)
         # First visit the name definition to check that it is a valid
         # name
         self.visit(node.name)
@@ -671,6 +627,14 @@ class CheckProgramVisitor(NodeVisitor):
         print('visit_ArraySizeExpr')
         self.visit(node.name)
         self.visit(node.name)
+
+
+def print_node(node):
+    '''
+    Print current node info for debugging
+    '''
+    print("\n  " + inspect.stack()[1].function)  # Caller's function name
+    print(node)
 
 
 # ----------------------------------------------------------------------
