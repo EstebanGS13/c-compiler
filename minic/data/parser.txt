@@ -55,13 +55,13 @@ Rule 51    expr -> TRUE
 Rule 52    expr -> BOOL_LIT
 Rule 53    expr -> IDENT . SIZE
 Rule 54    expr -> IDENT ( args )  [precedence=left, level=10]
-Rule 55    expr -> IDENT DEC  [precedence=left, level=10]
-Rule 56    expr -> IDENT INC  [precedence=left, level=10]
-Rule 57    expr -> DEC IDENT  [precedence=right, level=9]
-Rule 58    expr -> INC IDENT  [precedence=right, level=9]
-Rule 59    expr -> IDENT [ expr ]  [precedence=left, level=10]
-Rule 60    expr -> IDENT
-Rule 61    expr -> ( expr )  [precedence=left, level=10]
+Rule 55    expr -> IDENT [ expr ]  [precedence=left, level=10]
+Rule 56    expr -> IDENT
+Rule 57    expr -> ( expr )  [precedence=left, level=10]
+Rule 58    expr -> expr DEC  [precedence=left, level=10]
+Rule 59    expr -> expr INC  [precedence=left, level=10]
+Rule 60    expr -> DEC expr  [precedence=right, level=9]
+Rule 61    expr -> INC expr  [precedence=right, level=9]
 Rule 62    expr -> PLUS expr  [precedence=right, level=9]
 Rule 63    expr -> MINUS expr  [precedence=right, level=9]
 Rule 64    expr -> ! expr  [precedence=right, level=9]
@@ -94,8 +94,8 @@ Rule 89    empty -> <empty>
 Terminals, with rules where they appear:
 
 !                    : 64
-(                    : 14 38 39 40 41 54 61
-)                    : 14 38 39 40 41 54 61
+(                    : 14 38 39 40 41 54 57
+)                    : 14 38 39 40 41 54 57
 ,                    : 18 86
 .                    : 53
 ;                    : 6 7 8 24 25 26 36 37 39 39 42 43 44
@@ -109,7 +109,7 @@ BOOL_LIT             : 52
 BREAK                : 44
 CHAR                 : 9
 CHAR_LIT             : 47
-DEC                  : 55 57
+DEC                  : 58 60
 DIVASSIGN            : 80
 DIVIDE               : 66
 ELSE                 : 40
@@ -119,9 +119,9 @@ FLOAT                : 10
 FLOAT_LIT            : 48
 FOR                  : 39
 GE                   : 71
-IDENT                : 6 7 8 14 19 20 24 25 26 53 54 55 56 57 58 59 60 78 79 80 81 82 83 84
+IDENT                : 6 7 8 14 19 20 24 25 26 53 54 55 56 78 79 80 81 82 83 84
 IF                   : 40 41
-INC                  : 56 58
+INC                  : 59 61
 INT                  : 11
 INT_LIT              : 49
 LE                   : 73
@@ -141,8 +141,8 @@ TIMES                : 67
 TRUE                 : 51
 VOID                 : 13 15
 WHILE                : 38
-[                    : 6 19 24 45 59 78
-]                    : 6 19 24 45 59 78
+[                    : 6 19 24 45 55 78
+]                    : 6 19 24 45 55 78
 error                : 
 {                    : 21
 }                    : 21
@@ -156,7 +156,7 @@ compound_stmt        : 14 34
 decl                 : 2 3
 decl_list            : 1 3
 empty                : 22 27 87
-expr                 : 6 7 24 25 37 38 40 41 42 45 59 61 62 63 64 65 65 66 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 80 81 82 83 84 85 86
+expr                 : 6 7 24 25 37 38 40 41 42 45 55 57 58 59 60 61 62 63 64 65 65 66 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 80 81 82 83 84 85 86
 expr_stmt            : 35
 for_stmt             : 31
 fun_decl             : 4
@@ -375,13 +375,13 @@ state 15
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -414,9 +414,9 @@ state 15
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -447,13 +447,13 @@ state 17
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -486,9 +486,9 @@ state 17
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -535,10 +535,8 @@ state 23
 
     (53) expr -> IDENT . . SIZE
     (54) expr -> IDENT . ( args )
-    (55) expr -> IDENT . DEC
-    (56) expr -> IDENT . INC
-    (59) expr -> IDENT . [ expr ]
-    (60) expr -> IDENT .
+    (55) expr -> IDENT . [ expr ]
+    (56) expr -> IDENT .
     (78) expr -> IDENT . [ expr ] = expr
     (79) expr -> IDENT . MODASSIGN expr
     (80) expr -> IDENT . DIVASSIGN expr
@@ -548,37 +546,39 @@ state 23
     (84) expr -> IDENT . = expr
     .               shift and go to state 43
     (               shift and go to state 44
-    DEC             shift and go to state 45
-    INC             shift and go to state 46
-    [               shift and go to state 47
-    ]               reduce using rule 60 (expr -> IDENT .)
-    MOD             reduce using rule 60 (expr -> IDENT .)
-    DIVIDE          reduce using rule 60 (expr -> IDENT .)
-    TIMES           reduce using rule 60 (expr -> IDENT .)
-    MINUS           reduce using rule 60 (expr -> IDENT .)
-    PLUS            reduce using rule 60 (expr -> IDENT .)
-    >               reduce using rule 60 (expr -> IDENT .)
-    GE              reduce using rule 60 (expr -> IDENT .)
-    <               reduce using rule 60 (expr -> IDENT .)
-    LE              reduce using rule 60 (expr -> IDENT .)
-    NE              reduce using rule 60 (expr -> IDENT .)
-    EQ              reduce using rule 60 (expr -> IDENT .)
-    AND             reduce using rule 60 (expr -> IDENT .)
-    OR              reduce using rule 60 (expr -> IDENT .)
-    ;               reduce using rule 60 (expr -> IDENT .)
-    )               reduce using rule 60 (expr -> IDENT .)
-    ,               reduce using rule 60 (expr -> IDENT .)
-    MODASSIGN       shift and go to state 49
-    DIVASSIGN       shift and go to state 50
-    MULASSIGN       shift and go to state 51
-    SUBASSIGN       shift and go to state 52
-    ADDASSIGN       shift and go to state 53
-    =               shift and go to state 48
+    [               shift and go to state 45
+    ]               reduce using rule 56 (expr -> IDENT .)
+    DEC             reduce using rule 56 (expr -> IDENT .)
+    INC             reduce using rule 56 (expr -> IDENT .)
+    MOD             reduce using rule 56 (expr -> IDENT .)
+    DIVIDE          reduce using rule 56 (expr -> IDENT .)
+    TIMES           reduce using rule 56 (expr -> IDENT .)
+    MINUS           reduce using rule 56 (expr -> IDENT .)
+    PLUS            reduce using rule 56 (expr -> IDENT .)
+    >               reduce using rule 56 (expr -> IDENT .)
+    GE              reduce using rule 56 (expr -> IDENT .)
+    <               reduce using rule 56 (expr -> IDENT .)
+    LE              reduce using rule 56 (expr -> IDENT .)
+    NE              reduce using rule 56 (expr -> IDENT .)
+    EQ              reduce using rule 56 (expr -> IDENT .)
+    AND             reduce using rule 56 (expr -> IDENT .)
+    OR              reduce using rule 56 (expr -> IDENT .)
+    ;               reduce using rule 56 (expr -> IDENT .)
+    )               reduce using rule 56 (expr -> IDENT .)
+    ,               reduce using rule 56 (expr -> IDENT .)
+    MODASSIGN       shift and go to state 47
+    DIVASSIGN       shift and go to state 48
+    MULASSIGN       shift and go to state 49
+    SUBASSIGN       shift and go to state 50
+    ADDASSIGN       shift and go to state 51
+    =               shift and go to state 46
 
 
 state 24
 
     (6) var_decl -> type_spec IDENT [ expr . ] ;
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -592,7 +592,9 @@ state 24
     (75) expr -> expr . EQ expr
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
-    ]               shift and go to state 54
+    ]               shift and go to state 52
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -628,6 +630,8 @@ state 26
 
     (46) expr -> STRING_LIT .
     ]               reduce using rule 46 (expr -> STRING_LIT .)
+    DEC             reduce using rule 46 (expr -> STRING_LIT .)
+    INC             reduce using rule 46 (expr -> STRING_LIT .)
     MOD             reduce using rule 46 (expr -> STRING_LIT .)
     DIVIDE          reduce using rule 46 (expr -> STRING_LIT .)
     TIMES           reduce using rule 46 (expr -> STRING_LIT .)
@@ -650,6 +654,8 @@ state 27
 
     (47) expr -> CHAR_LIT .
     ]               reduce using rule 47 (expr -> CHAR_LIT .)
+    DEC             reduce using rule 47 (expr -> CHAR_LIT .)
+    INC             reduce using rule 47 (expr -> CHAR_LIT .)
     MOD             reduce using rule 47 (expr -> CHAR_LIT .)
     DIVIDE          reduce using rule 47 (expr -> CHAR_LIT .)
     TIMES           reduce using rule 47 (expr -> CHAR_LIT .)
@@ -672,6 +678,8 @@ state 28
 
     (48) expr -> FLOAT_LIT .
     ]               reduce using rule 48 (expr -> FLOAT_LIT .)
+    DEC             reduce using rule 48 (expr -> FLOAT_LIT .)
+    INC             reduce using rule 48 (expr -> FLOAT_LIT .)
     MOD             reduce using rule 48 (expr -> FLOAT_LIT .)
     DIVIDE          reduce using rule 48 (expr -> FLOAT_LIT .)
     TIMES           reduce using rule 48 (expr -> FLOAT_LIT .)
@@ -694,6 +702,8 @@ state 29
 
     (49) expr -> INT_LIT .
     ]               reduce using rule 49 (expr -> INT_LIT .)
+    DEC             reduce using rule 49 (expr -> INT_LIT .)
+    INC             reduce using rule 49 (expr -> INT_LIT .)
     MOD             reduce using rule 49 (expr -> INT_LIT .)
     DIVIDE          reduce using rule 49 (expr -> INT_LIT .)
     TIMES           reduce using rule 49 (expr -> INT_LIT .)
@@ -716,6 +726,8 @@ state 30
 
     (50) expr -> FALSE .
     ]               reduce using rule 50 (expr -> FALSE .)
+    DEC             reduce using rule 50 (expr -> FALSE .)
+    INC             reduce using rule 50 (expr -> FALSE .)
     MOD             reduce using rule 50 (expr -> FALSE .)
     DIVIDE          reduce using rule 50 (expr -> FALSE .)
     TIMES           reduce using rule 50 (expr -> FALSE .)
@@ -738,6 +750,8 @@ state 31
 
     (51) expr -> TRUE .
     ]               reduce using rule 51 (expr -> TRUE .)
+    DEC             reduce using rule 51 (expr -> TRUE .)
+    INC             reduce using rule 51 (expr -> TRUE .)
     MOD             reduce using rule 51 (expr -> TRUE .)
     DIVIDE          reduce using rule 51 (expr -> TRUE .)
     TIMES           reduce using rule 51 (expr -> TRUE .)
@@ -760,6 +774,8 @@ state 32
 
     (52) expr -> BOOL_LIT .
     ]               reduce using rule 52 (expr -> BOOL_LIT .)
+    DEC             reduce using rule 52 (expr -> BOOL_LIT .)
+    INC             reduce using rule 52 (expr -> BOOL_LIT .)
     MOD             reduce using rule 52 (expr -> BOOL_LIT .)
     DIVIDE          reduce using rule 52 (expr -> BOOL_LIT .)
     TIMES           reduce using rule 52 (expr -> BOOL_LIT .)
@@ -780,7 +796,7 @@ state 32
 
 state 33
 
-    (61) expr -> ( . expr )
+    (57) expr -> ( . expr )
     (45) expr -> . NEW type_spec [ expr ]
     (46) expr -> . STRING_LIT
     (47) expr -> . CHAR_LIT
@@ -791,13 +807,13 @@ state 33
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -830,9 +846,9 @@ state 33
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -841,15 +857,125 @@ state 33
 
 state 34
 
-    (57) expr -> DEC . IDENT
-    IDENT           shift and go to state 70
+    (60) expr -> DEC . expr
+    (45) expr -> . NEW type_spec [ expr ]
+    (46) expr -> . STRING_LIT
+    (47) expr -> . CHAR_LIT
+    (48) expr -> . FLOAT_LIT
+    (49) expr -> . INT_LIT
+    (50) expr -> . FALSE
+    (51) expr -> . TRUE
+    (52) expr -> . BOOL_LIT
+    (53) expr -> . IDENT . SIZE
+    (54) expr -> . IDENT ( args )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
+    (62) expr -> . PLUS expr
+    (63) expr -> . MINUS expr
+    (64) expr -> . ! expr
+    (65) expr -> . expr MOD expr
+    (66) expr -> . expr DIVIDE expr
+    (67) expr -> . expr TIMES expr
+    (68) expr -> . expr MINUS expr
+    (69) expr -> . expr PLUS expr
+    (70) expr -> . expr > expr
+    (71) expr -> . expr GE expr
+    (72) expr -> . expr < expr
+    (73) expr -> . expr LE expr
+    (74) expr -> . expr NE expr
+    (75) expr -> . expr EQ expr
+    (76) expr -> . expr AND expr
+    (77) expr -> . expr OR expr
+    (78) expr -> . IDENT [ expr ] = expr
+    (79) expr -> . IDENT MODASSIGN expr
+    (80) expr -> . IDENT DIVASSIGN expr
+    (81) expr -> . IDENT MULASSIGN expr
+    (82) expr -> . IDENT SUBASSIGN expr
+    (83) expr -> . IDENT ADDASSIGN expr
+    (84) expr -> . IDENT = expr
+    NEW             shift and go to state 25
+    STRING_LIT      shift and go to state 26
+    CHAR_LIT        shift and go to state 27
+    FLOAT_LIT       shift and go to state 28
+    INT_LIT         shift and go to state 29
+    FALSE           shift and go to state 30
+    TRUE            shift and go to state 31
+    BOOL_LIT        shift and go to state 32
+    IDENT           shift and go to state 23
+    (               shift and go to state 33
+    DEC             shift and go to state 34
+    INC             shift and go to state 35
+    PLUS            shift and go to state 36
+    MINUS           shift and go to state 37
+    !               shift and go to state 38
 
+    expr                           shift and go to state 70
 
 state 35
 
-    (58) expr -> INC . IDENT
-    IDENT           shift and go to state 71
+    (61) expr -> INC . expr
+    (45) expr -> . NEW type_spec [ expr ]
+    (46) expr -> . STRING_LIT
+    (47) expr -> . CHAR_LIT
+    (48) expr -> . FLOAT_LIT
+    (49) expr -> . INT_LIT
+    (50) expr -> . FALSE
+    (51) expr -> . TRUE
+    (52) expr -> . BOOL_LIT
+    (53) expr -> . IDENT . SIZE
+    (54) expr -> . IDENT ( args )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
+    (62) expr -> . PLUS expr
+    (63) expr -> . MINUS expr
+    (64) expr -> . ! expr
+    (65) expr -> . expr MOD expr
+    (66) expr -> . expr DIVIDE expr
+    (67) expr -> . expr TIMES expr
+    (68) expr -> . expr MINUS expr
+    (69) expr -> . expr PLUS expr
+    (70) expr -> . expr > expr
+    (71) expr -> . expr GE expr
+    (72) expr -> . expr < expr
+    (73) expr -> . expr LE expr
+    (74) expr -> . expr NE expr
+    (75) expr -> . expr EQ expr
+    (76) expr -> . expr AND expr
+    (77) expr -> . expr OR expr
+    (78) expr -> . IDENT [ expr ] = expr
+    (79) expr -> . IDENT MODASSIGN expr
+    (80) expr -> . IDENT DIVASSIGN expr
+    (81) expr -> . IDENT MULASSIGN expr
+    (82) expr -> . IDENT SUBASSIGN expr
+    (83) expr -> . IDENT ADDASSIGN expr
+    (84) expr -> . IDENT = expr
+    NEW             shift and go to state 25
+    STRING_LIT      shift and go to state 26
+    CHAR_LIT        shift and go to state 27
+    FLOAT_LIT       shift and go to state 28
+    INT_LIT         shift and go to state 29
+    FALSE           shift and go to state 30
+    TRUE            shift and go to state 31
+    BOOL_LIT        shift and go to state 32
+    IDENT           shift and go to state 23
+    (               shift and go to state 33
+    DEC             shift and go to state 34
+    INC             shift and go to state 35
+    PLUS            shift and go to state 36
+    MINUS           shift and go to state 37
+    !               shift and go to state 38
 
+    expr                           shift and go to state 71
 
 state 36
 
@@ -864,13 +990,13 @@ state 36
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -903,9 +1029,9 @@ state 36
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -925,13 +1051,13 @@ state 37
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -964,9 +1090,9 @@ state 37
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -986,13 +1112,13 @@ state 38
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1025,9 +1151,9 @@ state 38
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1037,6 +1163,8 @@ state 38
 state 39
 
     (7) var_decl -> type_spec IDENT = expr . ;
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -1051,6 +1179,8 @@ state 39
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ;               shift and go to state 75
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -1126,13 +1256,13 @@ state 44
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1166,9 +1296,9 @@ state 44
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1180,51 +1310,7 @@ state 44
 
 state 45
 
-    (55) expr -> IDENT DEC .
-    ]               reduce using rule 55 (expr -> IDENT DEC .)
-    MOD             reduce using rule 55 (expr -> IDENT DEC .)
-    DIVIDE          reduce using rule 55 (expr -> IDENT DEC .)
-    TIMES           reduce using rule 55 (expr -> IDENT DEC .)
-    MINUS           reduce using rule 55 (expr -> IDENT DEC .)
-    PLUS            reduce using rule 55 (expr -> IDENT DEC .)
-    >               reduce using rule 55 (expr -> IDENT DEC .)
-    GE              reduce using rule 55 (expr -> IDENT DEC .)
-    <               reduce using rule 55 (expr -> IDENT DEC .)
-    LE              reduce using rule 55 (expr -> IDENT DEC .)
-    NE              reduce using rule 55 (expr -> IDENT DEC .)
-    EQ              reduce using rule 55 (expr -> IDENT DEC .)
-    AND             reduce using rule 55 (expr -> IDENT DEC .)
-    OR              reduce using rule 55 (expr -> IDENT DEC .)
-    ;               reduce using rule 55 (expr -> IDENT DEC .)
-    )               reduce using rule 55 (expr -> IDENT DEC .)
-    ,               reduce using rule 55 (expr -> IDENT DEC .)
-
-
-state 46
-
-    (56) expr -> IDENT INC .
-    ]               reduce using rule 56 (expr -> IDENT INC .)
-    MOD             reduce using rule 56 (expr -> IDENT INC .)
-    DIVIDE          reduce using rule 56 (expr -> IDENT INC .)
-    TIMES           reduce using rule 56 (expr -> IDENT INC .)
-    MINUS           reduce using rule 56 (expr -> IDENT INC .)
-    PLUS            reduce using rule 56 (expr -> IDENT INC .)
-    >               reduce using rule 56 (expr -> IDENT INC .)
-    GE              reduce using rule 56 (expr -> IDENT INC .)
-    <               reduce using rule 56 (expr -> IDENT INC .)
-    LE              reduce using rule 56 (expr -> IDENT INC .)
-    NE              reduce using rule 56 (expr -> IDENT INC .)
-    EQ              reduce using rule 56 (expr -> IDENT INC .)
-    AND             reduce using rule 56 (expr -> IDENT INC .)
-    OR              reduce using rule 56 (expr -> IDENT INC .)
-    ;               reduce using rule 56 (expr -> IDENT INC .)
-    )               reduce using rule 56 (expr -> IDENT INC .)
-    ,               reduce using rule 56 (expr -> IDENT INC .)
-
-
-state 47
-
-    (59) expr -> IDENT [ . expr ]
+    (55) expr -> IDENT [ . expr ]
     (78) expr -> IDENT [ . expr ] = expr
     (45) expr -> . NEW type_spec [ expr ]
     (46) expr -> . STRING_LIT
@@ -1236,13 +1322,13 @@ state 47
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1275,16 +1361,16 @@ state 47
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 85
 
-state 48
+state 46
 
     (84) expr -> IDENT = . expr
     (45) expr -> . NEW type_spec [ expr ]
@@ -1297,13 +1383,13 @@ state 48
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1336,16 +1422,16 @@ state 48
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 86
 
-state 49
+state 47
 
     (79) expr -> IDENT MODASSIGN . expr
     (45) expr -> . NEW type_spec [ expr ]
@@ -1358,13 +1444,13 @@ state 49
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1397,16 +1483,16 @@ state 49
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 87
 
-state 50
+state 48
 
     (80) expr -> IDENT DIVASSIGN . expr
     (45) expr -> . NEW type_spec [ expr ]
@@ -1419,13 +1505,13 @@ state 50
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1458,16 +1544,16 @@ state 50
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 88
 
-state 51
+state 49
 
     (81) expr -> IDENT MULASSIGN . expr
     (45) expr -> . NEW type_spec [ expr ]
@@ -1480,13 +1566,13 @@ state 51
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1519,16 +1605,16 @@ state 51
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 89
 
-state 52
+state 50
 
     (82) expr -> IDENT SUBASSIGN . expr
     (45) expr -> . NEW type_spec [ expr ]
@@ -1541,13 +1627,13 @@ state 52
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1580,16 +1666,16 @@ state 52
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 90
 
-state 53
+state 51
 
     (83) expr -> IDENT ADDASSIGN . expr
     (45) expr -> . NEW type_spec [ expr ]
@@ -1602,13 +1688,13 @@ state 53
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1641,19 +1727,67 @@ state 53
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
 
     expr                           shift and go to state 91
 
-state 54
+state 52
 
     (6) var_decl -> type_spec IDENT [ expr ] . ;
     ;               shift and go to state 92
+
+
+state 53
+
+    (58) expr -> expr DEC .
+    ]               reduce using rule 58 (expr -> expr DEC .)
+    DEC             reduce using rule 58 (expr -> expr DEC .)
+    INC             reduce using rule 58 (expr -> expr DEC .)
+    MOD             reduce using rule 58 (expr -> expr DEC .)
+    DIVIDE          reduce using rule 58 (expr -> expr DEC .)
+    TIMES           reduce using rule 58 (expr -> expr DEC .)
+    MINUS           reduce using rule 58 (expr -> expr DEC .)
+    PLUS            reduce using rule 58 (expr -> expr DEC .)
+    >               reduce using rule 58 (expr -> expr DEC .)
+    GE              reduce using rule 58 (expr -> expr DEC .)
+    <               reduce using rule 58 (expr -> expr DEC .)
+    LE              reduce using rule 58 (expr -> expr DEC .)
+    NE              reduce using rule 58 (expr -> expr DEC .)
+    EQ              reduce using rule 58 (expr -> expr DEC .)
+    AND             reduce using rule 58 (expr -> expr DEC .)
+    OR              reduce using rule 58 (expr -> expr DEC .)
+    ;               reduce using rule 58 (expr -> expr DEC .)
+    )               reduce using rule 58 (expr -> expr DEC .)
+    ,               reduce using rule 58 (expr -> expr DEC .)
+
+
+state 54
+
+    (59) expr -> expr INC .
+    ]               reduce using rule 59 (expr -> expr INC .)
+    DEC             reduce using rule 59 (expr -> expr INC .)
+    INC             reduce using rule 59 (expr -> expr INC .)
+    MOD             reduce using rule 59 (expr -> expr INC .)
+    DIVIDE          reduce using rule 59 (expr -> expr INC .)
+    TIMES           reduce using rule 59 (expr -> expr INC .)
+    MINUS           reduce using rule 59 (expr -> expr INC .)
+    PLUS            reduce using rule 59 (expr -> expr INC .)
+    >               reduce using rule 59 (expr -> expr INC .)
+    GE              reduce using rule 59 (expr -> expr INC .)
+    <               reduce using rule 59 (expr -> expr INC .)
+    LE              reduce using rule 59 (expr -> expr INC .)
+    NE              reduce using rule 59 (expr -> expr INC .)
+    EQ              reduce using rule 59 (expr -> expr INC .)
+    AND             reduce using rule 59 (expr -> expr INC .)
+    OR              reduce using rule 59 (expr -> expr INC .)
+    ;               reduce using rule 59 (expr -> expr INC .)
+    )               reduce using rule 59 (expr -> expr INC .)
+    ,               reduce using rule 59 (expr -> expr INC .)
 
 
 state 55
@@ -1669,13 +1803,13 @@ state 55
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1708,9 +1842,9 @@ state 55
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1730,13 +1864,13 @@ state 56
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1769,9 +1903,9 @@ state 56
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1791,13 +1925,13 @@ state 57
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1830,9 +1964,9 @@ state 57
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1852,13 +1986,13 @@ state 58
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1891,9 +2025,9 @@ state 58
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1913,13 +2047,13 @@ state 59
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -1952,9 +2086,9 @@ state 59
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -1974,13 +2108,13 @@ state 60
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2013,9 +2147,9 @@ state 60
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2035,13 +2169,13 @@ state 61
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2074,9 +2208,9 @@ state 61
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2096,13 +2230,13 @@ state 62
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2135,9 +2269,9 @@ state 62
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2157,13 +2291,13 @@ state 63
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2196,9 +2330,9 @@ state 63
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2218,13 +2352,13 @@ state 64
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2257,9 +2391,9 @@ state 64
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2279,13 +2413,13 @@ state 65
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2318,9 +2452,9 @@ state 65
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2340,13 +2474,13 @@ state 66
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2379,9 +2513,9 @@ state 66
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2401,13 +2535,13 @@ state 67
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -2440,9 +2574,9 @@ state 67
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -2457,7 +2591,9 @@ state 68
 
 state 69
 
-    (61) expr -> ( expr . )
+    (57) expr -> ( expr . )
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2472,6 +2608,8 @@ state 69
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     )               shift and go to state 107
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -2489,51 +2627,87 @@ state 69
 
 state 70
 
-    (57) expr -> DEC IDENT .
-    ]               reduce using rule 57 (expr -> DEC IDENT .)
-    MOD             reduce using rule 57 (expr -> DEC IDENT .)
-    DIVIDE          reduce using rule 57 (expr -> DEC IDENT .)
-    TIMES           reduce using rule 57 (expr -> DEC IDENT .)
-    MINUS           reduce using rule 57 (expr -> DEC IDENT .)
-    PLUS            reduce using rule 57 (expr -> DEC IDENT .)
-    >               reduce using rule 57 (expr -> DEC IDENT .)
-    GE              reduce using rule 57 (expr -> DEC IDENT .)
-    <               reduce using rule 57 (expr -> DEC IDENT .)
-    LE              reduce using rule 57 (expr -> DEC IDENT .)
-    NE              reduce using rule 57 (expr -> DEC IDENT .)
-    EQ              reduce using rule 57 (expr -> DEC IDENT .)
-    AND             reduce using rule 57 (expr -> DEC IDENT .)
-    OR              reduce using rule 57 (expr -> DEC IDENT .)
-    ;               reduce using rule 57 (expr -> DEC IDENT .)
-    )               reduce using rule 57 (expr -> DEC IDENT .)
-    ,               reduce using rule 57 (expr -> DEC IDENT .)
+    (60) expr -> DEC expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
+    (65) expr -> expr . MOD expr
+    (66) expr -> expr . DIVIDE expr
+    (67) expr -> expr . TIMES expr
+    (68) expr -> expr . MINUS expr
+    (69) expr -> expr . PLUS expr
+    (70) expr -> expr . > expr
+    (71) expr -> expr . GE expr
+    (72) expr -> expr . < expr
+    (73) expr -> expr . LE expr
+    (74) expr -> expr . NE expr
+    (75) expr -> expr . EQ expr
+    (76) expr -> expr . AND expr
+    (77) expr -> expr . OR expr
+    ]               reduce using rule 60 (expr -> DEC expr .)
+    DEC             reduce using rule 60 (expr -> DEC expr .)
+    INC             reduce using rule 60 (expr -> DEC expr .)
+    MOD             reduce using rule 60 (expr -> DEC expr .)
+    DIVIDE          reduce using rule 60 (expr -> DEC expr .)
+    TIMES           reduce using rule 60 (expr -> DEC expr .)
+    MINUS           reduce using rule 60 (expr -> DEC expr .)
+    PLUS            reduce using rule 60 (expr -> DEC expr .)
+    >               reduce using rule 60 (expr -> DEC expr .)
+    GE              reduce using rule 60 (expr -> DEC expr .)
+    <               reduce using rule 60 (expr -> DEC expr .)
+    LE              reduce using rule 60 (expr -> DEC expr .)
+    NE              reduce using rule 60 (expr -> DEC expr .)
+    EQ              reduce using rule 60 (expr -> DEC expr .)
+    AND             reduce using rule 60 (expr -> DEC expr .)
+    OR              reduce using rule 60 (expr -> DEC expr .)
+    ;               reduce using rule 60 (expr -> DEC expr .)
+    )               reduce using rule 60 (expr -> DEC expr .)
+    ,               reduce using rule 60 (expr -> DEC expr .)
 
 
 state 71
 
-    (58) expr -> INC IDENT .
-    ]               reduce using rule 58 (expr -> INC IDENT .)
-    MOD             reduce using rule 58 (expr -> INC IDENT .)
-    DIVIDE          reduce using rule 58 (expr -> INC IDENT .)
-    TIMES           reduce using rule 58 (expr -> INC IDENT .)
-    MINUS           reduce using rule 58 (expr -> INC IDENT .)
-    PLUS            reduce using rule 58 (expr -> INC IDENT .)
-    >               reduce using rule 58 (expr -> INC IDENT .)
-    GE              reduce using rule 58 (expr -> INC IDENT .)
-    <               reduce using rule 58 (expr -> INC IDENT .)
-    LE              reduce using rule 58 (expr -> INC IDENT .)
-    NE              reduce using rule 58 (expr -> INC IDENT .)
-    EQ              reduce using rule 58 (expr -> INC IDENT .)
-    AND             reduce using rule 58 (expr -> INC IDENT .)
-    OR              reduce using rule 58 (expr -> INC IDENT .)
-    ;               reduce using rule 58 (expr -> INC IDENT .)
-    )               reduce using rule 58 (expr -> INC IDENT .)
-    ,               reduce using rule 58 (expr -> INC IDENT .)
+    (61) expr -> INC expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
+    (65) expr -> expr . MOD expr
+    (66) expr -> expr . DIVIDE expr
+    (67) expr -> expr . TIMES expr
+    (68) expr -> expr . MINUS expr
+    (69) expr -> expr . PLUS expr
+    (70) expr -> expr . > expr
+    (71) expr -> expr . GE expr
+    (72) expr -> expr . < expr
+    (73) expr -> expr . LE expr
+    (74) expr -> expr . NE expr
+    (75) expr -> expr . EQ expr
+    (76) expr -> expr . AND expr
+    (77) expr -> expr . OR expr
+    ]               reduce using rule 61 (expr -> INC expr .)
+    DEC             reduce using rule 61 (expr -> INC expr .)
+    INC             reduce using rule 61 (expr -> INC expr .)
+    MOD             reduce using rule 61 (expr -> INC expr .)
+    DIVIDE          reduce using rule 61 (expr -> INC expr .)
+    TIMES           reduce using rule 61 (expr -> INC expr .)
+    MINUS           reduce using rule 61 (expr -> INC expr .)
+    PLUS            reduce using rule 61 (expr -> INC expr .)
+    >               reduce using rule 61 (expr -> INC expr .)
+    GE              reduce using rule 61 (expr -> INC expr .)
+    <               reduce using rule 61 (expr -> INC expr .)
+    LE              reduce using rule 61 (expr -> INC expr .)
+    NE              reduce using rule 61 (expr -> INC expr .)
+    EQ              reduce using rule 61 (expr -> INC expr .)
+    AND             reduce using rule 61 (expr -> INC expr .)
+    OR              reduce using rule 61 (expr -> INC expr .)
+    ;               reduce using rule 61 (expr -> INC expr .)
+    )               reduce using rule 61 (expr -> INC expr .)
+    ,               reduce using rule 61 (expr -> INC expr .)
 
 
 state 72
 
     (62) expr -> PLUS expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2548,6 +2722,8 @@ state 72
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 62 (expr -> PLUS expr .)
+    DEC             reduce using rule 62 (expr -> PLUS expr .)
+    INC             reduce using rule 62 (expr -> PLUS expr .)
     MOD             reduce using rule 62 (expr -> PLUS expr .)
     DIVIDE          reduce using rule 62 (expr -> PLUS expr .)
     TIMES           reduce using rule 62 (expr -> PLUS expr .)
@@ -2569,6 +2745,8 @@ state 72
 state 73
 
     (63) expr -> MINUS expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2583,6 +2761,8 @@ state 73
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 63 (expr -> MINUS expr .)
+    DEC             reduce using rule 63 (expr -> MINUS expr .)
+    INC             reduce using rule 63 (expr -> MINUS expr .)
     MOD             reduce using rule 63 (expr -> MINUS expr .)
     DIVIDE          reduce using rule 63 (expr -> MINUS expr .)
     TIMES           reduce using rule 63 (expr -> MINUS expr .)
@@ -2604,6 +2784,8 @@ state 73
 state 74
 
     (64) expr -> ! expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2618,6 +2800,8 @@ state 74
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 64 (expr -> ! expr .)
+    DEC             reduce using rule 64 (expr -> ! expr .)
+    INC             reduce using rule 64 (expr -> ! expr .)
     MOD             reduce using rule 64 (expr -> ! expr .)
     DIVIDE          reduce using rule 64 (expr -> ! expr .)
     TIMES           reduce using rule 64 (expr -> ! expr .)
@@ -2692,9 +2876,9 @@ state 78
     TRUE            reduce using rule 89 (empty -> .)
     BOOL_LIT        reduce using rule 89 (empty -> .)
     IDENT           reduce using rule 89 (empty -> .)
+    (               reduce using rule 89 (empty -> .)
     DEC             reduce using rule 89 (empty -> .)
     INC             reduce using rule 89 (empty -> .)
-    (               reduce using rule 89 (empty -> .)
     PLUS            reduce using rule 89 (empty -> .)
     MINUS           reduce using rule 89 (empty -> .)
     !               reduce using rule 89 (empty -> .)
@@ -2713,6 +2897,8 @@ state 80
 
     (53) expr -> IDENT . SIZE .
     ]               reduce using rule 53 (expr -> IDENT . SIZE .)
+    DEC             reduce using rule 53 (expr -> IDENT . SIZE .)
+    INC             reduce using rule 53 (expr -> IDENT . SIZE .)
     MOD             reduce using rule 53 (expr -> IDENT . SIZE .)
     DIVIDE          reduce using rule 53 (expr -> IDENT . SIZE .)
     TIMES           reduce using rule 53 (expr -> IDENT . SIZE .)
@@ -2756,6 +2942,8 @@ state 83
 state 84
 
     (85) arg_list -> expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2772,6 +2960,8 @@ state 84
     ,               reduce using rule 85 (arg_list -> expr .)
     )               reduce using rule 85 (arg_list -> expr .)
     ;               reduce using rule 85 (arg_list -> expr .)
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -2789,8 +2979,10 @@ state 84
 
 state 85
 
-    (59) expr -> IDENT [ expr . ]
+    (55) expr -> IDENT [ expr . ]
     (78) expr -> IDENT [ expr . ] = expr
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2805,6 +2997,8 @@ state 85
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               shift and go to state 113
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -2823,6 +3017,8 @@ state 85
 state 86
 
     (84) expr -> IDENT = expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2837,6 +3033,8 @@ state 86
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 84 (expr -> IDENT = expr .)
+    DEC             reduce using rule 84 (expr -> IDENT = expr .)
+    INC             reduce using rule 84 (expr -> IDENT = expr .)
     ;               reduce using rule 84 (expr -> IDENT = expr .)
     )               reduce using rule 84 (expr -> IDENT = expr .)
     ,               reduce using rule 84 (expr -> IDENT = expr .)
@@ -2858,6 +3056,8 @@ state 86
 state 87
 
     (79) expr -> IDENT MODASSIGN expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2872,6 +3072,8 @@ state 87
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 79 (expr -> IDENT MODASSIGN expr .)
+    DEC             reduce using rule 79 (expr -> IDENT MODASSIGN expr .)
+    INC             reduce using rule 79 (expr -> IDENT MODASSIGN expr .)
     ;               reduce using rule 79 (expr -> IDENT MODASSIGN expr .)
     )               reduce using rule 79 (expr -> IDENT MODASSIGN expr .)
     ,               reduce using rule 79 (expr -> IDENT MODASSIGN expr .)
@@ -2893,6 +3095,8 @@ state 87
 state 88
 
     (80) expr -> IDENT DIVASSIGN expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2907,6 +3111,8 @@ state 88
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 80 (expr -> IDENT DIVASSIGN expr .)
+    DEC             reduce using rule 80 (expr -> IDENT DIVASSIGN expr .)
+    INC             reduce using rule 80 (expr -> IDENT DIVASSIGN expr .)
     ;               reduce using rule 80 (expr -> IDENT DIVASSIGN expr .)
     )               reduce using rule 80 (expr -> IDENT DIVASSIGN expr .)
     ,               reduce using rule 80 (expr -> IDENT DIVASSIGN expr .)
@@ -2928,6 +3134,8 @@ state 88
 state 89
 
     (81) expr -> IDENT MULASSIGN expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2942,6 +3150,8 @@ state 89
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 81 (expr -> IDENT MULASSIGN expr .)
+    DEC             reduce using rule 81 (expr -> IDENT MULASSIGN expr .)
+    INC             reduce using rule 81 (expr -> IDENT MULASSIGN expr .)
     ;               reduce using rule 81 (expr -> IDENT MULASSIGN expr .)
     )               reduce using rule 81 (expr -> IDENT MULASSIGN expr .)
     ,               reduce using rule 81 (expr -> IDENT MULASSIGN expr .)
@@ -2963,6 +3173,8 @@ state 89
 state 90
 
     (82) expr -> IDENT SUBASSIGN expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -2977,6 +3189,8 @@ state 90
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 82 (expr -> IDENT SUBASSIGN expr .)
+    DEC             reduce using rule 82 (expr -> IDENT SUBASSIGN expr .)
+    INC             reduce using rule 82 (expr -> IDENT SUBASSIGN expr .)
     ;               reduce using rule 82 (expr -> IDENT SUBASSIGN expr .)
     )               reduce using rule 82 (expr -> IDENT SUBASSIGN expr .)
     ,               reduce using rule 82 (expr -> IDENT SUBASSIGN expr .)
@@ -2998,6 +3212,8 @@ state 90
 state 91
 
     (83) expr -> IDENT ADDASSIGN expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3012,6 +3228,8 @@ state 91
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 83 (expr -> IDENT ADDASSIGN expr .)
+    DEC             reduce using rule 83 (expr -> IDENT ADDASSIGN expr .)
+    INC             reduce using rule 83 (expr -> IDENT ADDASSIGN expr .)
     ;               reduce using rule 83 (expr -> IDENT ADDASSIGN expr .)
     )               reduce using rule 83 (expr -> IDENT ADDASSIGN expr .)
     ,               reduce using rule 83 (expr -> IDENT ADDASSIGN expr .)
@@ -3044,6 +3262,8 @@ state 92
 state 93
 
     (65) expr -> expr MOD expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3058,6 +3278,8 @@ state 93
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 65 (expr -> expr MOD expr .)
+    DEC             reduce using rule 65 (expr -> expr MOD expr .)
+    INC             reduce using rule 65 (expr -> expr MOD expr .)
     MOD             reduce using rule 65 (expr -> expr MOD expr .)
     DIVIDE          reduce using rule 65 (expr -> expr MOD expr .)
     TIMES           reduce using rule 65 (expr -> expr MOD expr .)
@@ -3079,6 +3301,8 @@ state 93
 state 94
 
     (66) expr -> expr DIVIDE expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3093,6 +3317,8 @@ state 94
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 66 (expr -> expr DIVIDE expr .)
+    DEC             reduce using rule 66 (expr -> expr DIVIDE expr .)
+    INC             reduce using rule 66 (expr -> expr DIVIDE expr .)
     MOD             reduce using rule 66 (expr -> expr DIVIDE expr .)
     DIVIDE          reduce using rule 66 (expr -> expr DIVIDE expr .)
     TIMES           reduce using rule 66 (expr -> expr DIVIDE expr .)
@@ -3114,6 +3340,8 @@ state 94
 state 95
 
     (67) expr -> expr TIMES expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3128,6 +3356,8 @@ state 95
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 67 (expr -> expr TIMES expr .)
+    DEC             reduce using rule 67 (expr -> expr TIMES expr .)
+    INC             reduce using rule 67 (expr -> expr TIMES expr .)
     MOD             reduce using rule 67 (expr -> expr TIMES expr .)
     DIVIDE          reduce using rule 67 (expr -> expr TIMES expr .)
     TIMES           reduce using rule 67 (expr -> expr TIMES expr .)
@@ -3149,6 +3379,8 @@ state 95
 state 96
 
     (68) expr -> expr MINUS expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3163,6 +3395,8 @@ state 96
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 68 (expr -> expr MINUS expr .)
+    DEC             reduce using rule 68 (expr -> expr MINUS expr .)
+    INC             reduce using rule 68 (expr -> expr MINUS expr .)
     MINUS           reduce using rule 68 (expr -> expr MINUS expr .)
     PLUS            reduce using rule 68 (expr -> expr MINUS expr .)
     >               reduce using rule 68 (expr -> expr MINUS expr .)
@@ -3184,6 +3418,8 @@ state 96
 state 97
 
     (69) expr -> expr PLUS expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3198,6 +3434,8 @@ state 97
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 69 (expr -> expr PLUS expr .)
+    DEC             reduce using rule 69 (expr -> expr PLUS expr .)
+    INC             reduce using rule 69 (expr -> expr PLUS expr .)
     MINUS           reduce using rule 69 (expr -> expr PLUS expr .)
     PLUS            reduce using rule 69 (expr -> expr PLUS expr .)
     >               reduce using rule 69 (expr -> expr PLUS expr .)
@@ -3219,6 +3457,8 @@ state 97
 state 98
 
     (70) expr -> expr > expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3233,6 +3473,8 @@ state 98
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 70 (expr -> expr > expr .)
+    DEC             reduce using rule 70 (expr -> expr > expr .)
+    INC             reduce using rule 70 (expr -> expr > expr .)
     >               reduce using rule 70 (expr -> expr > expr .)
     GE              reduce using rule 70 (expr -> expr > expr .)
     <               reduce using rule 70 (expr -> expr > expr .)
@@ -3254,6 +3496,8 @@ state 98
 state 99
 
     (71) expr -> expr GE expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3268,6 +3512,8 @@ state 99
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 71 (expr -> expr GE expr .)
+    DEC             reduce using rule 71 (expr -> expr GE expr .)
+    INC             reduce using rule 71 (expr -> expr GE expr .)
     >               reduce using rule 71 (expr -> expr GE expr .)
     GE              reduce using rule 71 (expr -> expr GE expr .)
     <               reduce using rule 71 (expr -> expr GE expr .)
@@ -3289,6 +3535,8 @@ state 99
 state 100
 
     (72) expr -> expr < expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3303,6 +3551,8 @@ state 100
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 72 (expr -> expr < expr .)
+    DEC             reduce using rule 72 (expr -> expr < expr .)
+    INC             reduce using rule 72 (expr -> expr < expr .)
     >               reduce using rule 72 (expr -> expr < expr .)
     GE              reduce using rule 72 (expr -> expr < expr .)
     <               reduce using rule 72 (expr -> expr < expr .)
@@ -3324,6 +3574,8 @@ state 100
 state 101
 
     (73) expr -> expr LE expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3338,6 +3590,8 @@ state 101
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 73 (expr -> expr LE expr .)
+    DEC             reduce using rule 73 (expr -> expr LE expr .)
+    INC             reduce using rule 73 (expr -> expr LE expr .)
     >               reduce using rule 73 (expr -> expr LE expr .)
     GE              reduce using rule 73 (expr -> expr LE expr .)
     <               reduce using rule 73 (expr -> expr LE expr .)
@@ -3359,6 +3613,8 @@ state 101
 state 102
 
     (74) expr -> expr NE expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3373,6 +3629,8 @@ state 102
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 74 (expr -> expr NE expr .)
+    DEC             reduce using rule 74 (expr -> expr NE expr .)
+    INC             reduce using rule 74 (expr -> expr NE expr .)
     NE              reduce using rule 74 (expr -> expr NE expr .)
     EQ              reduce using rule 74 (expr -> expr NE expr .)
     AND             reduce using rule 74 (expr -> expr NE expr .)
@@ -3394,6 +3652,8 @@ state 102
 state 103
 
     (75) expr -> expr EQ expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3408,6 +3668,8 @@ state 103
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 75 (expr -> expr EQ expr .)
+    DEC             reduce using rule 75 (expr -> expr EQ expr .)
+    INC             reduce using rule 75 (expr -> expr EQ expr .)
     NE              reduce using rule 75 (expr -> expr EQ expr .)
     EQ              reduce using rule 75 (expr -> expr EQ expr .)
     AND             reduce using rule 75 (expr -> expr EQ expr .)
@@ -3429,6 +3691,8 @@ state 103
 state 104
 
     (76) expr -> expr AND expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3443,6 +3707,8 @@ state 104
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 76 (expr -> expr AND expr .)
+    DEC             reduce using rule 76 (expr -> expr AND expr .)
+    INC             reduce using rule 76 (expr -> expr AND expr .)
     AND             reduce using rule 76 (expr -> expr AND expr .)
     OR              reduce using rule 76 (expr -> expr AND expr .)
     ;               reduce using rule 76 (expr -> expr AND expr .)
@@ -3464,6 +3730,8 @@ state 104
 state 105
 
     (77) expr -> expr OR expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3478,6 +3746,8 @@ state 105
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 77 (expr -> expr OR expr .)
+    DEC             reduce using rule 77 (expr -> expr OR expr .)
+    INC             reduce using rule 77 (expr -> expr OR expr .)
     OR              reduce using rule 77 (expr -> expr OR expr .)
     ;               reduce using rule 77 (expr -> expr OR expr .)
     )               reduce using rule 77 (expr -> expr OR expr .)
@@ -3509,13 +3779,13 @@ state 106
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -3548,9 +3818,9 @@ state 106
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -3559,24 +3829,26 @@ state 106
 
 state 107
 
-    (61) expr -> ( expr ) .
-    ]               reduce using rule 61 (expr -> ( expr ) .)
-    MOD             reduce using rule 61 (expr -> ( expr ) .)
-    DIVIDE          reduce using rule 61 (expr -> ( expr ) .)
-    TIMES           reduce using rule 61 (expr -> ( expr ) .)
-    MINUS           reduce using rule 61 (expr -> ( expr ) .)
-    PLUS            reduce using rule 61 (expr -> ( expr ) .)
-    >               reduce using rule 61 (expr -> ( expr ) .)
-    GE              reduce using rule 61 (expr -> ( expr ) .)
-    <               reduce using rule 61 (expr -> ( expr ) .)
-    LE              reduce using rule 61 (expr -> ( expr ) .)
-    NE              reduce using rule 61 (expr -> ( expr ) .)
-    EQ              reduce using rule 61 (expr -> ( expr ) .)
-    AND             reduce using rule 61 (expr -> ( expr ) .)
-    OR              reduce using rule 61 (expr -> ( expr ) .)
-    ;               reduce using rule 61 (expr -> ( expr ) .)
-    )               reduce using rule 61 (expr -> ( expr ) .)
-    ,               reduce using rule 61 (expr -> ( expr ) .)
+    (57) expr -> ( expr ) .
+    ]               reduce using rule 57 (expr -> ( expr ) .)
+    DEC             reduce using rule 57 (expr -> ( expr ) .)
+    INC             reduce using rule 57 (expr -> ( expr ) .)
+    MOD             reduce using rule 57 (expr -> ( expr ) .)
+    DIVIDE          reduce using rule 57 (expr -> ( expr ) .)
+    TIMES           reduce using rule 57 (expr -> ( expr ) .)
+    MINUS           reduce using rule 57 (expr -> ( expr ) .)
+    PLUS            reduce using rule 57 (expr -> ( expr ) .)
+    >               reduce using rule 57 (expr -> ( expr ) .)
+    GE              reduce using rule 57 (expr -> ( expr ) .)
+    <               reduce using rule 57 (expr -> ( expr ) .)
+    LE              reduce using rule 57 (expr -> ( expr ) .)
+    NE              reduce using rule 57 (expr -> ( expr ) .)
+    EQ              reduce using rule 57 (expr -> ( expr ) .)
+    AND             reduce using rule 57 (expr -> ( expr ) .)
+    OR              reduce using rule 57 (expr -> ( expr ) .)
+    ;               reduce using rule 57 (expr -> ( expr ) .)
+    )               reduce using rule 57 (expr -> ( expr ) .)
+    ,               reduce using rule 57 (expr -> ( expr ) .)
 
 
 state 108
@@ -3618,9 +3890,9 @@ state 109
     TRUE            reduce using rule 89 (empty -> .)
     BOOL_LIT        reduce using rule 89 (empty -> .)
     IDENT           reduce using rule 89 (empty -> .)
+    (               reduce using rule 89 (empty -> .)
     DEC             reduce using rule 89 (empty -> .)
     INC             reduce using rule 89 (empty -> .)
-    (               reduce using rule 89 (empty -> .)
     PLUS            reduce using rule 89 (empty -> .)
     MINUS           reduce using rule 89 (empty -> .)
     !               reduce using rule 89 (empty -> .)
@@ -3660,9 +3932,9 @@ state 110
     TRUE            reduce using rule 22 (local_decls -> empty .)
     BOOL_LIT        reduce using rule 22 (local_decls -> empty .)
     IDENT           reduce using rule 22 (local_decls -> empty .)
+    (               reduce using rule 22 (local_decls -> empty .)
     DEC             reduce using rule 22 (local_decls -> empty .)
     INC             reduce using rule 22 (local_decls -> empty .)
-    (               reduce using rule 22 (local_decls -> empty .)
     PLUS            reduce using rule 22 (local_decls -> empty .)
     MINUS           reduce using rule 22 (local_decls -> empty .)
     !               reduce using rule 22 (local_decls -> empty .)
@@ -3672,6 +3944,8 @@ state 111
 
     (54) expr -> IDENT ( args ) .
     ]               reduce using rule 54 (expr -> IDENT ( args ) .)
+    DEC             reduce using rule 54 (expr -> IDENT ( args ) .)
+    INC             reduce using rule 54 (expr -> IDENT ( args ) .)
     MOD             reduce using rule 54 (expr -> IDENT ( args ) .)
     DIVIDE          reduce using rule 54 (expr -> IDENT ( args ) .)
     TIMES           reduce using rule 54 (expr -> IDENT ( args ) .)
@@ -3703,13 +3977,13 @@ state 112
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -3742,9 +4016,9 @@ state 112
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -3753,31 +4027,35 @@ state 112
 
 state 113
 
-    (59) expr -> IDENT [ expr ] .
+    (55) expr -> IDENT [ expr ] .
     (78) expr -> IDENT [ expr ] . = expr
-    ]               reduce using rule 59 (expr -> IDENT [ expr ] .)
-    MOD             reduce using rule 59 (expr -> IDENT [ expr ] .)
-    DIVIDE          reduce using rule 59 (expr -> IDENT [ expr ] .)
-    TIMES           reduce using rule 59 (expr -> IDENT [ expr ] .)
-    MINUS           reduce using rule 59 (expr -> IDENT [ expr ] .)
-    PLUS            reduce using rule 59 (expr -> IDENT [ expr ] .)
-    >               reduce using rule 59 (expr -> IDENT [ expr ] .)
-    GE              reduce using rule 59 (expr -> IDENT [ expr ] .)
-    <               reduce using rule 59 (expr -> IDENT [ expr ] .)
-    LE              reduce using rule 59 (expr -> IDENT [ expr ] .)
-    NE              reduce using rule 59 (expr -> IDENT [ expr ] .)
-    EQ              reduce using rule 59 (expr -> IDENT [ expr ] .)
-    AND             reduce using rule 59 (expr -> IDENT [ expr ] .)
-    OR              reduce using rule 59 (expr -> IDENT [ expr ] .)
-    ;               reduce using rule 59 (expr -> IDENT [ expr ] .)
-    )               reduce using rule 59 (expr -> IDENT [ expr ] .)
-    ,               reduce using rule 59 (expr -> IDENT [ expr ] .)
+    ]               reduce using rule 55 (expr -> IDENT [ expr ] .)
+    DEC             reduce using rule 55 (expr -> IDENT [ expr ] .)
+    INC             reduce using rule 55 (expr -> IDENT [ expr ] .)
+    MOD             reduce using rule 55 (expr -> IDENT [ expr ] .)
+    DIVIDE          reduce using rule 55 (expr -> IDENT [ expr ] .)
+    TIMES           reduce using rule 55 (expr -> IDENT [ expr ] .)
+    MINUS           reduce using rule 55 (expr -> IDENT [ expr ] .)
+    PLUS            reduce using rule 55 (expr -> IDENT [ expr ] .)
+    >               reduce using rule 55 (expr -> IDENT [ expr ] .)
+    GE              reduce using rule 55 (expr -> IDENT [ expr ] .)
+    <               reduce using rule 55 (expr -> IDENT [ expr ] .)
+    LE              reduce using rule 55 (expr -> IDENT [ expr ] .)
+    NE              reduce using rule 55 (expr -> IDENT [ expr ] .)
+    EQ              reduce using rule 55 (expr -> IDENT [ expr ] .)
+    AND             reduce using rule 55 (expr -> IDENT [ expr ] .)
+    OR              reduce using rule 55 (expr -> IDENT [ expr ] .)
+    ;               reduce using rule 55 (expr -> IDENT [ expr ] .)
+    )               reduce using rule 55 (expr -> IDENT [ expr ] .)
+    ,               reduce using rule 55 (expr -> IDENT [ expr ] .)
     =               shift and go to state 120
 
 
 state 114
 
     (45) expr -> NEW type_spec [ expr . ]
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3792,6 +4070,8 @@ state 114
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               shift and go to state 121
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -3838,13 +4118,13 @@ state 115
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -3885,9 +4165,9 @@ state 115
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -3927,9 +4207,9 @@ state 116
     TRUE            reduce using rule 23 (local_decls -> local_decls local_decl .)
     BOOL_LIT        reduce using rule 23 (local_decls -> local_decls local_decl .)
     IDENT           reduce using rule 23 (local_decls -> local_decls local_decl .)
+    (               reduce using rule 23 (local_decls -> local_decls local_decl .)
     DEC             reduce using rule 23 (local_decls -> local_decls local_decl .)
     INC             reduce using rule 23 (local_decls -> local_decls local_decl .)
-    (               reduce using rule 23 (local_decls -> local_decls local_decl .)
     PLUS            reduce using rule 23 (local_decls -> local_decls local_decl .)
     MINUS           reduce using rule 23 (local_decls -> local_decls local_decl .)
     !               reduce using rule 23 (local_decls -> local_decls local_decl .)
@@ -3955,9 +4235,9 @@ state 117
     TRUE            reduce using rule 27 (stmt_list -> empty .)
     BOOL_LIT        reduce using rule 27 (stmt_list -> empty .)
     IDENT           reduce using rule 27 (stmt_list -> empty .)
+    (               reduce using rule 27 (stmt_list -> empty .)
     DEC             reduce using rule 27 (stmt_list -> empty .)
     INC             reduce using rule 27 (stmt_list -> empty .)
-    (               reduce using rule 27 (stmt_list -> empty .)
     PLUS            reduce using rule 27 (stmt_list -> empty .)
     MINUS           reduce using rule 27 (stmt_list -> empty .)
     !               reduce using rule 27 (stmt_list -> empty .)
@@ -3974,6 +4254,8 @@ state 118
 state 119
 
     (86) arg_list -> arg_list , expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -3990,6 +4272,8 @@ state 119
     ,               reduce using rule 86 (arg_list -> arg_list , expr .)
     )               reduce using rule 86 (arg_list -> arg_list , expr .)
     ;               reduce using rule 86 (arg_list -> arg_list , expr .)
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -4018,13 +4302,13 @@ state 120
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -4057,9 +4341,9 @@ state 120
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -4070,6 +4354,8 @@ state 121
 
     (45) expr -> NEW type_spec [ expr ] .
     ]               reduce using rule 45 (expr -> NEW type_spec [ expr ] .)
+    DEC             reduce using rule 45 (expr -> NEW type_spec [ expr ] .)
+    INC             reduce using rule 45 (expr -> NEW type_spec [ expr ] .)
     MOD             reduce using rule 45 (expr -> NEW type_spec [ expr ] .)
     DIVIDE          reduce using rule 45 (expr -> NEW type_spec [ expr ] .)
     TIMES           reduce using rule 45 (expr -> NEW type_spec [ expr ] .)
@@ -4114,9 +4400,9 @@ state 122
     TRUE            reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     BOOL_LIT        reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     IDENT           reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
+    (               reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     DEC             reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     INC             reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
-    (               reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     PLUS            reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     MINUS           reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
     !               reduce using rule 21 (compound_stmt -> { local_decls stmt_list } .)
@@ -4143,9 +4429,9 @@ state 123
     TRUE            reduce using rule 28 (stmt_list -> stmt_list stmt .)
     BOOL_LIT        reduce using rule 28 (stmt_list -> stmt_list stmt .)
     IDENT           reduce using rule 28 (stmt_list -> stmt_list stmt .)
+    (               reduce using rule 28 (stmt_list -> stmt_list stmt .)
     DEC             reduce using rule 28 (stmt_list -> stmt_list stmt .)
     INC             reduce using rule 28 (stmt_list -> stmt_list stmt .)
-    (               reduce using rule 28 (stmt_list -> stmt_list stmt .)
     PLUS            reduce using rule 28 (stmt_list -> stmt_list stmt .)
     MINUS           reduce using rule 28 (stmt_list -> stmt_list stmt .)
     !               reduce using rule 28 (stmt_list -> stmt_list stmt .)
@@ -4171,9 +4457,9 @@ state 124
     TRUE            reduce using rule 29 (stmt -> break_stmt .)
     BOOL_LIT        reduce using rule 29 (stmt -> break_stmt .)
     IDENT           reduce using rule 29 (stmt -> break_stmt .)
+    (               reduce using rule 29 (stmt -> break_stmt .)
     DEC             reduce using rule 29 (stmt -> break_stmt .)
     INC             reduce using rule 29 (stmt -> break_stmt .)
-    (               reduce using rule 29 (stmt -> break_stmt .)
     PLUS            reduce using rule 29 (stmt -> break_stmt .)
     MINUS           reduce using rule 29 (stmt -> break_stmt .)
     !               reduce using rule 29 (stmt -> break_stmt .)
@@ -4200,9 +4486,9 @@ state 125
     TRUE            reduce using rule 30 (stmt -> return_stmt .)
     BOOL_LIT        reduce using rule 30 (stmt -> return_stmt .)
     IDENT           reduce using rule 30 (stmt -> return_stmt .)
+    (               reduce using rule 30 (stmt -> return_stmt .)
     DEC             reduce using rule 30 (stmt -> return_stmt .)
     INC             reduce using rule 30 (stmt -> return_stmt .)
-    (               reduce using rule 30 (stmt -> return_stmt .)
     PLUS            reduce using rule 30 (stmt -> return_stmt .)
     MINUS           reduce using rule 30 (stmt -> return_stmt .)
     !               reduce using rule 30 (stmt -> return_stmt .)
@@ -4229,9 +4515,9 @@ state 126
     TRUE            reduce using rule 31 (stmt -> for_stmt .)
     BOOL_LIT        reduce using rule 31 (stmt -> for_stmt .)
     IDENT           reduce using rule 31 (stmt -> for_stmt .)
+    (               reduce using rule 31 (stmt -> for_stmt .)
     DEC             reduce using rule 31 (stmt -> for_stmt .)
     INC             reduce using rule 31 (stmt -> for_stmt .)
-    (               reduce using rule 31 (stmt -> for_stmt .)
     PLUS            reduce using rule 31 (stmt -> for_stmt .)
     MINUS           reduce using rule 31 (stmt -> for_stmt .)
     !               reduce using rule 31 (stmt -> for_stmt .)
@@ -4258,9 +4544,9 @@ state 127
     TRUE            reduce using rule 32 (stmt -> while_stmt .)
     BOOL_LIT        reduce using rule 32 (stmt -> while_stmt .)
     IDENT           reduce using rule 32 (stmt -> while_stmt .)
+    (               reduce using rule 32 (stmt -> while_stmt .)
     DEC             reduce using rule 32 (stmt -> while_stmt .)
     INC             reduce using rule 32 (stmt -> while_stmt .)
-    (               reduce using rule 32 (stmt -> while_stmt .)
     PLUS            reduce using rule 32 (stmt -> while_stmt .)
     MINUS           reduce using rule 32 (stmt -> while_stmt .)
     !               reduce using rule 32 (stmt -> while_stmt .)
@@ -4287,9 +4573,9 @@ state 128
     TRUE            reduce using rule 33 (stmt -> if_stmt .)
     BOOL_LIT        reduce using rule 33 (stmt -> if_stmt .)
     IDENT           reduce using rule 33 (stmt -> if_stmt .)
+    (               reduce using rule 33 (stmt -> if_stmt .)
     DEC             reduce using rule 33 (stmt -> if_stmt .)
     INC             reduce using rule 33 (stmt -> if_stmt .)
-    (               reduce using rule 33 (stmt -> if_stmt .)
     PLUS            reduce using rule 33 (stmt -> if_stmt .)
     MINUS           reduce using rule 33 (stmt -> if_stmt .)
     !               reduce using rule 33 (stmt -> if_stmt .)
@@ -4316,9 +4602,9 @@ state 129
     TRUE            reduce using rule 34 (stmt -> compound_stmt .)
     BOOL_LIT        reduce using rule 34 (stmt -> compound_stmt .)
     IDENT           reduce using rule 34 (stmt -> compound_stmt .)
+    (               reduce using rule 34 (stmt -> compound_stmt .)
     DEC             reduce using rule 34 (stmt -> compound_stmt .)
     INC             reduce using rule 34 (stmt -> compound_stmt .)
-    (               reduce using rule 34 (stmt -> compound_stmt .)
     PLUS            reduce using rule 34 (stmt -> compound_stmt .)
     MINUS           reduce using rule 34 (stmt -> compound_stmt .)
     !               reduce using rule 34 (stmt -> compound_stmt .)
@@ -4345,9 +4631,9 @@ state 130
     TRUE            reduce using rule 35 (stmt -> expr_stmt .)
     BOOL_LIT        reduce using rule 35 (stmt -> expr_stmt .)
     IDENT           reduce using rule 35 (stmt -> expr_stmt .)
+    (               reduce using rule 35 (stmt -> expr_stmt .)
     DEC             reduce using rule 35 (stmt -> expr_stmt .)
     INC             reduce using rule 35 (stmt -> expr_stmt .)
-    (               reduce using rule 35 (stmt -> expr_stmt .)
     PLUS            reduce using rule 35 (stmt -> expr_stmt .)
     MINUS           reduce using rule 35 (stmt -> expr_stmt .)
     !               reduce using rule 35 (stmt -> expr_stmt .)
@@ -4380,9 +4666,9 @@ state 132
     TRUE            reduce using rule 36 (expr_stmt -> ; .)
     BOOL_LIT        reduce using rule 36 (expr_stmt -> ; .)
     IDENT           reduce using rule 36 (expr_stmt -> ; .)
+    (               reduce using rule 36 (expr_stmt -> ; .)
     DEC             reduce using rule 36 (expr_stmt -> ; .)
     INC             reduce using rule 36 (expr_stmt -> ; .)
-    (               reduce using rule 36 (expr_stmt -> ; .)
     PLUS            reduce using rule 36 (expr_stmt -> ; .)
     MINUS           reduce using rule 36 (expr_stmt -> ; .)
     !               reduce using rule 36 (expr_stmt -> ; .)
@@ -4403,13 +4689,13 @@ state 133
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -4443,9 +4729,9 @@ state 133
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -4455,6 +4741,8 @@ state 133
 state 134
 
     (37) expr_stmt -> expr . ;
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -4469,6 +4757,8 @@ state 134
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ;               shift and go to state 143
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -4516,6 +4806,8 @@ state 138
 state 139
 
     (78) expr -> IDENT [ expr ] = expr .
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -4530,6 +4822,8 @@ state 139
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               reduce using rule 78 (expr -> IDENT [ expr ] = expr .)
+    DEC             reduce using rule 78 (expr -> IDENT [ expr ] = expr .)
+    INC             reduce using rule 78 (expr -> IDENT [ expr ] = expr .)
     ;               reduce using rule 78 (expr -> IDENT [ expr ] = expr .)
     )               reduce using rule 78 (expr -> IDENT [ expr ] = expr .)
     ,               reduce using rule 78 (expr -> IDENT [ expr ] = expr .)
@@ -4568,9 +4862,9 @@ state 140
     TRUE            reduce using rule 44 (break_stmt -> BREAK ; .)
     BOOL_LIT        reduce using rule 44 (break_stmt -> BREAK ; .)
     IDENT           reduce using rule 44 (break_stmt -> BREAK ; .)
+    (               reduce using rule 44 (break_stmt -> BREAK ; .)
     DEC             reduce using rule 44 (break_stmt -> BREAK ; .)
     INC             reduce using rule 44 (break_stmt -> BREAK ; .)
-    (               reduce using rule 44 (break_stmt -> BREAK ; .)
     PLUS            reduce using rule 44 (break_stmt -> BREAK ; .)
     MINUS           reduce using rule 44 (break_stmt -> BREAK ; .)
     !               reduce using rule 44 (break_stmt -> BREAK ; .)
@@ -4580,6 +4874,8 @@ state 140
 state 141
 
     (42) return_stmt -> RETURN expr . ;
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -4594,6 +4890,8 @@ state 141
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ;               shift and go to state 150
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -4629,9 +4927,9 @@ state 142
     TRUE            reduce using rule 43 (return_stmt -> RETURN ; .)
     BOOL_LIT        reduce using rule 43 (return_stmt -> RETURN ; .)
     IDENT           reduce using rule 43 (return_stmt -> RETURN ; .)
+    (               reduce using rule 43 (return_stmt -> RETURN ; .)
     DEC             reduce using rule 43 (return_stmt -> RETURN ; .)
     INC             reduce using rule 43 (return_stmt -> RETURN ; .)
-    (               reduce using rule 43 (return_stmt -> RETURN ; .)
     PLUS            reduce using rule 43 (return_stmt -> RETURN ; .)
     MINUS           reduce using rule 43 (return_stmt -> RETURN ; .)
     !               reduce using rule 43 (return_stmt -> RETURN ; .)
@@ -4658,9 +4956,9 @@ state 143
     TRUE            reduce using rule 37 (expr_stmt -> expr ; .)
     BOOL_LIT        reduce using rule 37 (expr_stmt -> expr ; .)
     IDENT           reduce using rule 37 (expr_stmt -> expr ; .)
+    (               reduce using rule 37 (expr_stmt -> expr ; .)
     DEC             reduce using rule 37 (expr_stmt -> expr ; .)
     INC             reduce using rule 37 (expr_stmt -> expr ; .)
-    (               reduce using rule 37 (expr_stmt -> expr ; .)
     PLUS            reduce using rule 37 (expr_stmt -> expr ; .)
     MINUS           reduce using rule 37 (expr_stmt -> expr ; .)
     !               reduce using rule 37 (expr_stmt -> expr ; .)
@@ -4685,13 +4983,13 @@ state 144
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -4725,9 +5023,9 @@ state 144
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -4750,13 +5048,13 @@ state 145
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -4789,9 +5087,9 @@ state 145
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -4812,13 +5110,13 @@ state 146
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -4851,9 +5149,9 @@ state 146
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -4873,13 +5171,13 @@ state 147
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -4912,9 +5210,9 @@ state 147
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -4946,9 +5244,9 @@ state 148
     TRUE            reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     BOOL_LIT        reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     IDENT           reduce using rule 26 (local_decl -> type_spec IDENT ; .)
+    (               reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     DEC             reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     INC             reduce using rule 26 (local_decl -> type_spec IDENT ; .)
-    (               reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     PLUS            reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     MINUS           reduce using rule 26 (local_decl -> type_spec IDENT ; .)
     !               reduce using rule 26 (local_decl -> type_spec IDENT ; .)
@@ -4967,13 +5265,13 @@ state 149
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5006,9 +5304,9 @@ state 149
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5035,9 +5333,9 @@ state 150
     TRUE            reduce using rule 42 (return_stmt -> RETURN expr ; .)
     BOOL_LIT        reduce using rule 42 (return_stmt -> RETURN expr ; .)
     IDENT           reduce using rule 42 (return_stmt -> RETURN expr ; .)
+    (               reduce using rule 42 (return_stmt -> RETURN expr ; .)
     DEC             reduce using rule 42 (return_stmt -> RETURN expr ; .)
     INC             reduce using rule 42 (return_stmt -> RETURN expr ; .)
-    (               reduce using rule 42 (return_stmt -> RETURN expr ; .)
     PLUS            reduce using rule 42 (return_stmt -> RETURN expr ; .)
     MINUS           reduce using rule 42 (return_stmt -> RETURN expr ; .)
     !               reduce using rule 42 (return_stmt -> RETURN expr ; .)
@@ -5053,6 +5351,8 @@ state 151
 state 152
 
     (38) while_stmt -> WHILE ( expr . ) stmt
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -5067,6 +5367,8 @@ state 152
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     )               shift and go to state 157
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -5086,6 +5388,8 @@ state 153
 
     (40) if_stmt -> IF ( expr . ) stmt ELSE stmt
     (41) if_stmt -> IF ( expr . ) stmt
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -5100,6 +5404,8 @@ state 153
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     )               shift and go to state 158
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -5118,6 +5424,8 @@ state 153
 state 154
 
     (24) local_decl -> type_spec IDENT [ expr . ] ;
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -5132,6 +5440,8 @@ state 154
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ]               shift and go to state 159
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -5150,6 +5460,8 @@ state 154
 state 155
 
     (25) local_decl -> type_spec IDENT = expr . ;
+    (58) expr -> expr . DEC
+    (59) expr -> expr . INC
     (65) expr -> expr . MOD expr
     (66) expr -> expr . DIVIDE expr
     (67) expr -> expr . TIMES expr
@@ -5164,6 +5476,8 @@ state 155
     (76) expr -> expr . AND expr
     (77) expr -> expr . OR expr
     ;               shift and go to state 160
+    DEC             shift and go to state 53
+    INC             shift and go to state 54
     MOD             shift and go to state 55
     DIVIDE          shift and go to state 56
     TIMES           shift and go to state 57
@@ -5197,13 +5511,13 @@ state 156
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5237,9 +5551,9 @@ state 156
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5279,13 +5593,13 @@ state 157
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5325,9 +5639,9 @@ state 157
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5373,13 +5687,13 @@ state 158
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5419,9 +5733,9 @@ state 158
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5467,9 +5781,9 @@ state 160
     TRUE            reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     BOOL_LIT        reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     IDENT           reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
+    (               reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     DEC             reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     INC             reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
-    (               reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     PLUS            reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     MINUS           reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
     !               reduce using rule 25 (local_decl -> type_spec IDENT = expr ; .)
@@ -5501,9 +5815,9 @@ state 162
     TRUE            reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     BOOL_LIT        reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     IDENT           reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
+    (               reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     DEC             reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     INC             reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
-    (               reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     PLUS            reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     MINUS           reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
     !               reduce using rule 38 (while_stmt -> WHILE ( expr ) stmt .)
@@ -5531,9 +5845,9 @@ state 163
     TRUE            reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     BOOL_LIT        reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     IDENT           reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
+    (               reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     DEC             reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     INC             reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
-    (               reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     PLUS            reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     MINUS           reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
     !               reduce using rule 41 (if_stmt -> IF ( expr ) stmt .)
@@ -5565,9 +5879,9 @@ state 164
     TRUE            reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     BOOL_LIT        reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     IDENT           reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
+    (               reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     DEC             reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     INC             reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
-    (               reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     PLUS            reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     MINUS           reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
     !               reduce using rule 24 (local_decl -> type_spec IDENT [ expr ] ; .)
@@ -5591,13 +5905,13 @@ state 165
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5631,9 +5945,9 @@ state 165
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5673,13 +5987,13 @@ state 166
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5719,9 +6033,9 @@ state 166
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5762,9 +6076,9 @@ state 168
     TRUE            reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     BOOL_LIT        reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     IDENT           reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
+    (               reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     DEC             reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     INC             reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
-    (               reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     PLUS            reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     MINUS           reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
     !               reduce using rule 40 (if_stmt -> IF ( expr ) stmt ELSE stmt .)
@@ -5801,13 +6115,13 @@ state 169
     (52) expr -> . BOOL_LIT
     (53) expr -> . IDENT . SIZE
     (54) expr -> . IDENT ( args )
-    (55) expr -> . IDENT DEC
-    (56) expr -> . IDENT INC
-    (57) expr -> . DEC IDENT
-    (58) expr -> . INC IDENT
-    (59) expr -> . IDENT [ expr ]
-    (60) expr -> . IDENT
-    (61) expr -> . ( expr )
+    (55) expr -> . IDENT [ expr ]
+    (56) expr -> . IDENT
+    (57) expr -> . ( expr )
+    (58) expr -> . expr DEC
+    (59) expr -> . expr INC
+    (60) expr -> . DEC expr
+    (61) expr -> . INC expr
     (62) expr -> . PLUS expr
     (63) expr -> . MINUS expr
     (64) expr -> . ! expr
@@ -5847,9 +6161,9 @@ state 169
     TRUE            shift and go to state 31
     BOOL_LIT        shift and go to state 32
     IDENT           shift and go to state 23
+    (               shift and go to state 33
     DEC             shift and go to state 34
     INC             shift and go to state 35
-    (               shift and go to state 33
     PLUS            shift and go to state 36
     MINUS           shift and go to state 37
     !               shift and go to state 38
@@ -5884,9 +6198,9 @@ state 170
     TRUE            reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     BOOL_LIT        reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     IDENT           reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
+    (               reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     DEC             reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     INC             reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
-    (               reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     PLUS            reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     MINUS           reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)
     !               reduce using rule 39 (for_stmt -> FOR ( args ; args ; args ) stmt .)

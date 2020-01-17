@@ -116,7 +116,7 @@ from cast import *
 
 class Parser(sly.Parser):
 
-    debugfile = 'parser.txt'
+    debugfile = 'data/parser.txt'
 
     tokens = Lexer.tokens
 
@@ -294,6 +294,14 @@ class Parser(sly.Parser):
     def expr(self, p):
         return UnaryOpExpr(p[0], p.expr, lineno=p.lineno)
 
+    @_("INC expr %prec PRE", "DEC expr %prec PRE")
+    def expr(self, p):
+        return UnaryOpExpr(p[0], p.expr, lineno=p.lineno)
+
+    @_("expr INC %prec POST", "expr DEC %prec POST")
+    def expr(self, p):
+        return UnaryOpExpr(p[1], p.expr, lineno=p.lineno)
+
     @_("'(' expr ')'")
     def expr(self, p):
         return p.expr
@@ -305,14 +313,6 @@ class Parser(sly.Parser):
     @_("IDENT '[' expr ']'")
     def expr(self, p):
         return ArrayExpr(p.IDENT, p.expr, lineno=p.lineno)
-
-    @_("INC IDENT %prec PRE", "DEC IDENT %prec PRE")
-    def expr(self, p):
-        return IncDecExpr(p[0], p.IDENT, lineno=p.lineno)
-
-    @_("IDENT INC %prec POST", "IDENT DEC %prec POST")
-    def expr(self, p):
-        return IncDecExpr(p[1], p.IDENT, lineno=p.lineno)
 
     @_("IDENT '(' args ')'")
     def expr(self, p):

@@ -230,7 +230,7 @@ class ArrayExpr(Expression):
 
 class UnaryOpExpr(Expression):
     op: str
-    right: Expression
+    expr: Expression
 
 
 class BinaryOpExpr(Expression):
@@ -240,11 +240,6 @@ class BinaryOpExpr(Expression):
     op: str
     left: Expression
     right: Expression
-
-
-class IncDecExpr(Expression):
-    op: str
-    name: str
 
 
 class VarAssignmentExpr(Expression):
