@@ -130,7 +130,7 @@ class Parser(sly.Parser):
         ("left", PLUS, MINUS),
         ("left", TIMES, DIVIDE, MOD),
         ("right", '!', UNARY, PRE),
-        ("left", '.', '(', ')', '[', ']', POST)
+        ("left", '.', '(', ')', '[', ']', INC, DEC)
     )
 
     @_("decl_list")
@@ -298,7 +298,7 @@ class Parser(sly.Parser):
     def expr(self, p):
         return UnaryOpExpr(p[0], p.expr, lineno=p.lineno)
 
-    @_("expr INC %prec POST", "expr DEC %prec POST")
+    @_("expr INC", "expr DEC")
     def expr(self, p):
         return UnaryOpExpr(p[1], p.expr, lineno=p.lineno)
 
