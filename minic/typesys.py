@@ -18,16 +18,16 @@ de diferentes tipos. Hacer algunas funciones de utilidad que comprueban los oper
 MANTENLO SIMPLE. REPETIR. SENCILLO.
 '''
 
-ARITHM_BIN_OPS = ["+", "-", "*", "/", "%"]
-ARITHM_UNARY_OPS = ["+", "-"]
+ARITHM_BIN_OPS = ("+", "-", "*", "/", "%")
+ARITHM_UNARY_OPS = ("+", "-", "++", "--")
 
-REL_BIN_OPS = ["<", "<=", ">", ">=", "==", "!="]
+REL_BIN_OPS = ("<", "<=", ">", ">=", "==", "!=")
 
-BOOL_BIN_OPS = ["&&", "||", "==", "!="]
-BOOL_UNARY_OPS = ["!"]
+BOOL_BIN_OPS = ("&&", "||", "==", "!=")
+BOOL_UNARY_OPS = "!"
 
 
-class Type():
+class Type:
 	'''
 	Clase Base para nuestros tipos del sistema
 	'''
