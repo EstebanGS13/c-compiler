@@ -527,15 +527,21 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_UnaryOpExpr(self, node):
-        # Check and propagate the type of the only operand
-        self.visit(node.right)
-
         node.type = None
-        if node.right.type:
-            op_type = node.right.type.unaryop_type(node.op)
+        node.expr.type = None
+
+        if node.op in ('++', '--') and not isinstance(node.expr, VarExpr):
+            error(node.lineno, f"Operator '{node.op}' requires its operand to be an lvalue")
+            return
+
+        # Check and propagate the type of the only operand
+        self.visit(node.expr)
+
+        if node.expr.type:
+            op_type = node.expr.type.unaryop_type(node.op)
             if not op_type:
-                right_tname = node.right.type.name
-                error(node.lineno, f"Unary operation '{node.op} {right_tname}' not supported")
+                expr_tname = node.expr.type.name
+                error(node.lineno, f"Unary operation '{node.op} {expr_tname}' not supported")
 
             node.type = op_type
 
@@ -555,17 +561,6 @@ class CheckProgramVisitor(NodeVisitor):
                 error(node.lineno, f"Binary operation '{left_tname} {node.op} {right_tname}' not supported")
 
             node.type = op_type
-
-    def visit_IncDecExpr(self, node):
-        self.visit(node.op)
-
-        # Associate a type name such as "int" with a Type object
-        self.visit(node.name)
-        if node.name in self.symbols:
-            node.type = self.symbols[node.name].type
-        else:
-            node.type = None
-            error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_VarAssignmentExpr(self, node):
         # First visit the name definition to check that it is a valid
