@@ -208,6 +208,9 @@ class GenerateCode(cast.NodeVisitor):
         # El código generado (lista de tuplas)
         self.code = init_function.code
 
+        # Lista de loop merge labels para BreakStmt
+        self.loop_merge_labels = []
+
         # Esta bandera indica si el código actual que se está visitando
         # está en alcance global, o no
         self.global_scope = True
@@ -265,6 +268,9 @@ class GenerateCode(cast.NodeVisitor):
         lbl_op_code = get_op_code('label')
         branch_op_code = get_op_code('branch')
 
+        # Guardar el merge label en la lista
+        self.loop_merge_labels.append(merge_label)
+
         # Esto es necesario ya que LLVM requiere de un branch a label
         self.code.append((branch_op_code, top_label))
 
@@ -279,6 +285,9 @@ class GenerateCode(cast.NodeVisitor):
         self.code.append((lbl_op_code, start_label))
         self.visit(node.body)
 
+        # Luego de visitar el body, remover el merge label
+        self.loop_merge_labels.pop()
+
         # Regresa a la etiqueta inicial
         self.code.append((branch_op_code, top_label))
 
@@ -292,9 +301,10 @@ class GenerateCode(cast.NodeVisitor):
         node.register = node.value.register
 
     def visit_BreakStmt(self, node):
-        # crear lista con branches de loops, branchear
-        # a la ultima y borrarla luego
-        pass
+        branch_op_code = get_op_code('branch')
+        label = self.loop_merge_labels[-1]
+        inst = (branch_op_code, label)
+        self.code.append(inst)
 
     def visit_FuncDeclStmt(self, node):
         # Genera un nuevo objeto function para colocar el codigo
@@ -425,14 +435,19 @@ class GenerateCode(cast.NodeVisitor):
             # dependediendo de la operacion, en un nuevo registro.
             mov_op_code = get_op_code('mov', node_type)
             aux_target = self.new_register()
-            aux_inst = (mov_op_code, 0 if operator == '-' else 1, aux_target)
+            aux_value = 0 if operator == '-' else 1  # 0 para el menos unario
+            aux_inst = (mov_op_code, aux_value, aux_target)
             self.code.append(aux_inst)
 
             # XOR es para el operador boolean NOT
             op_code = 'XOR' if operator == '!' else get_op_code(operator[0], node_type)
 
             target = self.new_register()
-            inst = (op_code, aux_target, node.expr.register, target)
+            if aux_value:
+                inst = (op_code, node.expr.register, aux_target, target)
+            else:
+                inst = (op_code, aux_target, node.expr.register, target)
+
             self.code.append(inst)
             node.register = target
 
@@ -458,21 +473,6 @@ class GenerateCode(cast.NodeVisitor):
 
         self.code.append(inst)
         node.register = target
-
-    # def visit_IncDecExpr(self, node):
-    #     operator = node.op[0]
-    #     node_type = node.type.name
-    #     load_op_code = get_op_code('load', node_type)
-    #     mov_op_code = get_op_code('mov', node_type)
-    #     op_code = get_op_code(operator, node_type)
-    #     store_op_code = get_op_code('store', node_type)
-    #
-    #     self.code.append((load_op_code, node.name))
-    #     op_code = get_op_code(operator, node.type.name)
-    #
-    #     target = self.new_register()
-    #     inst = (op_code,)
-
 
     def visit_VarAssignmentExpr(self, node):
         self.visit(node.value)
