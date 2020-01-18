@@ -121,6 +121,8 @@ class Parser(sly.Parser):
     tokens = Lexer.tokens
 
     precedence = (
+        ("nonassoc", LOWER),
+        ("nonassoc", ELSE),
         ("left", ','),
         ("right", '=', ADDASSIGN, SUBASSIGN, MULASSIGN, DIVASSIGN, MODASSIGN),
         ("left", OR),
@@ -254,7 +256,7 @@ class Parser(sly.Parser):
     def for_stmt(self, p):
         return ForStmt(p.args0, p.args1, p.args2, p.stmt, lineno=p.lineno)
 
-    @_("IF '(' expr ')' stmt")
+    @_("IF '(' expr ')' stmt %prec LOWER")
     def if_stmt(self, p):
         return IfStmt(p.expr, p.stmt, None, lineno=p.lineno)
 
