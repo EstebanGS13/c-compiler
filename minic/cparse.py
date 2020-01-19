@@ -279,11 +279,13 @@ class Parser(sly.Parser):
     @_("IDENT '=' expr", "IDENT ADDASSIGN expr", "IDENT SUBASSIGN expr",
        "IDENT MULASSIGN expr", "IDENT DIVASSIGN expr", "IDENT MODASSIGN expr")
     def expr(self, p):
-        return VarAssignmentExpr(p.IDENT, p.expr, lineno=p.lineno)
+        return VarAssignmentExpr(p[1], p.IDENT, p.expr, lineno=p.lineno)
 
-    @_("IDENT '[' expr ']' '=' expr")
+    @_("IDENT '[' expr ']' '=' expr", "IDENT '[' expr ']' ADDASSIGN expr",
+       "IDENT '[' expr ']' SUBASSIGN expr", "IDENT '[' expr ']' MULASSIGN expr",
+       "IDENT '[' expr ']' DIVASSIGN expr", "IDENT '[' expr ']' MODASSIGN expr")
     def expr(self, p):
-        return ArrayAssignmentExpr(p.IDENT, p.expr0, p.expr1, lineno=p.lineno)
+        return ArrayAssignmentExpr(p[1], p.IDENT, p.expr0, p.expr1, lineno=p.lineno)
 
     @_("expr OR expr", "expr AND expr", "expr EQ expr", "expr NE expr",
        "expr LE expr", "expr '<' expr", "expr GE expr", "expr '>' expr",

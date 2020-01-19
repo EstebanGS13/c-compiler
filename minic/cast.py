@@ -243,11 +243,13 @@ class BinaryOpExpr(Expression):
 
 
 class VarAssignmentExpr(Expression):
+    op: str
     name: str
     value: Expression
 
 
 class ArrayAssignmentExpr(Expression):
+    op: str
     name: str
     index: Expression
     value: Expression
