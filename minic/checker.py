@@ -316,21 +316,19 @@ class CheckProgramVisitor(NodeVisitor):
                 if node.datatype.type is VoidType:
                     error(node.lineno, f"Variable '{node.name}' declared as '{VoidType.name}'")
                 else:
-                    # Before finishing, this var declaration may have an expression
-                    # to initialize it. If so, we must visit the node, and check
-                    # type errors
+                    # Before finishing, this var declaration may have an expression to
+                    # initialize it. If so, we must visit the node, and check type errors
                     if node.value:
                         self.visit(node.value)
-
                         if node.value.type:  # If value has no type, then there was a previous error
                             if node.value.type == node.datatype.type:
-                                # Great, the value type matches the variable type
-                                # declaration
+                                # Great, the value type matches the variable type declaration
                                 node.type = node.datatype.type
                                 self.symbols[node.name] = node
                             else:
                                 error(node.lineno,
-                                      f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                                      f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' "
+                                      f"but assigned expression of type '{node.value.type.name}'")
                     else:
                         # There is no initialization, so we have everything needed
                         # to save it into our symbols table
@@ -362,16 +360,11 @@ class CheckProgramVisitor(NodeVisitor):
                 else:
                     if node.size:
                         self.visit(node.size)
-
-                        # Check if size is an instance of IntegerLiteral
                         if isinstance(node.size, IntegerLiteral):
-                            if node.size.value > 0:
-                                # There is no initialization and the size is valid integer,
-                                # so we have everything needed to save it into our symbols table
-                                node.type = node.datatype.type
-                                self.symbols[node.name] = node
-                            else:
-                                error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
+                            # There is no initialization and the size is valid integer,
+                            # so we have everything needed to save it into our symbols table
+                            node.type = node.datatype.type
+                            self.symbols[node.name] = node
                         else:
                             error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
                     else:
@@ -400,21 +393,19 @@ class CheckProgramVisitor(NodeVisitor):
                 if node.datatype.type is VoidType:
                     error(node.lineno, f"Variable '{node.name}' declared as '{VoidType.name}'")
                 else:
-                    # Before finishing, this var declaration may have an expression
-                    # to initialize it. If so, we must visit the node, and check
-                    # type errors
+                    # Before finishing, this var declaration may have an expression to
+                    # initialize it. If so, we must visit the node, and check type errors
                     if node.value:
                         self.visit(node.value)
-
                         if node.value.type:  # If value has no type, then there was a previous error
                             if node.value.type == node.datatype.type:
-                                # Great, the value type matches the variable type
-                                # declaration
+                                # Great, the value type matches the variable type declaration
                                 node.type = node.datatype.type
                                 self.symbols[node.name] = node
                             else:
                                 error(node.lineno,
-                                      f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' but assigned expression of type '{node.value.type.name}'")
+                                      f"Declaring variable '{node.name}' of type '{node.datatype.type.name}' "
+                                      f"but assigned expression of type '{node.value.type.name}'")
                     else:
                         # There is no initialization, so we have everything needed
                         # to save it into our symbols table
@@ -446,16 +437,11 @@ class CheckProgramVisitor(NodeVisitor):
                 else:
                     if node.size:
                         self.visit(node.size)
-
-                        # Check if size is an instance of IntegerLiteral
                         if isinstance(node.size, IntegerLiteral):
-                            if node.size.value > 0:
-                                # There is no initialization and the size is valid integer,
-                                # so we have everything needed to save it into our symbols table
-                                node.type = node.datatype.type
-                                self.symbols[node.name] = node
-                            else:
-                                error(node.lineno, f"Size value of array '{node.name}' should be greater than zero")
+                            # There is no initialization and the size is valid integer,
+                            # so we have everything needed to save it into our symbols table
+                            node.type = node.datatype.type
+                            self.symbols[node.name] = node
                         else:
                             error(node.lineno, f"Size of array '{node.name}' must be a positive integer")
                     else:
@@ -521,6 +507,9 @@ class CheckProgramVisitor(NodeVisitor):
         self.visit(node.name)
         self.visit(node.index)
         if node.name in self.symbols:
+            if node.index.type is FloatType:
+                error(node.lineno, f"Index of array '{node.name}' must be '{IntType.name}' type ")
+
             node.type = self.symbols[node.name].type
         else:
             node.type = None
@@ -546,7 +535,7 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = op_type
 
     def visit_BinaryOpExpr(self, node):
-        # For operators, you need to visit each operand separately.  You'll
+        # For operators, you need to visit each operand separately. You'll
         # then need to make sure the types and operator are all compatible.
         self.visit(node.left)
         self.visit(node.right)
@@ -555,7 +544,7 @@ class CheckProgramVisitor(NodeVisitor):
         # Perform various checks here
         if node.left.type and node.right.type:
             op_type = node.left.type.binop_type(node.op, node.right.type)
-            if not op_type:
+            if (not op_type) or (op_type is FloatType and node.op == '%'):
                 left_tname = node.left.type.name
                 right_tname = node.right.type.name
                 error(node.lineno, f"Binary operation '{left_tname} {node.op} {right_tname}' not supported")
@@ -563,8 +552,7 @@ class CheckProgramVisitor(NodeVisitor):
             node.type = op_type
 
     def visit_VarAssignmentExpr(self, node):
-        # First visit the name definition to check that it is a valid
-        # name
+        # First visit the name definition to check that it is a valid name
         self.visit(node.name)
         # Visit the value, to also get type information
         self.visit(node.value)
@@ -574,9 +562,11 @@ class CheckProgramVisitor(NodeVisitor):
         if node.name in self.symbols:
             var_type = self.symbols[node.name].type
             if var_type and node.value.type:
-                # If both have type information, then the type checking worked on
-                # both branches
+                # If both have type information, then the type checking worked on both branches
                 if var_type == node.value.type:  # If var name type is the same as value type
+                    if var_type is FloatType and node.op == '%=':
+                        error(node.lineno, f"Cannot perform '%' assignment operation on '{var_type.name}' type")
+
                     # Propagate the type
                     node.type = var_type
                 else:
@@ -586,32 +576,27 @@ class CheckProgramVisitor(NodeVisitor):
             error(node.lineno, f"Name '{node.name}' was not defined")
 
     def visit_ArrayAssignmentExpr(self, node):
-        # First visit the name definition to check that it is a valid
-        # name
+        # First visit the name definition to check that it is a valid name
         self.visit(node.name)
-        # Visit the value, to also get type information
+        # Visit the index and value, to also get type information
         self.visit(node.value)
+        self.visit(node.index)
 
         node.type = None
         # Check if the array is already declared
         if node.name in self.symbols:
             array_type = self.symbols[node.name].type
             if array_type and node.value.type:
-                # If both have type information, then the type checking worked on
-                # both branches
+                # If both have type information, then the type checking worked on both branches
                 if array_type == node.value.type:  # If var name type is the same as value type
+                    if node.index.type is FloatType:
+                        error(node.lineno, f"Index of array '{node.name}' must be '{IntType.name}' type ")
+
+                    if array_type is FloatType and node.op == '%=':
+                        error(node.lineno, f"Cannot perform '%' assignment operation on '{array_type.name}' type")
+
                     # Propagate the type
                     node.type = array_type
-
-                    self.visit(node.index)
-                    if node.index:
-                        if isinstance(node.index, IntegerLiteral):
-                            array_size = self.symbols[node.name].size
-                            if node.index.value >= array_size.value:
-                                error(node.lineno,
-                                      f"Array '{node.name}' of size '{array_size}' has index '{node.index.value}' out of range")
-                        elif isinstance(node.index, FloatLiteral):
-                            error(node.lineno, f"Index of array '{node.name}' must be a positive integer")
                 else:
                     error(node.lineno,
                           f"Cannot assign type '{node.value.type.name}' to array '{node.name}' of type '{array_type.name}'")
