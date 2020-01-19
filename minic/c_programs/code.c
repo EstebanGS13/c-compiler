@@ -28,6 +28,10 @@ int main(void){
     int c = a + 3; // OKAY
     int d = a + b; // Error. int + float
     int e = b + 4.5; // Error. int = float
+    float f = 5 % 2; // Error float = int
+    int g = 5 % 2;
+    int h = 5.0 % 2; // Error float % int
+    float i = 5.0 % 2.0;  // Error float % float
 //
 //    int a[9.0]; // error size not int
 //    int b[0]; // error > 0

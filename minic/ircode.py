@@ -124,6 +124,7 @@ completar el proyecto.
 '''
 
 from collections import ChainMap
+from checker import print_node
 import cast
 
 IR_TYPE_MAPPING = {
@@ -140,7 +141,7 @@ OP_CODES = ChainMap({
     '-': 'SUB',
     '*': 'MUL',
     '/': 'DIV',
-    '!': 'XOR',
+    '%': 'REM',
     '&&': 'AND',
     '||': 'OR',
     'print': 'PRINT',
@@ -164,7 +165,7 @@ def get_op_code(operation, type_name=None):
     return f"{op_code}{suffix}"
 
 
-class Function():
+class Function:
     '''
 	Representa una function con su lista de instrucciones IR
 	'''
@@ -345,9 +346,10 @@ class GenerateCode(cast.NodeVisitor):
 
     def visit_StaticArrayDeclStmt(self, node):
         self.visit(node.datatype)
+        self.visit(node.size)
 
         op_code = get_op_code('var', node.type.name)
-        inst = (op_code, node.name + '[]')
+        inst = (op_code, node.name + '[' + node.size.register + ']')
         self.code.append(inst)
 
     def visit_LocalVarDeclStmt(self, node):
@@ -366,9 +368,10 @@ class GenerateCode(cast.NodeVisitor):
 
     def visit_LocalArrayDeclStmt(self, node):
         self.visit(node.datatype)
+        self.visit(node.size)
 
         op_code = get_op_code('alloc', node.type.name)
-        inst = (op_code, node.name + '[]')
+        inst = (op_code, node.name + '[' + node.size.register + ']')
         self.code.append(inst)
 
     def visit_IntegerLiteral(self, node):
@@ -414,10 +417,11 @@ class GenerateCode(cast.NodeVisitor):
         node.register = register
 
     def visit_ArrayExpr(self, node):
-        # TODO si tiene expr entonces load tambien?
+        self.visit(node.index)
+
         op_code = get_op_code('load', node.type.name)
         register = self.new_register()
-        inst = (op_code, node.name + '[]', register)
+        inst = (op_code, node.name + '[' + node.index.register + ']', register)
         self.code.append(inst)
         node.register = register
 
@@ -476,16 +480,61 @@ class GenerateCode(cast.NodeVisitor):
 
     def visit_VarAssignmentExpr(self, node):
         self.visit(node.value)
-        op_code = get_op_code('store', node.type.name)
-        inst = (op_code, node.value.register, node.name)
-        self.code.append(inst)
+        node.register = node.value.register
+        operator = node.op
+        node_type = node.type.name
 
+        if operator != '=':
+            # Cargar el valor de la propia variable
+            load_op_code = get_op_code('load', node_type)
+            load_register = self.new_register()
+            load_inst = (load_op_code, node.name, load_register)
+            self.code.append(load_inst)
+
+            # Hacer la operacion binaria
+            target = self.new_register()
+            op_code = get_op_code(operator[0], node_type)
+            inst = (op_code, load_register, node.value.register, target)
+            self.code.append(inst)
+            node.register = target
+
+        store_op_code = get_op_code('store', node_type)
+        store_inst = (store_op_code, node.register, node.name)
+        self.code.append(store_inst)
+
+    def visit_ArrayAssignmentExpr(self, node):
+        self.visit(node.value)
+        self.visit(node.index)
+        node.register = node.value.register
+        index_register = node.index.register
+        operator = node.op
+        node_type = node.type.name
+
+        if operator != '=':
+            # Cargar el valor de la propia variable
+            load_op_code = get_op_code('load', node_type)
+            load_register = self.new_register()
+            load_inst = (load_op_code, node.name + '[' + index_register + ']', load_register)
+            self.code.append(load_inst)
+
+            # Hacer la operacion binaria
+            target = self.new_register()
+            op_code = get_op_code(operator[0], node_type)
+            inst = (op_code, load_register, node.value.register, target)
+            self.code.append(inst)
+            node.register = target
+
+        store_op_code = get_op_code('store', node_type)
+        store_inst = (store_op_code, node.register,
+                      node.name + '[' + index_register + ']')
+        self.code.append(store_inst)
 
 # ----------------------------------------------------------------------
 #                       PRUEBAS/PROGRAMA PRINCIPAL
 #
 # Nota: Algunos cambios serán necesarios en proyectos posteriores.
 # ----------------------------------------------------------------------
+
 
 def compile_ircode(source):
     '''
