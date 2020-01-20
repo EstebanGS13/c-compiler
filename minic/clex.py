@@ -105,9 +105,6 @@ from errors import error
 import sly
 
 
-unallowed_escapes = ('\\a', '\\b', '\\e', '\\f', '\\r', '\\v')
-
-
 class Lexer(sly.Lexer):
     # -------
     # Conjunto de palabras reservadas.  Este conjunto enumera todos los
@@ -137,6 +134,10 @@ class Lexer(sly.Lexer):
     literals = '(){}[];,.+-*/#%<>=!'
 
     # ----------------------------------------------------------------------
+    # Caracteres escape no permitidos
+
+    disallowed_characters = ('\\a', '\\b', '\\e', '\\f', '\\r', '\\v')
+
     # Caracteres ignorados (whitespace)
     #
     # Los siguientes caracteres son ignorados completamente por el lexer.
@@ -243,7 +244,7 @@ class Lexer(sly.Lexer):
         return t
 
     def STRING_LIT(self, t):
-        char = [e for e in unallowed_escapes if e in t.value]
+        char = [e for e in self.disallowed_characters if e in t.value]
         if char:
             self.error_escape(char)
         else:
