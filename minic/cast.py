@@ -405,3 +405,16 @@ class DotVisitor(NodeVisitor):
 
         self.dot.add_node(pydot.Node(id, label=label))
         self.st.append(id)
+
+
+def create_ast_file(ast, filename):
+    dot = DotVisitor()
+    dot.visit(ast)
+    try:
+        ast_file = open("data/ast.txt", "w")
+        filename = "// Generated from: " + filename + "\n\n"
+        ast_file.write(filename + str(dot))
+        ast_file.close()
+        print("AST file written to 'data/ast.txt'")
+    except OSError:
+        print("Cannot create AST file")

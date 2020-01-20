@@ -406,7 +406,7 @@ def main():
 	'''
     import sys
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         sys.stderr.write('Uso: python -m minic.parser filename\n')
         raise SystemExit(1)
 
@@ -417,11 +417,8 @@ def main():
     for depth, node in flatten(ast):
         print('%s: %s%s' % (getattr(node, 'lineno', None), ' ' * (4 * depth), node))
 
-    dot = DotVisitor()
-    dot.visit(ast)
-    ast_file = open("data/ast.txt", "w")
-    ast_file.write(str(dot))
-    ast_file.close()
+    if '--ast' in sys.argv:
+        create_ast_file(ast, sys.argv[1])
 
 
 if __name__ == '__main__':
