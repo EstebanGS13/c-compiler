@@ -3,7 +3,7 @@ This is not a comment.
 /* This is another
  * C-style comment.
  */
-"This is /* also not a comment */"
+"This is /* not a comment */"
 
 /*
 * Some text here
@@ -16,14 +16,19 @@ This is not a comment.
 /* comentario */  anidado */
 
 
-/*foo
-lol
-blah
-
-
-
-da
-*
+/*long
+comment
+1
+2
+///*
 end*/
 
-one
+/*
+use of
+multi-line comment */
+
+/* Multi-line Welcome user comment
+    written to demonstrate comments
+    in C/C++ *
+
+ sin terminar

@@ -1,8 +1,14 @@
-test "esto \b es una "str"
-
-"esto tambien\r es una" str"
-
-"  "
+"Hello world"
+"Test \" ' string"
+"abcd\" inside string"
+"      "
+""
 char string[] = "hola mundo";
 
-"asas\" fuera"
+// With errors
+"esto también es una" str"
+"this is " not_a_str"
+"bad char \b \b \f"
+"another \r \a \e \r bad char"
+" not completed
+end

@@ -1,27 +1,21 @@
 test
-
-
 word
-
 wor4444
-
-kk_l0
-
-0part_1
-
-
+k_10
 qwer_123_123_qew
+_2123
+_one
+__two20
+A_12
+__1__2__
+___a___1
 
-111last22
-
-_2123kek
-
-
-truefalse
-
-true
+if
+IF
+for
+FALSE
 false
 
-FALSE false true
-
-TRUE true false
+// Not matched
+0part_1
+111last22
