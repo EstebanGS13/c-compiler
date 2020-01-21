@@ -180,7 +180,7 @@ class Parser(sly.Parser):
     def params(self, p):
         return p.param_list
 
-    @_("VOID")
+    @_("VOID", "empty")
     def params(self, p):
         return []
 
@@ -380,9 +380,9 @@ class Parser(sly.Parser):
 
     def error(self, p):
         if p:
-            error(p.lineno, "Error de sintaxis en la entrada en el token '%s'" % p.value)
+            error(p.lineno, "Syntax error in input at token '%s'" % p.value)
         else:
-            error('EOF', 'Error de sintaxis. No mas entrada.')
+            error("EOF", "Syntax error. No more input.")
 
 
 # ----------------------------------------------------------------------
@@ -407,7 +407,7 @@ def main():
     import sys
 
     if len(sys.argv) < 2:
-        sys.stderr.write('Uso: python -m minic.parser filename\n')
+        sys.stderr.write('Usage: python -m cparse filename\n')
         raise SystemExit(1)
 
     # Parse y crea el AST
