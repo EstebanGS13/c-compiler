@@ -1,5 +1,5 @@
 # cast.py
-'''
+"""
 
 Objetos del AST (Abstract Syntax Tree).
 
@@ -9,7 +9,7 @@ conectará entre sí. En general, tendrá un nodo AST diferente para cada
 tipo de regla de gramática. Se pueden encontrar algunos nodos AST de
 muestra en la parte superior de este archivo. Tendrá que agregar más
 por su cuenta.
-'''
+"""
 
 import pydot
 
@@ -53,12 +53,12 @@ class AST(object):
 
 
 # ----------------------------------------------------------------------
-# Nodos espefificos del AST.
+# Nodos específicos del AST.
 #
-# Para cada uno de estos nodos, se debe agregar la especificacion
-# apropiada de _fields = [] que especifique que campos seran guardados.
+# Para cada uno de estos nodos, se debe agregar la especificación
+# apropiada de _fields = [] que especifique que campos serán guardados.
 # Solo como ejemplo, para el operador binario, se debe guardar el
-# operador, la expresion izquierda y la derecha como esto:
+# operador, la expresión izquierda y la derecha como esto:
 #
 #    class Expression(AST):
 #          pass
@@ -68,8 +68,8 @@ class AST(object):
 #          left: Expression
 #          right: Expression
 #
-# En el archivo parser.py, se creara el nodo usando un codigo
-# sililar a esto:
+# En el archivo parser.py, se creara el nodo usando un código
+# similar a esto:
 #
 #    class MiniCParser(Parser):
 #        ...
@@ -90,9 +90,9 @@ class Expression(AST):
 
 
 class Literal(Expression):
-    '''
+    """
     Un valor literal como 2, 2.5, o "dos"
-    '''
+    """
     pass
 
 
@@ -104,9 +104,9 @@ class DataType(AST):
 
 
 class Program(Statement):
-    '''
+    """
     program : decl_list
-    '''
+    """
     decl_list: [Statement]
 
 
@@ -234,9 +234,9 @@ class UnaryOpExpr(Expression):
 
 
 class BinaryOpExpr(Expression):
-    '''
+    """
     Un operador binario como 2 + 3 o x * y
-    '''
+    """
     op: str
     left: Expression
     right: Expression
@@ -261,7 +261,7 @@ class ArraySizeExpr(Expression):
 
 
 # ----------------------------------------------------------------------
-#                NO MODIFIQUE NADA DE AQUI EN ADELANTE
+#                NO MODIFIQUE NADA DE AQUÍ EN ADELANTE
 # ----------------------------------------------------------------------
 
 # Las siguientes clases para visitar y reescribir el AST se toman del
@@ -269,7 +269,7 @@ class ArraySizeExpr(Expression):
 
 # NO MODIFIQUE
 class NodeVisitor(object):
-    '''
+    """
     Clase para visitar los nodos del árbol de análisis sintáctico.
     Esto se modela después de una clase similar en la biblioteca estándar
     ast.NodeVisitor. Para cada nodo, el método de visit(node) llama a
@@ -290,13 +290,13 @@ class NodeVisitor(object):
 
     tree = parse(txt)
     VisitOps().visit(tree)
-    '''
+    """
 
     def visit(self, node):
-        '''
-        Enecuta un metodo de la forma visit_NodeName(node) donde
+        """
+        Ejecuta un método de la forma visit_NodeName(node) donde
         NodeName es el nombre de la clase de un nodo particular.
-        '''
+        """
         if isinstance(node, list):
             for item in node:
                 self.visit(item)
@@ -306,21 +306,21 @@ class NodeVisitor(object):
             visitor(node)
 
     def generic_visit(self, node):
-        '''
-        Metodo ejecutado si no se encuentra el metodo visit_.
+        """
+        Método ejecutado si no se encuentra el método visit_.
         Este examina el nodo para ver si tiene _fields, una lista,
         o puede ser atravesado.
-        '''
+        """
         for field in getattr(node, '_fields'):
             value = getattr(node, field, None)
             self.visit(value)
 
     @classmethod
     def __init_subclass__(cls):
-        '''
+        """
         Revision de sanidad. Se asegura que las clases visitor usen los
         nombres adecuados.
-        '''
+        """
         for key in vars(cls):
             if key.startswith('visit_'):
                 assert key[6:] in globals(), f"{key} no coincide con nodos AST"
@@ -328,12 +328,12 @@ class NodeVisitor(object):
 
 # NO MODIFICAR
 def flatten(top):
-    '''
+    """
     Aplana todo el árbol de análisis sintáctico en una lista para
     depurar y probar.  Esto devuelve una lista de tuplas de la
     forma (depth, node) donde depth es un entero que representa
     la profundidad y node es el nodo AST asociado.
-    '''
+    """
 
     class Flattener(NodeVisitor):
         def __init__(self):
@@ -352,9 +352,9 @@ def flatten(top):
 
 
 class DotVisitor(NodeVisitor):
-    '''
+    """
     Crea archivo tipo 'dot' para Graphiz
-    '''
+    """
     _dot_graph_defaults = {
         'graph_name': 'AST',
         'graph_type': 'graph'
@@ -369,9 +369,9 @@ class DotVisitor(NodeVisitor):
     _dot_edge_defaults = {}
 
     def __init__(self):
-        '''
-        creamos un obj del tipo dot que se va a llamar AST
-        '''
+        """
+        Creamos un obj del tipo dot que se va a llamar AST
+        """
         self.dot = pydot.Dot(graph_name='AST', graph_type='graph')
         self.dot.set_node_defaults(**self._dot_node_defaults)
         self.dot.set_edge_defaults(**self._dot_edge_defaults)

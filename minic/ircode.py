@@ -1,10 +1,10 @@
 # ircode.py
-'''
+"""
 Proyecto 4
 ==========
 En este proyecto, va a convertir el AST en un código de máquina
-intermedio basado en el código de 3 direcciones.  Hay algunas partes
-importantes que necesitarás para que esto funcione.  Por favor,
+intermedio basado en el código de 3 direcciones. Hay algunas partes
+importantes que necesitarás para que esto funcione. Por favor,
 lea atentamente antes de comenzar:
 
 Una Maquina "Virtual"
@@ -12,7 +12,7 @@ Una Maquina "Virtual"
 Una CPU normalmente consiste en registros y un pequeño conjunto de
 códigos de operación básicos para realizar cálculos matemáticos,
 cargar/almacenar valores desde la memoria y un flujo de control
-básico (ramas, saltos, etc.).  Por ejemplo, suponga que desea evaluar
+básico (ramas, saltos, etc.). Por ejemplo, suponga que desea evaluar
 una operación como esta:
 
     a = 2 + 3 * 4 - 5
@@ -52,7 +52,7 @@ código de IR:
 
     MOVI   value, target       ;  Load a literal integer
     VARI   name                ;  Declare an integer variable
-    ALLOCI name                ;  Allocate an integer variabe on the stack
+    ALLOCI name                ;  Allocate an integer variable on the stack
     LOADI  name, target        ;  Load an integer from a variable
     STOREI target, name        ;  Store an integer into a variable
     ADDI   r1, r2, target      ;  target = r1 + r2
@@ -101,8 +101,9 @@ Single Static Assignment
 ========================
 En una CPU real, hay un número limitado de registros de CPU.
 En nuestra memoria virtual, vamos a suponer que la CPU tiene un número
-infinito de registros disponibles.  Además, asumiremos que cada registro
+infinito de registros disponibles. Además, asumiremos que cada registro
 solo se puede asignar una vez.
+
 Este estilo en particular se conoce como asignación única estática (SSA).
 A medida que genere instrucciones, mantendrá un contador activo que se
 incrementa cada vez que necesita una variable temporal.
@@ -115,13 +116,7 @@ un programa y lo aplana a una sola secuencia de instrucciones de código
 SSA representado como tuplas de la forma
 
        (operation, operands, ..., destination)
-
-Pruebas
-=======
-Los archivos Tests/irtest0-5.c contienen algún texto de entrada
-junto con salida de muestra.  Trabaja a través de cada archivo para
-completar el proyecto.
-'''
+"""
 
 from collections import ChainMap
 from checker import print_node
@@ -145,10 +140,10 @@ OP_CODES = ChainMap({
     '&&': 'AND',
     '||': 'OR',
     'print': 'PRINT',
-    'store': 'STORE',
     'var': 'VAR',
     'alloc': 'ALLOC',  # Local allocation (inside functions)
     'load': 'LOAD',
+    'store': 'STORE',
     'label': 'LABEL',
     'cbranch': 'CBRANCH',  # Conditional branch
     'branch': 'BRANCH',  # Unconditional branch
@@ -166,9 +161,9 @@ def get_op_code(operation, type_name=None):
 
 
 class Function:
-    '''
-	Representa una function con su lista de instrucciones IR
-	'''
+    """
+    Representa una function con su lista de instrucciones IR
+    """
 
     def __init__(self, func_name, parameters, return_type):
         self.name = func_name
@@ -189,16 +184,16 @@ class Function:
 
 
 class GenerateCode(cast.NodeVisitor):
-    '''
-	Clase visitante de nodo que crea secuencias de instrucciones
-	codificadas de 3 direcciones.
-	'''
+    """
+    Clase visitante de nodo que crea secuencias de instrucciones
+    codificadas de 3 direcciones.
+    """
 
     def __init__(self):
-        # contador de registros
+        # Contador de registros
         self.register_count = 0
 
-        # contador rotulos de bloque
+        # Contador rótulos de bloque
         self.label_count = 0
 
         # Función especial para recoger todas las declaraciones globales.
@@ -217,9 +212,9 @@ class GenerateCode(cast.NodeVisitor):
         self.global_scope = True
 
     def new_register(self):
-        '''
-		Crea un nuevo registro temporal
-		'''
+        """
+        Crea un nuevo registro temporal
+        """
         self.register_count += 1
         return f"R{self.register_count}"
 
@@ -244,17 +239,17 @@ class GenerateCode(cast.NodeVisitor):
         lbl_op_code = get_op_code('label')
         branch_op_code = get_op_code('branch')
 
-        # Inserta la instruccion CBRANCH
+        # Inserta la instrucción CBRANCH
         cbranch_op_code = get_op_code('cbranch')
         self.code.append((cbranch_op_code, node.condition.register, t_label, f_label))
 
-        # Ahora, el codigo para el bloque true
+        # Ahora, el código para el bloque true
         self.code.append((lbl_op_code, t_label))
         self.visit(node.true_block)
         # Y debemos mezclar la etiqueta
         self.code.append((branch_op_code, merge_label))
 
-        # Genera etiqueta para bloque flase
+        # Genera etiqueta para bloque false
         self.code.append((lbl_op_code, f_label))
         self.visit(node.false_block)
         self.code.append((branch_op_code, merge_label))
@@ -263,8 +258,8 @@ class GenerateCode(cast.NodeVisitor):
         self.code.append((lbl_op_code, merge_label))
 
     def visit_WhileStmt(self, node):
-        top_label = self.new_label()  # Para antes de la evaluacion de condicion
-        start_label = self.new_label()  # Para despues de la condicion
+        top_label = self.new_label()  # Para antes de la evaluación de condición
+        start_label = self.new_label()  # Para después de la condición
         merge_label = self.new_label()  # Para salir del ciclo
         lbl_op_code = get_op_code('label')
         branch_op_code = get_op_code('branch')
@@ -276,13 +271,13 @@ class GenerateCode(cast.NodeVisitor):
         self.code.append((branch_op_code, top_label))
 
         self.code.append((lbl_op_code, top_label))
-        self.visit(node.condition)  # Generar instruccion de CMP
+        self.visit(node.condition)  # Generar instrucción de CMP
 
-        # Inserta la instruccion CBRANCH
+        # Inserta la instrucción CBRANCH
         cbranch_op_code = get_op_code('cbranch')
         self.code.append((cbranch_op_code, node.condition.register, start_label, merge_label))
 
-        # Ahora, el codigo para el cuerpo del ciclo
+        # Ahora, el código para el cuerpo del ciclo
         self.code.append((lbl_op_code, start_label))
         self.visit(node.body)
 
@@ -308,7 +303,7 @@ class GenerateCode(cast.NodeVisitor):
         self.code.append(inst)
 
     def visit_FuncDeclStmt(self, node):
-        # Genera un nuevo objeto function para colocar el codigo
+        # Genera un nuevo objeto function para colocar el código
         func = Function(node.name,
                         [(p.name, IR_TYPE_MAPPING[p.datatype.type.name]) for p in node.params],
                         IR_TYPE_MAPPING[node.datatype.type.name])
@@ -333,7 +328,7 @@ class GenerateCode(cast.NodeVisitor):
     def visit_StaticVarDeclStmt(self, node):
         self.visit(node.datatype)
 
-        # La declaracion de variable depende del alcance
+        # La declaración de variable depende del alcance
         op_code = get_op_code('var', node.type.name)
         def_inst = (op_code, node.name)
         self.code.append(def_inst)
@@ -355,7 +350,7 @@ class GenerateCode(cast.NodeVisitor):
     def visit_LocalVarDeclStmt(self, node):
         self.visit(node.datatype)
 
-        # La declaracion de variable depende del alcance
+        # La declaración de variable depende del alcance
         op_code = get_op_code('alloc', node.type.name)
         def_inst = (op_code, node.name)
         self.code.append(def_inst)
@@ -431,12 +426,12 @@ class GenerateCode(cast.NodeVisitor):
         node_type = node.type.name
 
         if operator == '+':
-            # El operador unario + no produce codigo extra
+            # El operador unario + no produce código extra
             node.register = node.expr.register
         else:
             # Para tener en cuenta el hecho de que el código de máquina no
             # admite operaciones unarias, primero debemos cargar un 0 o 1,
-            # dependediendo de la operacion, en un nuevo registro.
+            # dependiendo de la operación, en un nuevo registro.
             mov_op_code = get_op_code('mov', node_type)
             aux_target = self.new_register()
             aux_value = 0 if operator == '-' else 1  # 0 para el menos unario
@@ -456,8 +451,8 @@ class GenerateCode(cast.NodeVisitor):
             node.register = target
 
             if operator in ('++', '--'):
-                # Si la operacion es inc o dec, se debe
-                # guardar el nuevo valor de la varible
+                # Si la operación es inc o dec, se debe
+                # guardar el nuevo valor de la variable
                 store_op_code = get_op_code('store', node_type)
                 store_inst = (store_op_code, target, node.expr.name)
                 self.code.append(store_inst)
@@ -491,7 +486,7 @@ class GenerateCode(cast.NodeVisitor):
             load_inst = (load_op_code, node.name, load_register)
             self.code.append(load_inst)
 
-            # Hacer la operacion binaria
+            # Hacer la operación binaria
             target = self.new_register()
             op_code = get_op_code(operator[0], node_type)
             inst = (op_code, load_register, node.value.register, target)
@@ -517,7 +512,7 @@ class GenerateCode(cast.NodeVisitor):
             load_inst = (load_op_code, node.name + '[' + index_register + ']', load_register)
             self.code.append(load_inst)
 
-            # Hacer la operacion binaria
+            # Hacer la operación binaria
             target = self.new_register()
             op_code = get_op_code(operator[0], node_type)
             inst = (op_code, load_register, node.value.register, target)
@@ -529,6 +524,7 @@ class GenerateCode(cast.NodeVisitor):
                       node.name + '[' + index_register + ']')
         self.code.append(store_inst)
 
+
 # ----------------------------------------------------------------------
 #                       PRUEBAS/PROGRAMA PRINCIPAL
 #
@@ -537,9 +533,9 @@ class GenerateCode(cast.NodeVisitor):
 
 
 def compile_ircode(source):
-    '''
-	Genera codigo intermedio desde el fuente.
-	'''
+    """
+    Genera código intermedio desde el fuente.
+    """
     from cparse import parse
     from checker import check_program
     from errors import errors_reported
@@ -547,7 +543,7 @@ def compile_ircode(source):
     ast = parse(source)
     check_program(ast)
 
-    # Si no ocurrio error, genere codigo
+    # Si no ocurrió error, genere código
     if not errors_reported():
         gen = GenerateCode()
         gen.visit(ast)

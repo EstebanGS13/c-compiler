@@ -1,6 +1,6 @@
 # cparse.py
 # coding: utf-8
-r'''
+r"""
 Proyecto 2: Escribir un analizador
 ==================================
 En este proyecto, escribes el shell básico de un analizador para MiniC.
@@ -65,7 +65,7 @@ proyectos posteriores.
 	return_stmt : RETURN ;
 			| RETURN expr ;
 
-	break_stamt : BREAK ;
+	break_stmt : BREAK ;
 
 	expr : IDENT = expr | IDENT[ expr ] = expr
 			| expr OR expr
@@ -87,7 +87,7 @@ proyectos posteriores.
 
 
 Para hacer el proyecto, siga las instrucciones que siguen a continuación.
-'''
+"""
 # ----------------------------------------------------------------------
 # Analizadores son definidos usando SLY.  Se hereda de la clase Parser
 #
@@ -115,7 +115,6 @@ from cast import *
 
 
 class Parser(sly.Parser):
-
     debugfile = 'data/parser.txt'
 
     tokens = Lexer.tokens
@@ -391,9 +390,9 @@ class Parser(sly.Parser):
 
 
 def parse(source):
-    '''
-	Parser el código fuente en un AST. Devuelve la parte superior del árbol AST.
-	'''
+    """
+    Parser el código fuente en un AST. Devuelve la parte superior del árbol AST.
+    """
     lexer = Lexer()
     parser = Parser()
     ast = parser.parse(lexer.tokenize(source))
@@ -401,9 +400,9 @@ def parse(source):
 
 
 def main():
-    '''
-	Programa principal. Usado para probar.
-	'''
+    """
+    Programa principal. Usado para probar.
+    """
     import sys
 
     if len(sys.argv) < 2:

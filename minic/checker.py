@@ -1,5 +1,5 @@
 # checker.py
-'''
+"""
 
 *** No inicie este proyecto hasta que no haya completado el parser. ***
 
@@ -69,7 +69,7 @@ la siguiente:
         a = 37; // OKAY
         b = 37; // Error. b es const
 
-Estrategia de implementacion:
+Estrategia de implementación:
 -----------------------------
 Se va a usar la clase NodeVisitor definida en ast.py
 para recorrer el árbol de parse. Se van a definir
@@ -103,7 +103,7 @@ Pensamientos generales y consejos.
 ----------------------------------
 Lo principal en lo que debe estar pensando con la verificación
 es el programa exactitud. ¿Esta declaración u operación que
-estás mirando? en el arbol de parse tiene sentido? Si no,
+estás mirando? en el árbol de parse tiene sentido? Si no,
 algún tipo de error necesita ser generado. Use sus propias
 experiencias como programador como guía (piense sobre lo que
 causaría un error en tu lenguaje de programación favorito).
@@ -112,7 +112,7 @@ Un desafío será la gestión de muchos detalles complicados.
 Tienes que rastrear símbolos, tipos y diferentes tipos de
 capacidades. No siempre está claro cómo organizar mejor
 todo eso. Entonces, espera un poco al principio.
-'''
+"""
 
 from collections import ChainMap
 from errors import error
@@ -122,12 +122,12 @@ import inspect
 
 
 class CheckProgramVisitor(NodeVisitor):
-    '''
+    """
     Program checking class.   This class uses the visitor pattern as described
     in ast.py.   You need to define methods of the form visit_NodeName()
     for each kind of AST node that you want to process.  You may need to
     adjust the method names here if you've picked different AST node names.
-    '''
+    """
 
     def __init__(self):
         # Initialize the symbol table
@@ -266,7 +266,6 @@ class CheckProgramVisitor(NodeVisitor):
                     error(node.lineno, f"Parameter '{param}' has invalid type '{VoidType.name}' at function definition")
 
         self.visit(node.datatype)
-        ret_type_ok = node.datatype.type is not None
 
         # Before visiting the function, body, we must change the symbol table
         # to a new one
@@ -610,9 +609,9 @@ class CheckProgramVisitor(NodeVisitor):
 
 
 def print_node(node):
-    '''
+    """
     Print current node info for debugging
-    '''
+    """
     print("\n  " + inspect.stack()[1].function)  # Caller's function name
     print(node)
 
@@ -622,17 +621,17 @@ def print_node(node):
 # ----------------------------------------------------------------------
 
 def check_program(ast):
-    '''
+    """
     Check the supplied program (in the form of an AST)
-    '''
+    """
     checker = CheckProgramVisitor()
     checker.visit(ast)
 
 
 def main():
-    '''
+    """
     Main program. Used for testing
-    '''
+    """
     import sys
     from cparse import parse
 

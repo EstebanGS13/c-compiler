@@ -1,11 +1,11 @@
 # typesys.py
-'''
+"""
 Sistema de tipo miniC
 =====================
-Este archivo implementa características básicas del sistema de 
-tipos MiniC. 
-Ahi esta mucha flexibilidad es posible aquí, pero la mejor 
-estrategia podría ser No reconsiderar el problema. Al menos 
+Este archivo implementa características básicas del sistema de
+tipos MiniC.
+Ahi esta mucha flexibilidad es posible aquí, pero la mejor
+estrategia podría ser No reconsiderar el problema. Al menos
 no al principio. Aquí están los Requisitos básicos mínimos:
 
 1. Los tipos tienen nombres (por ejemplo, 'int', 'float', 'string')
@@ -16,7 +16,7 @@ Para tratar todo esto inicialmente, recomiendo representar tipos
 Como cuerdas simples. Hacer tablas que representen las capacidades.
 de diferentes tipos. Hacer algunas funciones de utilidad que comprueban los operadores.
 MANTENLO SIMPLE. REPETIR. SENCILLO.
-'''
+"""
 
 ARITHM_BIN_OPS = ("+", "-", "*", "/", "%")
 ARITHM_UNARY_OPS = ("+", "-", "++", "--")
@@ -28,9 +28,9 @@ BOOL_UNARY_OPS = "!"
 
 
 class Type:
-	'''
+	"""
 	Clase Base para nuestros tipos del sistema
-	'''
+	"""
 	
 	@classmethod
 	def binop_type(cls, op, right_type):

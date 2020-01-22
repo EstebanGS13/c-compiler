@@ -1,34 +1,34 @@
 # clexer.py
 # coding: utf-8
-r'''
+r"""
 Proyecto 1 - Escribir un Lexer
 ==============================
 
-En este primer proyecto, usted debe escribir un lexer sencillo para 
+En este primer proyecto, usted debe escribir un lexer sencillo para
 un lenguaje de instrucciones: MiniC.
 
-El proyecto es basado en código que usted debe leer (en este archivo) 
-y completar. Por favor, lea el contenido completo de este archivo y 
+El proyecto es basado en código que usted debe leer (en este archivo)
+y completar. Por favor, lea el contenido completo de este archivo y
 cuidadosamente complete los pasos indicados como comentarios.
 
 Revisión:
 ---------
-El proceso del analizador léxico es la de tomar el texto de entrada y 
-descomponerlo en un flujo de símbolos (tokens). Cada token es como una 
+El proceso del analizador léxico es la de tomar el texto de entrada y
+descomponerlo en un flujo de símbolos (tokens). Cada token es como una
 palabra válida del diccionario.  Esencialmente, el papel del lexer es
-simplemente asegurarse de que el texto de entrada se compone de símbolos 
-válidos antes de cualquier procesamiento adicional relacionado con el 
+simplemente asegurarse de que el texto de entrada se compone de símbolos
+válidos antes de cualquier procesamiento adicional relacionado con el
 análisis sintáctico.
 
 Cada token es definido por una expresión regular. Por lo tanto, su
-principal tarea en este primer proyecto es definir un conjunto de 
-expresiones regulares para el lenguaje. El trabajo actual del análisis 
+principal tarea en este primer proyecto es definir un conjunto de
+expresiones regulares para el lenguaje. El trabajo actual del análisis
 léxico deberá ser manejado por SLY.
 
 Especificación:
 ---------------
-Su lexer debe reconocer los siguientes tokens (símbolos). El nombre a la 
-izquierda es el nombre del token, el valor en la derecha es el texto de 
+Su lexer debe reconocer los siguientes tokens (símbolos). El nombre a la
+izquierda es el nombre del token, el valor en la derecha es el texto de
 coincidencia.
 
 Palabras Reservadas:
@@ -37,8 +37,8 @@ Palabras Reservadas:
 	WHILE    : 'while'
 
 Identificadores: (Las mismas reglas como para Python)
-	IDENT    : El texto inicia con una letra o '_', seguido por 
-			   cualquier número de letras, digitos o guión bajo.
+	IDENT    : El texto inicia con una letra o '_', seguido por
+			   cualquier número de letras, dígitos o guión bajo.
 
 Operadores y Delimitadores:
 	PLUS    : '+'
@@ -69,28 +69,28 @@ Comentarios: Para ser ignorados por el lexer
 	/* ... */      Omite un bloque (sin anidamiento permitido)
 
 Errores: Su lexer debe reportar los siguientes mensajes de error:
-	lineno: Caracter ilegal 'c' 
+	lineno: Carácter ilegal 'c'
 	lineno: Cadena sin terminar
 	lineno: Comentario sin terminar
 	lineno: Cadena de código de escape malo '\..'
 
 Pruebas
 -------
-Para el desarrollo inicial, trate de correr el lexer sobre un 
+Para el desarrollo inicial, trate de correr el lexer sobre un
 archivo de entrada de ejemplo, como:
 
 	bash % python minic.tokenizer.py nibless.c
 
-Estudie cuidadosamente la salida del lexer y asegúrese que tiene 
+Estudie cuidadosamente la salida del lexer y asegúrese que tiene
 sentido. Una vez que este razonablemente contento con la salida,
 intente ejecutar alguna de las pruebas mas difíciles:
 
 	bash % python minic.tokenizer.py testlex1.c
 	bash % python minic.tokenizer.py testlex2.c
 
-Bono: ¿Cómo haría usted para convertir estas pruebas en pruebas 
+Bono: ¿Cómo haría usted para convertir estas pruebas en pruebas
 unitarias adecuadas?
-'''
+"""
 
 # ----------------------------------------------------------------------
 # El siguiente import carga una función error(lineno,msg) que se debe
@@ -106,7 +106,7 @@ import sly
 
 
 class Lexer(sly.Lexer):
-    # Conjunto de palabras reservadas.  Este conjunto enumera todos los
+    # Conjunto de palabras reservadas. Este conjunto enumera todos los
     # nombres especiales utilizados en el lenguaje, como 'if', 'else',
     # 'while', etc.
 
@@ -145,7 +145,7 @@ class Lexer(sly.Lexer):
     ignore = ' \t\r'
 
     # ----------------------------------------------------------------------
-    # Patrones ignorados.  Complete las expresiones regulares a continuación
+    # Patrones ignorados. Complete las expresiones regulares a continuación
     # para ignorar los comentarios
 
     ignore_line_comment = r'//.*'
@@ -325,9 +325,9 @@ class Lexer(sly.Lexer):
 #
 # ----------------------------------------------------------------------
 def main():
-    '''
-    main. Para propósitos de depuración
-    '''
+    """
+    Para propósitos de depuración
+    """
     import sys
 
     if len(sys.argv) != 2:
