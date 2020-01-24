@@ -153,6 +153,10 @@ class BreakStmt(Statement):
     value: type(None)
 
 
+class PrintStmt(Statement):
+    arguments: [Expression]
+
+
 class CompoundStmt(Statement):
     decl: [Statement]
     stmt_list: [Statement]

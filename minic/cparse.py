@@ -235,7 +235,7 @@ class Parser(sly.Parser):
         return []
 
     @_("expr_stmt", "compound_stmt", "if_stmt", "while_stmt",
-       "for_stmt", "return_stmt", "break_stmt")
+       "for_stmt", "return_stmt", "break_stmt", "print_stmt")
     def stmt(self, p):
         return p[0]
 
@@ -274,6 +274,10 @@ class Parser(sly.Parser):
     @_("BREAK ';'")
     def break_stmt(self, p):
         return BreakStmt(None, lineno=p.lineno)
+
+    @_("PRINT '(' args ')' ';'")
+    def print_stmt(self, p):
+        return PrintStmt(p.args, lineno=p.lineno)
 
     @_("IDENT '=' expr", "IDENT ADDASSIGN expr", "IDENT SUBASSIGN expr",
        "IDENT MULASSIGN expr", "IDENT DIVASSIGN expr", "IDENT MODASSIGN expr")

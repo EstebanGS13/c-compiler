@@ -302,6 +302,16 @@ class GenerateCode(cast.NodeVisitor):
         inst = (branch_op_code, label)
         self.code.append(inst)
 
+    def visit_PrintStmt(self, node):
+        self.visit(node.arguments)
+        for arg in node.arguments:
+            op_code = get_op_code('print', arg.type.name)
+            inst = (op_code, arg.register)
+            self.code.append(inst)
+        # registers = [arg.register for arg in node.arguments]
+        # self.code.append((op_code, node.name, *registers, target))
+        # node.register = target
+
     def visit_FuncDeclStmt(self, node):
         # Genera un nuevo objeto function para colocar el código
         func = Function(node.name,
@@ -520,8 +530,7 @@ class GenerateCode(cast.NodeVisitor):
             node.register = target
 
         store_op_code = get_op_code('store', node_type)
-        store_inst = (store_op_code, node.register,
-                      node.name + '[' + index_register + ']')
+        store_inst = (store_op_code, node.register, node.name + '[' + index_register + ']')
         self.code.append(store_inst)
 
 

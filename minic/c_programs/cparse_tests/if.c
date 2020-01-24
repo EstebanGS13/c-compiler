@@ -1,4 +1,5 @@
 int main(void){
+    int K = 0;
     if (a != s){
         int a = 2;
         if(test){
@@ -13,5 +14,14 @@ int main(void){
     }
     else{
         int b = 4;
+    }
+    if(!b){
+        do_x();
+        if(k == 1){
+            test(4);
+        }
+        else{
+            do_x();
+        }
     }
 }

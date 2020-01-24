@@ -240,6 +240,9 @@ class CheckProgramVisitor(NodeVisitor):
         if not self.loop:
             error(node.lineno, "Break statement must be within a loop")
 
+    def visit_PrintStmt(self, node):
+        self.visit(node.arguments)
+
     def visit_CompoundStmt(self, node):
         self.visit(node.decl)
         self.visit(node.stmt_list)

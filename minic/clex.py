@@ -111,9 +111,8 @@ class Lexer(sly.Lexer):
     # 'while', etc.
 
     keywords = {
-        'if', 'else', 'while', 'for', 'break',
-        'return', 'void', 'bool', 'int', 'float',
-        'char', 'new', 'size', 'true', 'false',
+        'if', 'else', 'while', 'for', 'break', 'return', 'print', 'new',
+        'size', 'void', 'bool', 'int', 'float', 'char', 'true', 'false',
     }
 
     # ----------------------------------------------------------------------
@@ -291,13 +290,14 @@ class Lexer(sly.Lexer):
     IDENT['for'] = FOR
     IDENT['break'] = BREAK
     IDENT['return'] = RETURN
+    IDENT['print'] = PRINT
+    IDENT['new'] = NEW
+    IDENT['size'] = SIZE
     IDENT['void'] = VOID
     IDENT['bool'] = BOOL
     IDENT['int'] = INT
     IDENT['float'] = FLOAT
     IDENT['char'] = CHAR
-    IDENT['new'] = NEW
-    IDENT['size'] = SIZE
     IDENT['true'] = TRUE
     IDENT['false'] = FALSE
 
